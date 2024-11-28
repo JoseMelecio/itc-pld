@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -10,38 +12,47 @@ use Inertia\Inertia;
 |--------------------------------------------------------------------------
 */
 
-// Landing (Guest)
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-    ]);
-})->name('welcome');
 
-// Dashboard (Authenticated + Verified)
+Route::get('/', function () {
+   return redirect('login');
+});
+
+
+Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
+Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->name('logout');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Dashboard - Profile (Authenticated)
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+//    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+//
+//    Route::resource('/users', UserController::class);
+
+    Route::get('/pld-notices/{noticeType}', [\App\Http\Controllers\PLDNoticeController::class, 'showForm'])->name('pld-notice.showForm');
+    Route::post('/pld-notices', [\App\Http\Controllers\PLDNoticeController::class, 'makeNotice'])->name('pld-notice.makeNotice');
 });
 
-/*
-|--------------------------------------------------------------------------
-| Auth Routes
-|--------------------------------------------------------------------------
-*/
 
-require __DIR__ . '/auth.php';
+//// Landing (Guest)
+//Route::get('/', function () {
+//    return Inertia::render('Welcome', [
+//        'canLogin' => Route::has('login'),
+//        'canRegister' => Route::has('register'),
+//    ]);
+//})->name('welcome');
+//
+//// Dashboard (Authenticated + Verified)
+//Route::get('/dashboard', function () {
+//    return Inertia::render('Dashboard');
+//})->middleware(['auth', 'verified'])->name('dashboard');
+//
+// Dashboard - Profile (Authenticated)
 
-/*
-|--------------------------------------------------------------------------
-| Preview Pages Routes
-|--------------------------------------------------------------------------
-*/
 
-require __DIR__ . '/preview.php';

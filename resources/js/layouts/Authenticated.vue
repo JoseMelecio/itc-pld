@@ -66,23 +66,39 @@ store.mainContent({ mode: "narrow" });
               to: '/dashboard',
               icon: 'fa fa-rocket',
             },
+            // {
+            //   name: 'Administración',
+            //   heading: true,
+            // },
+            // {
+            //   name: 'Usuarios',
+            //   to: '/users',
+            //   icon: 'fa fa-users-gear',
+            // },
+            // {
+            //   name: 'Cuenta',
+            //   heading: true,
+            // },
+            // {
+            //   name: 'Perfil',
+            //   to: '/profile',
+            //   icon: 'fa fa-user-circle',
+            // },
             {
-              name: 'Account',
+              name: 'Menu',
               heading: true,
             },
             {
-              name: 'Profile',
-              to: '/profile',
-              icon: 'fa fa-user-circle',
-            },
-            {
-              name: 'More',
-              heading: true,
-            },
-            {
-              name: 'Landing',
+              name: 'Notificaciones PLD',
               to: '/',
-              icon: 'fa fa-arrow-left',
+              icon: 'fa fa-file-code',
+              sub: [
+                {
+                  name: 'Arrendamiento de inmuebles',
+                  to: '/pld-notices/real_estate_leasing',
+                  icon: 'far fa-circle'
+                },
+              ]
             },
           ]"
         />
@@ -136,19 +152,19 @@ store.mainContent({ mode: "narrow" });
           aria-labelledby="page-header-user-dropdown"
         >
           <div class="p-2">
-            <Link
-              href="/profile"
-              class="dropdown-item d-flex align-items-center justify-content-between"
-            >
-              <span class="fs-sm fw-medium">Profile</span>
-            </Link>
+<!--            <Link-->
+<!--              href="/profile"-->
+<!--              class="dropdown-item d-flex align-items-center justify-content-between"-->
+<!--            >-->
+<!--              <span class="fs-sm fw-medium">Profile</span>-->
+<!--            </Link>-->
             <Link
               href="/logout"
               method="post"
               class="dropdown-item d-flex align-items-center justify-content-between"
               as="button"
             >
-              <span class="fs-sm fw-medium">Log Out</span>
+              <span class="fs-sm fw-medium">Salir</span>
             </Link>
           </div>
         </div>

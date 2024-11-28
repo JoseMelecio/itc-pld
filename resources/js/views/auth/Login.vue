@@ -39,11 +39,10 @@ const submit = () => {
         <div class="p-4 p-xl-5 flex-grow-1 d-flex align-items-center">
           <div class="w-100">
             <Link href="/" class="link-fx fw-semibold fs-2 text-white">
-              OneUI <span class="fw-normal">Vue</span>
+              PLD - <span class="fw-normal">Generador de notificaciones</span>
             </Link>
             <p class="text-white-75 me-xl-8 mt-2">
-              Welcome to your amazing app. Feel free to login and get access to
-              your dashboard.
+              Generador de avisos de prevención de lavado de dinero
             </p>
           </div>
         </div>
@@ -54,23 +53,23 @@ const submit = () => {
             <strong>{{ store.app.version }}</strong>
             &copy; {{ store.app.copyright }}
           </p>
-          <ul class="list list-inline mb-0 py-2">
-            <li class="list-inline-item">
-              <a class="text-white-75 fw-medium" href="javascript:void(0)"
-                >Legal</a
-              >
-            </li>
-            <li class="list-inline-item">
-              <a class="text-white-75 fw-medium" href="javascript:void(0)"
-                >Contact</a
-              >
-            </li>
-            <li class="list-inline-item">
-              <a class="text-white-75 fw-medium" href="javascript:void(0)"
-                >Terms</a
-              >
-            </li>
-          </ul>
+<!--          <ul class="list list-inline mb-0 py-2">-->
+<!--            <li class="list-inline-item">-->
+<!--              <a class="text-white-75 fw-medium" href="javascript:void(0)"-->
+<!--                >Legal</a-->
+<!--              >-->
+<!--            </li>-->
+<!--            <li class="list-inline-item">-->
+<!--              <a class="text-white-75 fw-medium" href="javascript:void(0)"-->
+<!--                >Contact</a-->
+<!--              >-->
+<!--            </li>-->
+<!--            <li class="list-inline-item">-->
+<!--              <a class="text-white-75 fw-medium" href="javascript:void(0)"-->
+<!--                >Terms</a-->
+<!--              >-->
+<!--            </li>-->
+<!--          </ul>-->
         </div>
       </div>
       <!-- END Meta Info Section -->
@@ -88,10 +87,10 @@ const submit = () => {
           <div class="w-100">
             <!-- Header -->
             <div class="text-center mb-5">
-              <h1 class="fw-black mb-2">Log In</h1>
+              <h1 class="fw-black mb-2">Entrar</h1>
               <p class="fw-medium text-muted">
-                Welcome, please log in or
-                <Link href="/register">create an account</Link>.
+                Bienvenido, Inicia sesión, por favor.
+<!--                <Link href="/register">create an account</Link>.-->
               </p>
             </div>
             <!-- END Header -->
@@ -130,7 +129,7 @@ const submit = () => {
                     </div>
                   </div>
                   <div class="mb-4">
-                    <label class="form-label" for="password">Password</label>
+                    <label class="form-label" for="password">Contaseña</label>
                     <input
                       type="password"
                       id="password"
@@ -149,19 +148,19 @@ const submit = () => {
                   <div
                     class="d-flex justify-content-between align-items-center mb-4"
                   >
-                    <div>
-                      <div class="form-check">
-                        <input
-                          type="checkbox"
-                          class="form-check-input"
-                          id="remember"
-                          v-model="form.remember"
-                        />
-                        <label class="form-check-label" for="remember"
-                          >Remember me</label
-                        >
-                      </div>
-                    </div>
+<!--                    <div>-->
+<!--                      <div class="form-check">-->
+<!--                        <input-->
+<!--                          type="checkbox"-->
+<!--                          class="form-check-input"-->
+<!--                          id="remember"-->
+<!--                          v-model="form.remember"-->
+<!--                        />-->
+<!--                        <label class="form-check-label" for="remember"-->
+<!--                          >Remember me</label-->
+<!--                        >-->
+<!--                      </div>-->
+<!--                    </div>-->
                     <div>
                       <button
                         type="submit"
@@ -170,7 +169,7 @@ const submit = () => {
                         :disabled="form.processing"
                       >
                         <i class="fa fa-fw fa-sign-in-alt me-1 opacity-50"></i>
-                        Log In
+                        Iniciar
                       </button>
                     </div>
                   </div>

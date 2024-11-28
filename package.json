@@ -54,6 +54,7 @@
     "vue-easy-lightbox": "^1.19.0",
     "vue-flatpickr-component": "^11.0.5",
     "vue-select": "^4.0.0-beta.3",
-    "vue-star-rating": "^2.1.0"
+    "vue-star-rating": "^2.1.0",
+    "ziggy-js": "^2.4.1"
   }
 }
