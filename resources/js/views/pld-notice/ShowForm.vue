@@ -5,7 +5,7 @@ import {route} from "ziggy-js";
 
 const props = defineProps({
   errors: Object,
-  noticeType: '',
+  pldNotice: '',
 })
 
 const form = useForm({
@@ -47,13 +47,13 @@ const submit = () => {
     <div class="row items-push">
       <div class="col-sm-12 col-xl-12">
         <form @submit.prevent="submit">
-          <BaseBlock :title="noticeType" class="h-100 mb-0" content-class="fs-sm">
+          <BaseBlock :title="pldNotice.spanish_name" class="h-100 mb-0" content-class="fs-sm">
 
             <div class="block-content block-content-full">
               <div class="row">
                 <div class="col-12">
                   <div class="mb-4">
-                    <label class="form-label" for="month">Mes repostado <span class="text-danger">*</span></label>
+                    <label class="form-label" for="month">Mes reportado <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" :class="{ 'is-invalid': errors.month }"  id="month" name="month" placeholder="MMAAAA" v-model="form.month">
                     <div id="month-error" class="invalid-feedback animated fadeIn">asdsad</div>
                   </div>
