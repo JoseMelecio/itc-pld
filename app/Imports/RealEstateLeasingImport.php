@@ -3,9 +3,11 @@
 namespace App\Imports;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class RealEstateLeasingImport implements ToCollection
+class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
 {
     private array $data = [];
     /**
@@ -16,13 +18,15 @@ class RealEstateLeasingImport implements ToCollection
         $isLeasing = false;
         $numLeasing = 0;
 
-        foreach ($collection->skip(1) as $row) {
+        foreach ($collection->skip(3) as $row) {
+            Log::info($row);
             /**
              * We read the type of lease to know if there is registration or only payments
              * if there is a type of lease it means that it is a new registration,
              * If there is no type of lease it means that they are only payments.
             */
-            if (strlen(trim(strtoupper($row[57]))) > 0) {
+            Log::info($row[58]);
+            if (strlen(trim(strtoupper($row[58]))) > 0) { //BG
                 $isLeasing = true;
                 $numLeasing++;
             } else {
@@ -41,7 +45,10 @@ class RealEstateLeasingImport implements ToCollection
                 $modification['priority'] = trim($tempPriority[0]);
             }
 
+            Log::info($modification);
+
             if($isLeasing) {
+                Log::info("Entro");
                 $this->data['items'][$numLeasing]['modification'] = $modification;
             }
 
@@ -286,5 +293,12 @@ class RealEstateLeasingImport implements ToCollection
     public function getData(): array
     {
         return $this->data;
+    }
+
+    public function sheets(): array
+    {
+        return [
+            'Plantilla' => $this
+        ];
     }
 }

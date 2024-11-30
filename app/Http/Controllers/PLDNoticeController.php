@@ -24,6 +24,7 @@ class PLDNoticeController extends Controller
     public function makeNotice(MakeNoticeRequest $request): void
     {
         $import = new RealEstateLeasingImport();
+        //$import->onlySheets('Plantilla');
         Excel::import($import, $request->file('file'));
         $data = $import->getData();
         Log::info($data);

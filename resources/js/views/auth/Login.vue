@@ -14,7 +14,7 @@ defineProps({
 const store = useTemplateStore();
 
 const form = useForm({
-  email: "",
+  user_name: "",
   password: "",
   remember: false,
 });
@@ -111,21 +111,21 @@ const submit = () => {
 
                 <form @submit.prevent="submit">
                   <div class="mb-4">
-                    <label class="form-label" for="email">Email</label>
+                    <label class="form-label" for="email">Usuario</label>
                     <input
                       id="email"
-                      type="email"
+                      type="text"
                       class="form-control form-control-lg form-control-alt"
                       :class="{
-                        'is-invalid': form.errors.email,
+                        'is-invalid': form.errors.user_name,
                       }"
-                      v-model="form.email"
+                      v-model="form.user_name"
                       required
                       autofocus
                       autocomplete="username"
                     />
-                    <div v-show="form.errors.email" class="invalid-feedback">
-                      {{ form.errors.email }}
+                    <div v-show="form.errors.user_name" class="invalid-feedback">
+                      {{ form.errors.user_name }}
                     </div>
                   </div>
                   <div class="mb-4">
