@@ -11,15 +11,44 @@ const props = defineProps({
 
 const form = useForm({
   pld_notice_id: props.pldNotice.id,
-  month: null,
-  collegiate_entity_tax_id: null,
-  notice_reference: null,
+  month: '',
+  collegiate_entity_tax_id: '',
+  notice_reference: '',
   exempt: 'no',
-  file: null,
+  file: '',
 });
 
-const submit = () => {
-  router.post(route('pld-notice.makeNotice'), form)
+const submit = async () => {
+  try {
+    const response = await axios.post(route('pld-notice.makeNotice'), form, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+      responseType: 'blob', // Necesario para manejar archivos binarios
+
+    });
+
+    // Crear un enlace para descargar el archivo
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+
+    // Extraer el nombre del archivo del encabezado Content-Disposition
+    const contentDisposition = response.headers['content-disposition'];
+    const fileName = contentDisposition
+      ? contentDisposition.split('filename=')[1].replace(/['"]/g, '')
+      : 'archivo.xml';
+
+    link.setAttribute('download', fileName);
+    document.body.appendChild(link);
+    link.click();
+
+    // Limpiar el enlace después de usarlo
+    link.parentNode.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Error al descargar el archivo:', error);
+  }
 };
 
 const downloadTemplate = () => {

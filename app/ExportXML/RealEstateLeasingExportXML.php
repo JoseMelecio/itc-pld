@@ -2,6 +2,8 @@
 
 namespace App\ExportXML;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class RealEstateLeasingExportXML
 {
@@ -15,11 +17,9 @@ class RealEstateLeasingExportXML
     }
     function makeXML()
     {
-        $fileName = "ArrendamientoInmuebles" . Carbon::now() .".xml";
-
         //make xml object
-        $xmlObject = new XMLWriter();
-        $xmlObject->openURI($fileName);
+        $xmlObject = new \XMLWriter();
+        $xmlObject->openMemory();
         $xmlObject->setIndent(true);
         $xmlObject->setIndentString("\t");
 
@@ -60,7 +60,6 @@ class RealEstateLeasingExportXML
 
         $xmlObject->endElement(); // sujeto_obligado
 
-
         foreach($this->data['items'] as $key => $notice){
             $xmlObject->startElement("aviso");
             $xmlObject->startElement("referencia_aviso");
@@ -98,96 +97,96 @@ class RealEstateLeasingExportXML
 
             # Validamos si es persona Fisica, Moral o Fideicomiso
             # Persona Fisica
-            if(strlen($notice['identificationDataPersonSubjectNotice']['physicalPerson']['nombre']) > 0 )
+            if(strlen($notice['identificationDataPersonSubjectNotice']['physicalPerson']['name']) > 0 )
             {
                 $xmlObject->startElement("persona_fisica");
                 $xmlObject->startElement("nombre");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['nombre']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['name']);
                 $xmlObject->endElement(); // nombre
 
                 $xmlObject->startElement("apellido_paterno");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['apellidoPaterno']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['last_name']);
                 $xmlObject->endElement(); // apellido_paterno
 
                 $xmlObject->startElement("apellido_materno");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['apellidoMaterno']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['second_last_name']);
                 $xmlObject->endElement(); // apellido_materno
 
                 $xmlObject->startElement("fecha_nacimiento");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['fechaNacimiento']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['birthdate']);
                 $xmlObject->endElement(); // fecha_nacimiento
 
-                if(strlen($notice['identificationDataPersonSubjectNotice']['physicalPerson']['rfc']) > 0){
+                if(strlen($notice['identificationDataPersonSubjectNotice']['physicalPerson']['tax_id']) > 0){
                     $xmlObject->startElement("rfc");
-                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['rfc']);
+                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['tax_id']);
                     $xmlObject->endElement(); // rfc
                 }
 
-                if(strlen($notice['identificationDataPersonSubjectNotice']['physicalPerson']['curp']) > 0){
+                if(strlen($notice['identificationDataPersonSubjectNotice']['physicalPerson']['population_id']) > 0){
                     $xmlObject->startElement("curp");
-                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['curp']);
+                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['population_id']);
                     $xmlObject->endElement(); // curp
                 }
 
                 $xmlObject->startElement("pais_nacionalidad");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['nacionalidad']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['nationality']);
                 $xmlObject->endElement(); // pais_nacionalidad
 
                 $xmlObject->startElement("actividad_economica");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['actividadEconomica']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['physicalPerson']['economic_activity']);
                 $xmlObject->endElement(); // actividad_economica
 
                 $xmlObject->endElement(); // persona_fisica
             }
             # Persona Moral
-            elseif(strlen($notice['identificationDataPersonSubjectNotice']['personaMoral']['razonSocial']) > 0){
+            elseif(strlen($notice['identificationDataPersonSubjectNotice']['legalPerson']['company_name']) > 0){
                 $xmlObject->startElement("persona_moral");
                 $xmlObject->startElement("denominacion_razon");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['personaMoral']['razonSocial']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['legalPerson']['company_name']);
                 $xmlObject->endElement(); // denominacion_razon
 
                 $xmlObject->startElement("fecha_constitucion");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['personaMoral']['fechaConstitucion']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['legalPerson']['constitution_date']);
                 $xmlObject->endElement(); // fecha_constitucion
 
                 $xmlObject->startElement("rfc");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['personaMoral']['rfc']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['legalPerson']['tax_id']);
                 $xmlObject->endElement(); // rfc
 
                 $xmlObject->startElement("pais_nacionalidad");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['personaMoral']['nacionalidad']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['legalPerson']['nationality']);
                 $xmlObject->endElement(); // pais_nacionalidad
 
                 $xmlObject->startElement("giro_mercantil");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['personaMoral']['giroMercantil']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['legalPerson']['commercial_business']);
                 $xmlObject->endElement(); // giro_mercantil
 
                 $xmlObject->startElement("representante_apoderado");
                 $xmlObject->startElement("nombre");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['nombre']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['representativeData']['name']);
                 $xmlObject->endElement(); // nombre
 
                 $xmlObject->startElement("apellido_paterno");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['apellidoPaterno']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['representativeData']['last_name']);
                 $xmlObject->endElement(); // apellido_paterno
 
                 $xmlObject->startElement("apellido_materno");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['apellidoMaterno']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['representativeData']['second_last_name']);
                 $xmlObject->endElement(); // apellido_materno
 
                 $xmlObject->startElement("fecha_nacimiento");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['fechaNacimiento']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['representativeData']['birthdate']);
                 $xmlObject->endElement(); // fecha_nacimiento
 
-                if(strlen($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['rfc']) > 0){
+                if(strlen($notice['identificationDataPersonSubjectNotice']['representativeData']['tax_id']) > 0){
                     $xmlObject->startElement("rfc");
-                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['rfc']);
+                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['representativeData']['tax_id']);
                     $xmlObject->endElement(); // rfc
                 }
 
-                if(strlen($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['curp']) > 0){
+                if(strlen($notice['identificationDataPersonSubjectNotice']['representativeData']['population_id']) > 0){
                     $xmlObject->startElement("curp");
-                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['curp']);
+                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['representativeData']['population_id']);
                     $xmlObject->endElement(); // curp
                 }
                 $xmlObject->endElement(); // representante_apoderado
@@ -198,45 +197,45 @@ class RealEstateLeasingExportXML
             else{
                 $xmlObject->startElement("fideicomiso");
                 $xmlObject->startElement("denominacion_razon");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['fideicomiso']['denominacion']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['trust']['denomination']);
                 $xmlObject->endElement(); // denominacion_razon
 
                 $xmlObject->startElement("rfc");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['fideicomiso']['rfc']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['trust']['tax_id']);
                 $xmlObject->endElement(); // rfc
 
                 $xmlObject->startElement("identificador_fideicomiso");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['fideicomiso']['identificador']);
-                $xmlObject->endElement(); // identificador_fideicomiso
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['trust']['identification']);
+                $xmlObject->endElement(); // identificador_trust
 
                 $xmlObject->endElement(); // fideicomiso
 
                 $xmlObject->startElement("representante_apoderado");
                 $xmlObject->startElement("nombre");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['nombre']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['representativeData']['name']);
                 $xmlObject->endElement(); // nombre
 
                 $xmlObject->startElement("apellido_paterno");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['apellidoPaterno']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['representativeData']['last_name']);
                 $xmlObject->endElement(); // apellido_paterno
 
                 $xmlObject->startElement("apellido_materno");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['apellidoMaterno']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['representativeData']['second_last_name']);
                 $xmlObject->endElement(); // apellido_materno
 
                 $xmlObject->startElement("fecha_nacimiento");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['fechaNacimiento']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['representativeData']['birthdate']);
                 $xmlObject->endElement(); // fecha_nacimiento
 
-                if(strlen($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['rfc']) > 0){
+                if(strlen($notice['identificationDataPersonSubjectNotice']['representativeData']['tax_id']) > 0){
                     $xmlObject->startElement("rfc");
-                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['rfc']);
+                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['representativeData']['tax_id']);
                     $xmlObject->endElement(); // rfc
                 }
 
-                if(strlen($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['curp']) > 0){
+                if(strlen($notice['identificationDataPersonSubjectNotice']['representativeData']['population_id']) > 0){
                     $xmlObject->startElement("curp");
-                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['datosRepresentantes']['curp']);
+                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['representativeData']['population_id']);
                     $xmlObject->endElement(); // curp
                 }
 
@@ -249,29 +248,29 @@ class RealEstateLeasingExportXML
             $xmlObject->startElement("tipo_domicilio");
 
             # Validamos si es domicilio nacional o extranjero
-            if(strlen($notice['identificationDataPersonSubjectNotice']['domicilioNacional']['cp']) > 0){
+            if(strlen($notice['identificationDataPersonSubjectNotice']['nationalAddress']['postal_code']) > 0){
                 $xmlObject->startElement("nacional");
 
                 $xmlObject->startElement("colonia");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['domicilioNacional']['colonia']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['nationalAddress']['settlement']);
                 $xmlObject->endElement(); // colonia
 
                 $xmlObject->startElement("calle");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['domicilioNacional']['calle']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['nationalAddress']['street']);
                 $xmlObject->endElement(); // calle
 
                 $xmlObject->startElement("numero_exterior");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['domicilioNacional']['numeroExterior']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['nationalAddress']['external_number']);
                 $xmlObject->endElement(); // numero_exterior
 
-                if(strlen($notice['identificationDataPersonSubjectNotice']['domicilioNacional']['numeroInterior']) > 0){
+                if(strlen($notice['identificationDataPersonSubjectNotice']['nationalAddress']['internal_number']) > 0){
                     $xmlObject->startElement("numero_interior");
-                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['domicilioNacional']['numeroInterior']);
+                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['nationalAddress']['internal_number']);
                     $xmlObject->endElement(); // numero_interior
                 }
 
                 $xmlObject->startElement("codigo_postal");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['domicilioNacional']['cp']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['nationalAddress']['postal_code']);
                 $xmlObject->endElement(); // codigo_postal
 
                 $xmlObject->endElement(); // nacional
@@ -279,38 +278,38 @@ class RealEstateLeasingExportXML
             else{
                 $xmlObject->startElement("extranjero");
                 $xmlObject->startElement("pais");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['domicilioExtranjero']['pais']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['foreignAddress']['country']);
                 $xmlObject->endElement(); // pais
 
                 $xmlObject->startElement("estado_provincia");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['domicilioextranjero']['estado']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['foreignAddress']['state']);
                 $xmlObject->endElement(); // estado_provincia
 
                 $xmlObject->startElement("ciudad_poblacion");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['domicilioextranjero']['municipio']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['foreignAddress']['municipality']);
                 $xmlObject->endElement(); // ciudad_poblacion
 
                 $xmlObject->startElement("colonia");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['domicilioextranjero']['colonia']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['foreignAddress']['settlement']);
                 $xmlObject->endElement(); // colonia
 
                 $xmlObject->startElement("calle");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['domicilioextranjero']['calle']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['foreignAddress']['street']);
                 $xmlObject->endElement(); // calle
 
 
                 $xmlObject->startElement("numero_exterior");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['domicilioextranjero']['numeroExterior']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['foreignAddress']['external_number']);
                 $xmlObject->endElement(); // numero_exterior
 
-                if(strlen($notice['identificationDataPersonSubjectNotice']['domicilioextranjero']['numeroInterior']) > 0){
+                if(strlen($notice['identificationDataPersonSubjectNotice']['foreignAddress']['internal_number']) > 0){
                     $xmlObject->startElement("numero_interior");
-                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['domicilioextranjero']['numeroInterior']);
+                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['foreignAddress']['internal_number']);
                     $xmlObject->endElement(); // numero_interior
                 }
 
                 $xmlObject->startElement("codigo_postal");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['domicilioextranjero']['cp']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['foreignAddress']['postal_code']);
                 $xmlObject->endElement(); // codigo_postal
 
                 $xmlObject->endElement(); // extranjero
@@ -318,20 +317,20 @@ class RealEstateLeasingExportXML
             $xmlObject->endElement(); // tipo_domicilio
 
             # Datos del numero telefonico
-            if (strlen($notice['identificationDataPersonSubjectNotice']['physicalPerson']['nombre']) > 0
-                || strlen($notice['identificationDataPersonSubjectNotice']['personaMoral']['razonSocial']) > 0) {
+            if (strlen($notice['identificationDataPersonSubjectNotice']['physicalPerson']['name']) > 0
+                || strlen($notice['identificationDataPersonSubjectNotice']['legalPerson']['company_name']) > 0) {
                 $xmlObject->startElement("telefono");
                 $xmlObject->startElement("clave_pais");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['contacto']['pais']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['contact']['country']);
                 $xmlObject->endElement(); // clave_pais
 
                 $xmlObject->startElement("numero_telefono");
-                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['contacto']['telefono']);
+                $xmlObject->text($notice['identificationDataPersonSubjectNotice']['contact']['phone']);
                 $xmlObject->endElement(); // numero_telefono
 
-                if(strlen($notice['identificationDataPersonSubjectNotice']['contacto']['correo']) > 0){
+                if(strlen($notice['identificationDataPersonSubjectNotice']['contact']['email']) > 0){
                     $xmlObject->startElement("correo_electronico");
-                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['contacto']['correo']);
+                    $xmlObject->text($notice['identificationDataPersonSubjectNotice']['contact']['email']);
                     $xmlObject->endElement(); // correo_electronico
                 }
                 $xmlObject->endElement(); // telefono
@@ -342,69 +341,69 @@ class RealEstateLeasingExportXML
 
             # Datos del dueño o beneficiario
             # Validamos si hay datos del dueño o beneficiario
-            if(strlen($notice['identificacionPersonaBeneficiaria']['physicalPerson']['nombre']) > 0 ||
-                strlen($notice['identificacionPersonaBeneficiaria']['personaMoral']['razonSocial']) > 0 ||
-                strlen($notice['identificacionPersonaBeneficiaria']['fideicomiso']['denominacion']) > 0){
+            if(strlen($notice['identificationDataPersonBeneficiary']['physicalPerson']['name']) > 0 ||
+                strlen($notice['identificationDataPersonBeneficiary']['legalPerson']['company_name']) > 0 ||
+                strlen($notice['identificationDataPersonBeneficiary']['trust']['denomination']) > 0){
 
                 $xmlObject->startElement("dueno_beneficiario");
 
                 # Persona Fisica
-                if(strlen($notice['identificacionPersonaBeneficiaria']['physicalPerson']['nombre']) > 0 )
+                if(strlen($notice['identificationDataPersonBeneficiary']['physicalPerson']['name']) > 0 )
                 {
                     $xmlObject->startElement("persona_fisica");
                     $xmlObject->startElement("nombre");
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['physicalPerson']['nombre']);
+                    $xmlObject->text($notice['identificationDataPersonBeneficiary']['physicalPerson']['name']);
                     $xmlObject->endElement(); // nombre
 
                     $xmlObject->startElement("apellido_paterno");
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['physicalPerson']['apellidoPaterno']);
+                    $xmlObject->text($notice['identificationDataPersonBeneficiary']['physicalPerson']['last_name']);
                     $xmlObject->endElement(); // apellido_paterno
 
                     $xmlObject->startElement("apellido_materno");
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['physicalPerson']['apellidoMaterno']);
+                    $xmlObject->text($notice['identificationDataPersonBeneficiary']['physicalPerson']['second_last_name']);
                     $xmlObject->endElement(); // apellido_materno
 
                     $xmlObject->startElement("fecha_nacimiento");
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['physicalPerson']['fechaNacimiento']);
+                    $xmlObject->text($notice['identificationDataPersonBeneficiary']['physicalPerson']['birthdate']);
                     $xmlObject->endElement(); // fecha_nacimiento
 
-                    if(strlen($notice['identificacionPersonaBeneficiaria']['physicalPerson']['rfc']) > 0){
+                    if(strlen($notice['identificationDataPersonBeneficiary']['physicalPerson']['tax_id']) > 0){
                         $xmlObject->startElement("rfc");
-                        $xmlObject->text($notice['identificacionPersonaBeneficiaria']['physicalPerson']['rfc']);
+                        $xmlObject->text($notice['identificationDataPersonBeneficiary']['physicalPerson']['tax_id']);
                         $xmlObject->endElement(); // rfc
                     }
 
-                    if(strlen($notice['identificacionPersonaBeneficiaria']['physicalPerson']['curp']) > 0){
+                    if(strlen($notice['identificationDataPersonBeneficiary']['physicalPerson']['population_id']) > 0){
                         $xmlObject->startElement("curp");
-                        $xmlObject->text($notice['identificacionPersonaBeneficiaria']['physicalPerson']['curp']);
+                        $xmlObject->text($notice['identificationDataPersonBeneficiary']['physicalPerson']['population_id']);
                         $xmlObject->endElement(); // curp
                     }
 
-                    if(strlen($notice['identificacionPersonaBeneficiaria']['physicalPerson']['nacionalidad'] > 0)){
+                    if(strlen($notice['identificationDataPersonBeneficiary']['physicalPerson']['nationality'] > 0)){
                         $xmlObject->startElement("pais_nacionalidad");
-                        $xmlObject->text($notice['identificacionPersonaBeneficiaria']['physicalPerson']['nacionalidad']);
+                        $xmlObject->text($notice['identificationDataPersonBeneficiary']['physicalPerson']['nationality']);
                         $xmlObject->endElement(); // pais_nacionalidad
                     }
 
                     $xmlObject->endElement(); // persona_fisica
                 }
                 # Persona Moral
-                elseif(strlen($notice['identificacionPersonaBeneficiaria']['personaMoral']['razonSocial']) > 0){
+                elseif(strlen($notice['identificationDataPersonBeneficiary']['legalPerson']['company_name']) > 0){
                     $xmlObject->startElement("persona_moral");
                     $xmlObject->startElement("denominacion_razon");
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['razonSocial']);
+                    $xmlObject->text($notice['identificationDataPersonBeneficiary']['legalPerson']['company_name']);
                     $xmlObject->endElement(); // denominacion_razon
 
                     $xmlObject->startElement("fecha_constitucion");
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['fechaConstitucion']);
+                    $xmlObject->text($notice['identificationDataPersonBeneficiary']['legalPerson']['constitution_date']);
                     $xmlObject->endElement(); // fecha_constitucion
 
                     $xmlObject->startElement("rfc");
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['rfc']);
+                    $xmlObject->text($notice['identificationDataPersonBeneficiary']['legalPerson']['tax_id']);
                     $xmlObject->endElement(); // rfc
 
                     $xmlObject->startElement("pais_nacionalidad");
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['nacionalidad']);
+                    $xmlObject->text($notice['identificationDataPersonBeneficiary']['legalPerson']['nationality']);
                     $xmlObject->endElement(); // pais_nacionalidad
 
                     $xmlObject->endElement(); // persona_moral
@@ -413,18 +412,18 @@ class RealEstateLeasingExportXML
                 else{
                     $xmlObject->startElement("fideicomiso");
                     $xmlObject->startElement("denominacion_razon");
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['fideicomiso']['denominacion']);
+                    $xmlObject->text($notice['identificationDataPersonBeneficiary']['trust']['denomination']);
                     $xmlObject->endElement(); // denominacion_razon
 
                     $xmlObject->startElement("rfc");
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['fideicomiso']['rfc']);
+                    $xmlObject->text($notice['identificationDataPersonBeneficiary']['trust']['tax_id']);
                     $xmlObject->endElement(); // rfc
 
                     $xmlObject->startElement("identificador_fideicomiso");
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['fideicomiso']['identificador']);
-                    $xmlObject->endElement(); // identificador_fideicomiso
+                    $xmlObject->text($notice['identificationDataPersonBeneficiary']['trust']['identification']);
+                    $xmlObject->endElement(); // identificador_trust
 
-                    $xmlObject->endElement(); // fideicomiso
+                    $xmlObject->endElement(); // trust
                 }
 
                 $xmlObject->endElement(); // dueno_beneficiario
@@ -434,82 +433,82 @@ class RealEstateLeasingExportXML
             $xmlObject->startElement("datos_operacion");
 
             $xmlObject->startElement("fecha_operacion");
-            $xmlObject->text($notice['detallesOperacion']['datosOperacion']['fechaOperacion']);
+            $xmlObject->text($notice['operationDetails']['operationData']['date_operation']);
             $xmlObject->endElement(); // fecha operacion
 
             $xmlObject->startElement("tipo_operacion");
-            $xmlObject->text($notice['detallesOperacion']['datosOperacion']['tipoOperacion']);
+            $xmlObject->text($notice['operationDetails']['operationData']['type_operation']);
             $xmlObject->endElement(); // tipo_operacion
 
             #Caracteristicas de arrendamiento
             $xmlObject->startElement("caracteristicas");
 
             $xmlObject->startElement("fecha_inicio");
-            $xmlObject->text($notice['detallesOperacion']['caracteristicasArrendamiento']['fechaInicio']);
+            $xmlObject->text($notice['operationDetails']['leasingCharacteristic']['start_date']);
             $xmlObject->endElement(); // fecha_inicio
 
             $xmlObject->startElement("fecha_termino");
-            $xmlObject->text($notice['detallesOperacion']['caracteristicasArrendamiento']['fechaTermino']);
+            $xmlObject->text($notice['operationDetails']['leasingCharacteristic']['end_date']);
             $xmlObject->endElement(); // fecha_termino
 
             $xmlObject->startElement("tipo_inmueble");
-            $xmlObject->text($notice['detallesOperacion']['caracteristicasArrendamiento']['tipoInmueble']);
+            $xmlObject->text($notice['operationDetails']['leasingCharacteristic']['property_type']);
             $xmlObject->endElement(); // tipo_inmueble
 
             $xmlObject->startElement("valor_referencia");
-            $xmlObject->text(number_format($notice['detallesOperacion']['caracteristicasArrendamiento']['valorReferencia'],2,'.',''));
+            $xmlObject->text(number_format($notice['operationDetails']['leasingCharacteristic']['reference_value'],2,'.',''));
             $xmlObject->endElement(); // valor_referencia
 
             $xmlObject->startElement("colonia");
-            $xmlObject->text($notice['detallesOperacion']['caracteristicasArrendamiento']['colonia']);
+            $xmlObject->text($notice['operationDetails']['leasingCharacteristic']['settlement']);
             $xmlObject->endElement(); // colonia
 
             $xmlObject->startElement("calle");
-            $xmlObject->text($notice['detallesOperacion']['caracteristicasArrendamiento']['calle']);
+            $xmlObject->text($notice['operationDetails']['leasingCharacteristic']['street']);
             $xmlObject->endElement(); // calle
 
             $xmlObject->startElement("numero_exterior");
-            $xmlObject->text($notice['detallesOperacion']['caracteristicasArrendamiento']['numeroExterior']);
+            $xmlObject->text($notice['operationDetails']['leasingCharacteristic']['external_number']);
             $xmlObject->endElement(); // numero_exterior
 
-            if(strlen($notice['detallesOperacion']['caracteristicasArrendamiento']['numeroInterior'])> 0){
+            if(strlen($notice['operationDetails']['leasingCharacteristic']['internal_number'])> 0){
                 $xmlObject->startElement("numero_interior");
-                $xmlObject->text($notice['detallesOperacion']['caracteristicasArrendamiento']['numeroInterior']);
+                $xmlObject->text($notice['operationDetails']['leasingCharacteristic']['internal_number']);
                 $xmlObject->endElement(); // numero_interior
             }
 
             $xmlObject->startElement("codigo_postal");
-            $xmlObject->text($notice['detallesOperacion']['caracteristicasArrendamiento']['cp']);
+            $xmlObject->text($notice['operationDetails']['leasingCharacteristic']['postal_code']);
             $xmlObject->endElement(); // codigo_postal
 
             $xmlObject->startElement("folio_real");
-            $xmlObject->text($notice['detallesOperacion']['caracteristicasArrendamiento']['folioReal']);
+            $xmlObject->text($notice['operationDetails']['leasingCharacteristic']['real_folio']);
             $xmlObject->endElement(); // folio_real
 
             $xmlObject->endElement(); // caracteristicas
 
             #Datos de liquidacion
-            foreach ($notice['detallesOperacion']['liquidacion'] as $liquidacion) {
+            foreach ($notice['operationDetails']['saleData'] as $liquidacion) {
                 $xmlObject->startElement("datos_liquidacion");
 
                 $xmlObject->startElement("fecha_pago");
-                $xmlObject->text($liquidacion['fechaPago']);
+                $xmlObject->text($liquidacion['payment_date']);
                 $xmlObject->endElement(); // fecha_pago
 
                 $xmlObject->startElement("forma_pago");
-                $xmlObject->text($liquidacion['formaPago']);
+                $xmlObject->text($liquidacion['payment_way']);
                 $xmlObject->endElement(); // forma_pago
 
                 $xmlObject->startElement("instrumento_monetario");
-                $xmlObject->text($liquidacion['instrumentoMonetario']);
+                $xmlObject->text($liquidacion['monetary_instrument']);
                 $xmlObject->endElement(); // instrumento_monetario
 
                 $xmlObject->startElement("moneda");
-                $xmlObject->text($liquidacion['moneda']);
+                $xmlObject->text($liquidacion['currency']);
                 $xmlObject->endElement(); // moneda
 
                 $xmlObject->startElement("monto_operacion");
-                $xmlObject->text(number_format($liquidacion['montoOperacion'],2,'.',''));
+                $xmlObject->text(number_format($liquidacion['amount_operation'],2,'.',''));
                 $xmlObject->endElement(); // monto_operacion
 
                 $xmlObject->endElement(); // datos_liquidacion
@@ -525,7 +524,7 @@ class RealEstateLeasingExportXML
         $xmlObject->endElement(); // archivo
 
         $xmlObject->endDocument();
-        return $fileName;
 
+        return $xmlObject->outputMemory();
     }
 }

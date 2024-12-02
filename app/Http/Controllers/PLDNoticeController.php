@@ -8,6 +8,8 @@ use App\Models\Permission;
 use App\Models\PLDNotice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules\In;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
@@ -29,10 +31,10 @@ class PLDNoticeController extends Controller
         return response()->download($filePath);
     }
 
-    public function makeNotice(MakeNoticeRequest $request): void
+    public function makeNotice(MakeNoticeRequest $request)
     {
         $dataRequest = $request->validated();
-        Log::info($dataRequest);
+        $dataRequest['tax_id'] = \Auth::user()->tax_id;
         $pldNotice = PLDNotice::findOrFail($dataRequest['pld_notice_id']);
         $importName = str_replace(' ', '', ucwords($pldNotice->name));
         $importClass = "\App\Imports\\" . $importName . "Import";
@@ -45,7 +47,12 @@ class PLDNoticeController extends Controller
             data: $data,
             headers: $dataRequest
         );
-        $xml = $makeXml->makeXML();
+        $xmlContent = $makeXml->makeXML();
+
+        $fileName = $pldNotice->spanish_name . ' - ' . now()->format('YmdHis') . ".xml";
+        Storage::put($fileName, $xmlContent);
+
+        return Response::download(Storage::path($fileName), $fileName)->deleteFileAfterSend(true);
 
     }
 }
