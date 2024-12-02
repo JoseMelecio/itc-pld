@@ -5,6 +5,30 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ *
+ *
+ * @property int $id
+ * @property string $route_param
+ * @property string $name
+ * @property string $spanish_name
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $deleted_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice whereRouteParam($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice whereSpanishName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice whereUpdatedAt($value)
+ * @mixin \Eloquent
+ */
 class PLDNotice extends Model
 {
     use HasFactory;
@@ -12,8 +36,11 @@ class PLDNotice extends Model
     protected $table = 'pld_notice';
 
     protected $fillable = [
+        'route_param',
         'name',
-        'is_active'
+        'spanish_name',
+        'template',
+        'is_active',
     ];
 
     protected $casts = [

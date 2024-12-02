@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-    <title inertia>OneUI Vue Edition</title>
+    <title inertia>PLD - ITConsultores</title>
 
     <meta name="description" content="OneUI Vue Edition is a Bootstrap 5 Admin Template &amp; UI Framework based on Vue.js 3. Created by pixelcave">
     <meta name="author" content="pixelcave">

@@ -37,6 +37,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/pld-notices/{noticeType}', [\App\Http\Controllers\PLDNoticeController::class, 'showForm'])->name('pld-notice.showForm');
     Route::post('/pld-notices', [\App\Http\Controllers\PLDNoticeController::class, 'makeNotice'])->name('pld-notice.makeNotice');
+    Route::get('/pld-notices-download/{noticeType}', [\App\Http\Controllers\PLDNoticeController::class, 'downloadTemplate'])->name('pld-notice.downloadTemplate');
 });
 
 
