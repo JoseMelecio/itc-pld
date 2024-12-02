@@ -11,22 +11,41 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules\In;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
+use App\ExportXML\RealEstateLeasingExportXML;
 
 class PLDNoticeController extends Controller
 {
     public function showForm(string $notice): \Inertia\Response
     {
-        Log::info($notice);
         $pldNotice = PLDNotice::where('route_param', $notice)->firstOrFail();
         return Inertia::render('pld-notice/ShowForm', ['pldNotice' => $pldNotice]);
     }
 
+    public function downloadTemplate(string $notice): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        $pldNotice = PLDNotice::where('route_param', $notice)->firstOrFail();
+        $filePath = public_path('templates/' . $pldNotice->template);
+
+        return response()->download($filePath);
+    }
+
     public function makeNotice(MakeNoticeRequest $request): void
     {
-        $import = new RealEstateLeasingImport();
-        //$import->onlySheets('Plantilla');
+        $dataRequest = $request->validated();
+        Log::info($dataRequest);
+        $pldNotice = PLDNotice::findOrFail($dataRequest['pld_notice_id']);
+        $importName = str_replace(' ', '', ucwords($pldNotice->name));
+        $importClass = "\App\Imports\\" . $importName . "Import";
+        $import = new $importClass();
+
         Excel::import($import, $request->file('file'));
         $data = $import->getData();
-        Log::info($data);
+
+        $makeXml = new RealEstateLeasingExportXML(
+            data: $data,
+            headers: $dataRequest
+        );
+        $xml = $makeXml->makeXML();
+
     }
 }

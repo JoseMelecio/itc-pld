@@ -22,11 +22,14 @@ class MakeNoticeRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'pld_notice_id' => 'required|integer',
             'month' => [
                 'required',
                 'string',
                 'regex:/^(0[1-9]|1[0-2])\d{4}$/'
             ],
+            'collegiate_entity_tax_id' => 'nullable|string',
+            'notice_reference' => 'nullable|string',
             'exempt' => 'required|in:yes,no',
             'file' => 'required|file|mimes:xlsx,xls|max:2048',
         ];
@@ -44,6 +47,7 @@ class MakeNoticeRequest extends FormRequest
             'file.file' => 'Debes subir un archivo válido.',
             'file.mimes' => 'El archivo debe ser de tipo Excel (.xlsx o .xls).',
             'file.max' => 'El archivo no debe exceder los 2MB.',
+            'file.uploaded' => 'El archivo no pudo ser subido, revise que no este dañado y que sea tipo Excel.',
         ];
     }
 }

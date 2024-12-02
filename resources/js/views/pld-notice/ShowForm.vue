@@ -1,15 +1,17 @@
 <script setup>
 
-import {router, useForm} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
+import {router, useForm} from "@inertiajs/vue3";
+import axios from "axios";
 
 const props = defineProps({
   errors: Object,
-  pldNotice: '',
+  pldNotice: null,
 })
 
 const form = useForm({
-  month: '',
+  pld_notice_id: props.pldNotice.id,
+  month: null,
   collegiate_entity_tax_id: null,
   notice_reference: null,
   exempt: 'no',
@@ -17,9 +19,28 @@ const form = useForm({
 });
 
 const submit = () => {
-  console.log("submite");
   router.post(route('pld-notice.makeNotice'), form)
 };
+
+const downloadTemplate = () => {
+  const url = route('pld-notice.downloadTemplate', {noticeType: props.pldNotice.route_param });
+
+  axios({
+    url: url,
+    method: 'GET',
+    responseType: 'blob',
+  }).then((response) => {
+    const blob = new Blob([response.data]);
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', props.pldNotice.template);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  })
+}
 </script>
 
 <template>
@@ -55,7 +76,7 @@ const submit = () => {
                   <div class="mb-4">
                     <label class="form-label" for="month">Mes reportado <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" :class="{ 'is-invalid': errors.month }"  id="month" name="month" placeholder="MMAAAA" v-model="form.month">
-                    <div id="month-error" class="invalid-feedback animated fadeIn">asdsad</div>
+                    <div id="month-error" class="text-danger" >{{ errors.month }}</div>
                   </div>
                 </div>
               </div>
@@ -74,7 +95,7 @@ const submit = () => {
                 <div class="col-12">
                   <div class="mb-4">
                     <label class="form-label" for="notice_reference">Referencia del aviso</label>
-                    <input type="text" class="form-control" :class="{ 'is-invalid': errors.notice_reference }"  id="notice_reference" name="notice_reference" placeholder="Referencia.." v-model="form.collegiate_entity_tax_id">
+                    <input type="text" class="form-control" :class="{ 'is-invalid': errors.notice_reference }"  id="notice_reference" name="notice_reference" placeholder="Referencia.." v-model="form.notice_reference">
                     <div id="notice_reference-error" class="invalid-feedback animated fadeIn">{{ errors.notice_reference}}</div>
                   </div>
                 </div>
@@ -83,11 +104,12 @@ const submit = () => {
               <div class="row">
                 <div class="col-12">
                   <div class="mb-4">
-                    <label class="form-label" for="example-select">Exento <span class="text-danger">*</span></label>
-                    <select class="form-select" id="status" name="status" v-model="form.exempt">
+                    <label class="form-label" for="exempt">Exento <span class="text-danger">*</span></label>
+                    <select class="form-select" :class="{ 'is-invalid': errors.exempt }" id="exempt" name="exempt" v-model="form.exempt">
                       <option value="no">No</option>
                       <option value="yes">Si</option>
                     </select>
+                    <div id="exempt-error" class="text-danger">{{ errors.exempt}}</div>
                   </div>
                 </div>
               </div>
@@ -96,15 +118,15 @@ const submit = () => {
                 <div class="col-12">
                   <div class="mb-4">
                     <label class="form-label" for="file">Archivo de Excel</label>
-                    <input class="form-control" type="file" id="file" name="file" @input="form.file = $event.target.files[0]">
-                    <div id="file-error" class="invalid-feedback animated fadeIn">{{ errors.file}}</div>
+                    <input class="form-control" :class="{ 'is-invalid': errors.file }" type="file" id="file" name="file" @input="form.file = $event.target.files[0]">
+                    <div id="file-error" class="text-danger">{{ errors.file}}</div>
                   </div>
                 </div>
               </div>
 
               <div class="mb-4">
                 <button type="submit" class="btn btn-success me-2">Generar</button>
-                <!--              <button type="button" class="btn btn-info me-2">Plantilla</button>-->
+                <button type="button" @click="downloadTemplate()" class="btn btn-info me-2">Plantilla</button>
                 <!--              <button type="button" class="btn btn-light me-2">Ayuda</button>-->
               </div>
 
@@ -118,7 +140,3 @@ const submit = () => {
     </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>

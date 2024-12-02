@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('route_param');
             $table->string('name');
             $table->string('spanish_name');
+            $table->string('template');
             $table->boolean('is_active');
             $table->timestamps();
             $table->softDeletes();
