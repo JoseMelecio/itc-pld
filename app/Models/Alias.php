@@ -6,13 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class BirthPlace extends Model
+class Alias extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'city',
-        'state_province',
-        'country',
+        'alias',
+        'quality'
     ];
 }
