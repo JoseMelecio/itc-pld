@@ -90,7 +90,7 @@ store.mainContent({ mode: "narrow" });
             },
             {
               name: 'Personas Bloqueadas',
-              to: '/blocked-person',
+              to: '/person-list-blocked',
               icon: 'fa fa-list',
             },
             {
