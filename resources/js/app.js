@@ -5,6 +5,8 @@ import { createInertiaApp, Link, Head } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { createPinia } from "pinia";
 
+import DataTable from 'datatables.net-vue3';
+
 // Main layouts
 import LayoutAuthenticated from "@/layouts/Authenticated.vue";
 import LayoutGuestLanding from "@/layouts/GuestLanding.vue";
@@ -96,6 +98,7 @@ createInertiaApp({
   setup({ el, App, props, plugin }) {
     return createApp({ render: () => h(App, props) })
       .use(plugin)
+      .use(DataTable)
       .use(createPinia())
       .component("Link", Link)
       .component("Head", Head)
