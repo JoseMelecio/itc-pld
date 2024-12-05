@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('birth_dates', function (Blueprint $table) {
             $table->id();
-            $table->string('date_type');
+            $table->string('date_type')->nullable();
             $table->integer('year')->nullable();
             $table->integer('final_year')->nullable();
             $table->integer('month')->nullable();

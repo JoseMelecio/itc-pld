@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('aliases', function (Blueprint $table) {
             $table->id();
-            $table->string('quality');
-            $table->string('alias');
+            $table->string('quality')->nullable();
+            $table->text('alias');
             $table->foreignIdFor(\App\Models\PersonList::class)->constrained();
             $table->timestamps();
             $table->softDeletes();

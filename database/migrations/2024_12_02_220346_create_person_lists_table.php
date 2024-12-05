@@ -19,6 +19,8 @@ return new class extends Migration
             $table->text('first_name')->nullable();
             $table->text('second_name')->nullable();
             $table->text('third_name')->nullable();
+            $table->string('file')->nullable();
+            $table->string('file_name_from_import')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
