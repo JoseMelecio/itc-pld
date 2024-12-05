@@ -98,7 +98,7 @@ class ProcessPersonBlockedListJsonFile extends Command
             }
 
             $birthPlace = $this->clearText($record['lugar_nacimiento']);
-            if (strlen($birthPlace) > 3) {
+            if (strlen($birthPlace) > 0) {
                 $person->birthPlaces()->create([
                     'city' => $this->clearText($record['lugar_nacimiento']),
                 ]);
