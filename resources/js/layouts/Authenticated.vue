@@ -89,6 +89,11 @@ store.mainContent({ mode: "narrow" });
               heading: true,
             },
             {
+              name: 'Personas Bloqueadas',
+              to: '/blocked-person',
+              icon: 'fa fa-list',
+            },
+            {
               name: 'Notificaciones PLD',
               to: '/',
               icon: 'fa fa-file-code',
