@@ -19,13 +19,11 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
         $numLeasing = 0;
 
         foreach ($collection->skip(3) as $row) {
-            Log::info($row);
             /**
              * We read the type of lease to know if there is registration or only payments
              * if there is a type of lease it means that it is a new registration,
              * If there is no type of lease it means that they are only payments.
             */
-            Log::info($row[58]);
             if (strlen(trim(strtoupper($row[58]))) > 0) { //BG
                 $isLeasing = true;
                 $numLeasing++;
@@ -45,10 +43,7 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
                 $modification['priority'] = trim($tempPriority[0]);
             }
 
-            Log::info($modification);
-
             if($isLeasing) {
-                Log::info("Entro");
                 $this->data['items'][$numLeasing]['modification'] = $modification;
             }
 

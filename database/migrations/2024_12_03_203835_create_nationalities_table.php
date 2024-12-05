@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pld_notice', function (Blueprint $table) {
+        Schema::create('nationalities', function (Blueprint $table) {
             $table->id();
-            $table->string('route_param');
-            $table->string('name');
-            $table->string('spanish_name');
-            $table->string('template');
-            $table->boolean('is_active');
+            $table->string('nationality');
+            $table->foreignIdFor(\App\Models\PersonList::class)->constrained();
             $table->timestamps();
             $table->softDeletes();
         });
@@ -28,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pld_notice');
+        Schema::dropIfExists('nationality');
     }
 };
