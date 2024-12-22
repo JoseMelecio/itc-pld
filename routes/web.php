@@ -39,6 +39,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/pld-notices', [\App\Http\Controllers\PLDNoticeController::class, 'makeNotice'])->name('pld-notice.makeNotice');
     Route::get('/pld-notices-download/{noticeType}', [\App\Http\Controllers\PLDNoticeController::class, 'downloadTemplate'])->name('pld-notice.downloadTemplate');
     Route::get('/person-list-blocked', [\App\Http\Controllers\PersonListController::class, 'index'])->name('person-list-blocked');
+    Route::get('/person-list-blocked-form-find', [\App\Http\Controllers\PersonListController::class, 'formFind'])->name('person-list-blocked-form-find');
+    Route::post('/person-list-blocked-find', [\App\Http\Controllers\PersonListController::class, 'find'])->name('person-list-blocked-find');
+    Route::get('/person-list-blocked-result', [\App\Http\Controllers\PersonListController::class, 'result'])->name('person-list-blocked-result');
+    Route::get('/person-list-blocked-download-template', [\App\Http\Controllers\PersonListController::class, 'downloadTemplate'])->name('person-list-blocked-download-template');
+    //Route::get('/person-list-blocked-', [\App\Http\Controllers\PersonListController::class, 'index'])->name('person-list-blocked');
 });
 
 
