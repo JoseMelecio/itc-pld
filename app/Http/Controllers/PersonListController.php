@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PersonListFindRequest;
+use App\Imports\PersonListFinderImport;
 use App\Models\PersonList;
-use Illuminate\Http\Request;
+use App\Services\PersonBlockedFinderService;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\View;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PersonListController extends Controller
 {
@@ -71,5 +76,43 @@ class PersonListController extends Controller
         }
 
         return Inertia::render('person-list/Index', ['person_list' => $data]);
+    }
+
+    public function formFind(): \Inertia\Response
+    {
+        return Inertia::render('person-list/ShowForm');
+    }
+
+    public function find(PersonListFindRequest $request): \Illuminate\Http\Response
+    {
+        $dataToFind = $request->validated();
+        $findService = new PersonBlockedFinderService();
+
+
+        if ($dataToFind['name']) {
+            $data[] = [
+                'name' => $dataToFind['name'],
+                'alias' => $dataToFind['alias'],
+                'date' => $dataToFind['date'],
+            ];
+
+            $dataResult = $findService->finder($data);
+        } else {
+            $import = new PersonListFinderImport();
+            Excel::import($import, $request->file('file'));
+            $data = $import->getData();
+            $dataResult = $findService->finder($data);
+        }
+
+        $html = View::make('person-list/pdf-person-list-found', ['data' => $dataResult])->render();
+        $pdf = Pdf::loadHTML($html);
+        return $pdf->download('resultado.pdf');
+
+    }
+
+    public function downloadTemplate(): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        $filePath = public_path('templates/plantillaBuscarPersonasBloqueadas.xlsx');
+        return response()->download($filePath);
     }
 }
