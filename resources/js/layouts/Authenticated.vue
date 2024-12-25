@@ -92,6 +92,18 @@ store.mainContent({ mode: "narrow" });
               name: 'Personas Bloqueadas',
               to: '/person-list-blocked',
               icon: 'fa fa-list',
+              sub: [
+                {
+                  name: 'Busqueda',
+                  to: '/person-list-blocked-form-find',
+                  icon: 'far fa-circle',
+                },
+                                {
+                  name: 'Listado',
+                  to: '/person-list-blocked',
+                  icon: 'far fa-circle',
+                }
+              ],
             },
             {
               name: 'Notificaciones PLD',
@@ -101,6 +113,11 @@ store.mainContent({ mode: "narrow" });
                 {
                   name: 'Arrendamiento de inmuebles',
                   to: '/pld-notices/real_estate_leasing',
+                  icon: 'far fa-circle'
+                },
+                {
+                  name: 'Muto Prestamo y Credito',
+                  to: '/pld-notices/mutual_loan_credit',
                   icon: 'far fa-circle'
                 },
               ]

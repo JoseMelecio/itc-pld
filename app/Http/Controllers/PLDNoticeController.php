@@ -3,14 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\MakeNoticeRequest;
-use App\Imports\RealEstateLeasingImport;
-use App\Models\Permission;
 use App\Models\PLDNotice;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Validation\Rules\In;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use App\ExportXML\RealEstateLeasingExportXML;
@@ -42,6 +38,9 @@ class PLDNoticeController extends Controller
 
         Excel::import($import, $request->file('file'));
         $data = $import->getData();
+
+        $exportClassName = ucwords($pldNotice->route_param);
+        Log::info($exportClassName);
 
         $makeXml = new RealEstateLeasingExportXML(
             data: $data,
