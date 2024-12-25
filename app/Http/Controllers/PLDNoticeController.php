@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MakeNoticeRequest;
 use App\Models\PLDNotice;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -37,6 +38,9 @@ class PLDNoticeController extends Controller
 
         Excel::import($import, $request->file('file'));
         $data = $import->getData();
+
+        $exportClassName = ucwords($pldNotice->route_param);
+        Log::info($exportClassName);
 
         $makeXml = new RealEstateLeasingExportXML(
             data: $data,

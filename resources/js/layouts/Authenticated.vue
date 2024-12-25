@@ -115,6 +115,11 @@ store.mainContent({ mode: "narrow" });
                   to: '/pld-notices/real_estate_leasing',
                   icon: 'far fa-circle'
                 },
+                {
+                  name: 'Muto Prestamo y Credito',
+                  to: '/pld-notices/mutual_loan_credit',
+                  icon: 'far fa-circle'
+                },
               ]
             },
           ]"
