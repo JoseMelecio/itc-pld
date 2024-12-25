@@ -7,11 +7,6 @@ use Illuminate\Support\Facades\Log;
 
 class MakeNoticeRequest extends FormRequest
 {
-    public function prepareForValidation()
-    {
-        Log::info($this);
-    }
-
     /**
      * Determine if the user is authorized to make this request.
      */
