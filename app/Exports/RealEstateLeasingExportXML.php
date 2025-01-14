@@ -1,9 +1,6 @@
 <?php
 
-namespace App\ExportXML;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+namespace App\Exports;
 
 class RealEstateLeasingExportXML
 {
