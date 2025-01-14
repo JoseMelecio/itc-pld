@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\MutualLoanCreditExportXML;
+use App\Exports\RealEstateLeasingExportXML;
 use App\Http\Requests\MakeNoticeRequest;
 use App\Models\PLDNotice;
 use Illuminate\Support\Facades\Log;
@@ -9,7 +11,6 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
-use App\ExportXML\RealEstateLeasingExportXML;
 
 class PLDNoticeController extends Controller
 {
@@ -27,7 +28,7 @@ class PLDNoticeController extends Controller
         return response()->download($filePath);
     }
 
-    public function makeNotice(MakeNoticeRequest $request)
+    public function makeNotice(MakeNoticeRequest $request): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $dataRequest = $request->validated();
         $dataRequest['tax_id'] = \Auth::user()->tax_id;
@@ -38,11 +39,12 @@ class PLDNoticeController extends Controller
 
         Excel::import($import, $request->file('file'));
         $data = $import->getData();
+        Log::info($data);
 
         $exportClassName = ucwords($pldNotice->route_param);
         Log::info($exportClassName);
 
-        $makeXml = new RealEstateLeasingExportXML(
+        $makeXml = new MutualLoanCreditExportXML(
             data: $data,
             headers: $dataRequest
         );
