@@ -173,7 +173,7 @@ const clearForm = () => {
                   <td class="text-center">
                     <input class="form-check-input" type="checkbox" v-model="item.selected">
                   </td>
-                  <td class="fw-semibold fs-sm" style="width: 100px">{{ item.header }}</td>
+                  <td class="fw-semibold fs-sm" style="width: 100px">{{ item.menu_label }}</td>
                   <td class="fw-semibold fs-sm" style="width: 160px">{{ item.menu }}</td>
                   <td class="fw-semibold fs-sm">{{ item.option }}</td>
                 </tr>
