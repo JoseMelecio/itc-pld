@@ -63,12 +63,10 @@ class UserController extends Controller
      */
     public function show(User $user): \Inertia\Response
     {
-        $allPermissionsTable = MenuBuilderService::allPermissionsTable();
-        $assignedIdPermissions = $user->getIdPermissions();
-        $permissions = MenuBuilderService::currentPermissions($allPermissionsTable, $assignedIdPermissions);
+        $permissionsTable = MenuBuilderService::allPermissionsTable($user->getIdPermissions());
         return Inertia::render('user/Create', [
             'user' => $user,
-            'permissions' => $permissions
+            'permissions' => $permissionsTable
         ]);
     }
 

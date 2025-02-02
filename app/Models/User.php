@@ -3,6 +3,7 @@
 namespace App\Models;
 
 //use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Services\MenuBuilderService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -117,5 +118,10 @@ class User extends Authenticatable // implements MustVerifyEmail
             ->get();
 
         return $permissions->pluck('permission_id')->toArray();
+    }
+
+    public function userMenu(): \Illuminate\Database\Eloquent\Collection|array|\Illuminate\Support\Collection
+    {
+        return MenuBuilderService::menuJSON($this->getIdPermissions());
     }
 }

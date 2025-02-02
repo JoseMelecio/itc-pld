@@ -100,7 +100,7 @@ class InitialMenuSeeder extends Seeder
             Permission::create([
                 'name' => 'notification_pld',
                 'guard_name' => 'web',
-                'to' => null,
+                'to' => '/',
                 'icon' => 'fa fa-file-code',
                 'heading' => false,
                 'menu_label' => 'Notificaciones PLD',
