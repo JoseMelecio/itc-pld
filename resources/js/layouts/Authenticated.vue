@@ -3,6 +3,10 @@ import { useTemplateStore } from "@/stores/template";
 
 import BaseLayout from "@/layouts/BaseLayout.vue";
 import BaseNavigation from "@/components/BaseNavigation.vue";
+import {usePage} from "@inertiajs/vue3";
+import {computed} from "vue";
+
+const page = usePage();
 
 // Main store
 const store = useTemplateStore();
@@ -19,6 +23,7 @@ store.setLayout({
 store.header({ mode: "fixed" });
 store.headerStyle({ mode: "light" });
 store.mainContent({ mode: "narrow" });
+const menuItems = computed(() => page.props.auth?.user?.user_menu || []);
 </script>
 
 <template>
@@ -60,69 +65,7 @@ store.mainContent({ mode: "narrow" });
     <template #sidebar-content>
       <div class="content-side">
         <BaseNavigation
-          :nodes="[
-            {
-              name: 'Dashboard',
-              to: '/dashboard',
-              icon: 'fa fa-rocket',
-            },
-            // {
-            //   name: 'Administración',
-            //   heading: true,
-            // },
-            // {
-            //   name: 'Usuarios',
-            //   to: '/users',
-            //   icon: 'fa fa-users-gear',
-            // },
-            // {
-            //   name: 'Cuenta',
-            //   heading: true,
-            // },
-            // {
-            //   name: 'Perfil',
-            //   to: '/profile',
-            //   icon: 'fa fa-user-circle',
-            // },
-            {
-              name: 'Menu',
-              heading: true,
-            },
-            {
-              name: 'Personas Bloqueadas',
-              to: '/person-list-blocked',
-              icon: 'fa fa-list',
-              sub: [
-                {
-                  name: 'Busqueda',
-                  to: '/person-list-blocked-form-find',
-                  icon: 'far fa-circle',
-                },
-                                {
-                  name: 'Listado',
-                  to: '/person-list-blocked',
-                  icon: 'far fa-circle',
-                }
-              ],
-            },
-            {
-              name: 'Notificaciones PLD',
-              to: '/',
-              icon: 'fa fa-file-code',
-              sub: [
-                {
-                  name: 'Arrendamiento de inmuebles',
-                  to: '/pld-notices/real_estate_leasing',
-                  icon: 'far fa-circle'
-                },
-                {
-                  name: 'Muto Prestamo y Credito',
-                  to: '/pld-notices/mutual_loan_credit',
-                  icon: 'far fa-circle'
-                },
-              ]
-            },
-          ]"
+          :nodes="menuItems"
         />
       </div>
     </template>

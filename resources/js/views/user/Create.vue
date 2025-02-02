@@ -10,6 +10,7 @@ const props = defineProps({
     type: Object,
     default: () => ({
       id: null,
+      user_name: null,
       name: null,
       last_name: null,
       tax_id: null,
@@ -69,6 +70,14 @@ const clearForm = () => {
 
             <div class="block-content block-content-full">
                   <div class="row">
+                    <div class="col-2">
+                      <div class="mb-4">
+                        <label class="form-label" for="user_name">Usuario <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" :class="{ 'is-invalid': errors.user_name }"  id="user_name" name="user_name" placeholder="Usuario.." v-model="form.user_name">
+                        <div id="name-error" class="invalid-feedback animated fadeIn">{{ errors.user_name}}</div>
+                      </div>
+                    </div>
+
                     <div class="col-4">
                       <div class="mb-4">
                         <label class="form-label" for="name">Nombre <span class="text-danger">*</span></label>
@@ -85,7 +94,7 @@ const clearForm = () => {
                       </div>
                     </div>
 
-                    <div class="col-4">
+                    <div class="col-2">
                       <div class="mb-4">
                         <label class="form-label" for="tax-id">RFC <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" :class="{ 'is-invalid': errors.tax_id }" id="tax-id" name="tax-id" placeholder="RFC.." v-model="form.tax_id">
@@ -150,28 +159,26 @@ const clearForm = () => {
 
         <div class="col-sm-12 col-xl-12">
           <BaseBlock title="Permisos"  class="h-100 mb-0" content-class="fs-sm">
-            <div class="block-content block-content-full">
-                <div class="col" v-for="(section, index) in permissions" :key="permissions.id">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" :value="section.name" :id="section.name" :name="section.name" v-model="section.selected">
-                    <label class="form-check-label" :for="section.name">{{ section.menu_label }}</label>
-                  </div>
-
-                  <div class="col offset-md-1" v-for="(menu, index) in section.children" :key="section.id">
-                    <div class="form-check">
-                      <input class="form-check-input" type="checkbox" :value="menu.name" :id="menu.name" :name="menu.name" v-model="menu.selected">
-                      <label class="form-check-label" :for="menu.name">{{ menu.menu_label }}</label>
-                    </div>
-
-                    <div class="col offset-md-1" v-for="(submenu, index) in menu.children" :key="menu.id">
-                      <div class="form-check">
-                        <input class="form-check-input" type="checkbox" :value="submenu.name" :id="submenu.name" :name="submenu.name" v-model="submenu.selected">
-                        <label class="form-check-label" :for="submenu.name">{{ submenu.menu_label }}</label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-            </div>
+            <table class="table table-hover table-vcenter">
+              <thead>
+              <tr>
+                <th class="text-center" style="width: 50px;">#</th>
+                <th>Menu</th>
+                <th></th>
+                <th></th>
+              </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in form.permissions">
+                  <td class="text-center">
+                    <input class="form-check-input" type="checkbox" v-model="item.selected">
+                  </td>
+                  <td class="fw-semibold fs-sm" style="width: 100px">{{ item.menu_label }}</td>
+                  <td class="fw-semibold fs-sm" style="width: 160px">{{ item.menu }}</td>
+                  <td class="fw-semibold fs-sm">{{ item.option }}</td>
+                </tr>
+              </tbody>
+            </table>
           </BaseBlock>
         </div>
 

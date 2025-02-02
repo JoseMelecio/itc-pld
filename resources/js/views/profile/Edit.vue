@@ -28,7 +28,7 @@ defineProps({
           />
         </div>
         <h1 class="h2 text-white mb-0">{{ $page.props.auth.user.name }}</h1>
-        <h2 class="h4 fw-normal text-white-75">Edit your profile</h2>
+        <h2 class="h4 fw-normal text-white-75">Actualice sus datos</h2>
       </div>
     </div>
   </BaseBackground>
@@ -36,11 +36,11 @@ defineProps({
 
   <!-- Page Content -->
   <div class="content content-boxed">
-    <BaseBlock title="Profile Information">
+    <BaseBlock title="Informacion del usuario">
       <div class="row push">
         <div class="col-lg-4">
           <p class="fs-sm text-muted">
-            Your account’s vital info. Your username will be publicly visible.
+            Datos Genetales
           </p>
         </div>
         <div class="col-lg-8 col-xl-5">

@@ -7,11 +7,6 @@ use Illuminate\Support\Facades\Log;
 
 class UserUpdateRequest extends FormRequest
 {
-    public function prepareForValidation()
-    {
-        Log::info($this->all());
-    }
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -30,6 +25,7 @@ class UserUpdateRequest extends FormRequest
         $userId = $this->route('user') ? $this->route('user')->id : null;
 
         return [
+            'user_name' => "required|unique:users,user_name,$userId",
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'tax_id' => "required|string|max:13|unique:users,tax_id,$userId",
@@ -38,12 +34,15 @@ class UserUpdateRequest extends FormRequest
             'password' => 'nullable|string|min:8|confirmed',
             'password_confirmation' => 'nullable|string|min:8',
             'status' => 'required|string|in:active,inactive,suspended',
+            'permissions' => 'required|array|min:1',
         ];
     }
 
     public function messages(): array
     {
         return [
+            'user_name.unique' => 'El usuario ya está en uso.',
+            'user_name.require' => 'El usuario es obligatorio.',
             'name.required' => 'El nombre es obligatorio.',
             'last_name.required' => 'El apellido es obligatorio.',
             'tax_id.required' => 'El RFC es obligatorio.',
@@ -59,6 +58,7 @@ class UserUpdateRequest extends FormRequest
             'password.confirmed' => 'Las contraseñas no coinciden.',
             'password' => 'La confirmacion de contraseña es obligatoria.',
             'status' => 'El status es obligatorio.',
+            'permissions.required' => 'Los permisos son requeridos.',
         ];
     }
 }
