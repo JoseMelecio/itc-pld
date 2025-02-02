@@ -7,6 +7,7 @@ use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Permission;
 use App\Models\User;
+use App\Services\MenuBuilderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
@@ -28,12 +29,9 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): \Inertia\Response
     {
-        $permissions = Permission::whereNotNull('order_to_show')
-            ->orderBy('order_to_show')
-            ->with('children.children')
-            ->get();
+        $permissions = MenuBuilderService::allPermissionsTable();
 
         return Inertia::render('user/Create', [
             'permissions' => $permissions
@@ -43,9 +41,19 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(UserCreateRequest $request)
+    public function store(UserCreateRequest $request): \Illuminate\Http\RedirectResponse
     {
-        User::create($request->validated());
+        $data = $request->validated();
+        $newUser = User::create($data);
+
+        $newPermissions = [];
+        foreach ($data['permissions'] as $permission) {
+            if ($permission['selected']) {
+                $newPermissions[] = $permission['id'];
+            }
+        }
+
+        $newUser->permissions()->sync($newPermissions);
 
         return redirect()->route('users.index');
     }
@@ -55,8 +63,12 @@ class UserController extends Controller
      */
     public function show(User $user): \Inertia\Response
     {
+        $allPermissionsTable = MenuBuilderService::allPermissionsTable();
+        $assignedIdPermissions = $user->getIdPermissions();
+        $permissions = MenuBuilderService::currentPermissions($allPermissionsTable, $assignedIdPermissions);
         return Inertia::render('user/Create', [
-            'user' => $user
+            'user' => $user,
+            'permissions' => $permissions
         ]);
     }
 
@@ -65,7 +77,18 @@ class UserController extends Controller
      */
     public function update(UserUpdateRequest $request, User $user): \Illuminate\Http\RedirectResponse
     {
-        $user->update($request->validated());
+        $data = $request->validated();
+        $user->update($data);
+
+        if ($user->user_type != 'admin') {
+            $newPermissions = [];
+            foreach ($data['permissions'] as $permission) {
+                if ($permission['selected']) {
+                    $newPermissions[] = $permission['id'];
+                }
+            }
+            $user->syncPermissions($newPermissions);
+        }
 
         return redirect()->route('users.index');
     }
