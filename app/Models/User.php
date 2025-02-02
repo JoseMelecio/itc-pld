@@ -9,7 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
- * 
+ *
  *
  * @property int $id
  * @property string $name
@@ -65,13 +65,15 @@ class User extends Authenticatable // implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
+        'user_name',
         'name',
         'last_name',
         'tax_id',
         'email',
         'phone',
         'password',
-        'status'
+        'status',
+        'user_type'
     ];
 
     /**
@@ -104,5 +106,16 @@ class User extends Authenticatable // implements MustVerifyEmail
     public function getGravatarAttribute(): string
     {
         return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?s=128';
+    }
+
+    public function getIdPermissions(): array
+    {
+        $permissions = (new User)->join('model_has_permissions', 'model_has_permissions.model_id', '=', 'users.id')
+            ->where('model_has_permissions.model_id', '=', $this->id)
+            ->where('model_has_permissions.model_type', '=', User::class)
+            ->select('permission_id')
+            ->get();
+
+        return $permissions->pluck('permission_id')->toArray();
     }
 }

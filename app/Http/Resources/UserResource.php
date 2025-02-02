@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Str;
 
 class UserResource extends JsonResource
 {
@@ -21,6 +22,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'tax_id' => $this->tax_id,
+            'user_type' => Str::ucfirst($this->user_type),
             'status' => $this->status,
             'role' => 'adin'
         ];

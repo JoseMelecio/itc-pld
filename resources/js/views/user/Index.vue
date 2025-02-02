@@ -1,7 +1,7 @@
 <script setup>
 import {Link, router} from "@inertiajs/vue3";
 import {route} from "ziggy-js";
-defineProps({
+const props = defineProps({
   users: {
     data: {}
   },
@@ -47,7 +47,6 @@ const editUser = (id) => {
     <div class="row items-push">
       <div class="col-sm-12 col-xl-12">
         <BaseBlock title="Usuarios" class="h-100 mb-0" content-class="fs-sm">
-
             <table class="table table-hover table-vcenter">
               <thead>
               <tr>
@@ -56,6 +55,7 @@ const editUser = (id) => {
                 <th>Email</th>
                 <th>Celular</th>
                 <th>RFC</th>
+                <th>Tipo Usuario</th>
                 <th class="d-none d-sm-table-cell" style="width: 15%;">Status</th>
                 <th class="text-center" style="width: 100px;">Acciones</th>
               </tr>
@@ -74,6 +74,9 @@ const editUser = (id) => {
                 </td>
                 <td class="fw-semibold fs-sm">
                   {{ user.tax_id }}
+                </td>
+                <td class="fw-semibold fs-sm">
+                  {{ user.user_type }}
                 </td>
                 <td class="d-none d-sm-table-cell">
                   <span

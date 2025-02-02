@@ -66,24 +66,24 @@ store.mainContent({ mode: "narrow" });
               to: '/dashboard',
               icon: 'fa fa-rocket',
             },
-            // {
-            //   name: 'Administración',
-            //   heading: true,
-            // },
-            // {
-            //   name: 'Usuarios',
-            //   to: '/users',
-            //   icon: 'fa fa-users-gear',
-            // },
-            // {
-            //   name: 'Cuenta',
-            //   heading: true,
-            // },
-            // {
-            //   name: 'Perfil',
-            //   to: '/profile',
-            //   icon: 'fa fa-user-circle',
-            // },
+            {
+              name: 'Administración',
+              heading: true,
+            },
+            {
+              name: 'Usuarios',
+              to: '/users',
+              icon: 'fa fa-users-gear',
+            },
+            {
+              name: 'Cuenta',
+              heading: true,
+            },
+            {
+              name: 'Perfil',
+              to: '/profile',
+              icon: 'fa fa-user-circle',
+            },
             {
               name: 'Menu',
               heading: true,
