@@ -1,8 +1,9 @@
 <script setup>
 
 import {route} from "ziggy-js";
-import {router, useForm} from "@inertiajs/vue3";
+import {router, useForm, usePage} from "@inertiajs/vue3";
 import axios from "axios";
+const page = usePage();
 
 const props = defineProps({
   errors: Object,
@@ -50,6 +51,8 @@ const submit = async () => {
     console.error('Error al descargar el archivo:', error);
   }
 };
+
+const showGenerarButton = page.props.auth?.user?.status === "active";
 
 const downloadTemplate = () => {
   const url = route('pld-notice.downloadTemplate', {noticeType: props.pldNotice.route_param });
@@ -154,7 +157,7 @@ const downloadTemplate = () => {
               </div>
 
               <div class="mb-4">
-                <button type="submit" class="btn btn-success me-2">Generar</button>
+                <button type="submit" class="btn btn-success me-2" v-if="showGenerarButton">Generar</button>
                 <button type="button" @click="downloadTemplate()" class="btn btn-info me-2">Plantilla</button>
                 <!--              <button type="button" class="btn btn-light me-2">Ayuda</button>-->
               </div>

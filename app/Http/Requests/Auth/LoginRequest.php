@@ -45,7 +45,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'user_name' => trans('auth.failed'),
+                'user_name' => trans('Datos incorrectos'), //auth.failed
             ]);
         }
 
