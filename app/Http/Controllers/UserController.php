@@ -77,16 +77,19 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $user->update($data);
+        $newPermissions = [];
 
         if ($user->user_type != 'admin') {
-            $newPermissions = [];
             foreach ($data['permissions'] as $permission) {
                 if ($permission['selected']) {
                     $newPermissions[] = $permission['id'];
                 }
             }
-            $user->syncPermissions($newPermissions);
+        } else {
+            $newPermissions = Permission::all()->select('id')->pluck('id')->toArray();
         }
+
+        $user->syncPermissions($newPermissions);
 
         return redirect()->route('users.index');
     }
