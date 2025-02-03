@@ -2,10 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 
 class InitialMenuSeeder extends Seeder
@@ -114,7 +111,7 @@ class InitialMenuSeeder extends Seeder
             Permission::create([
                 'name' => 'real_estate_leasing',
                 'guard_name' => 'web',
-                'to' => null,
+                'to' => '/pld-notices/real_estate_leasing',
                 'icon' => 'fa fa-circle',
                 'heading' => false,
                 'menu_label' => 'Arrendamiento de inmuebles',
