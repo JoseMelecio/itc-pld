@@ -18,9 +18,9 @@ class PersonBlockedFormFindPermissionSeeder extends Seeder
         $parentPermission = Permission::where('name', 'person_blocked')->first();
         if (!Permission::where('name', 'person_bloqued_finder')->exists()) {
             Permission::create([
-                'name' => 'person_blocked_finder',
+                'name' => 'person_blocked_form_finder',
                 'guard_name' => 'web',
-                'to' => '/person-blocked-finder',
+                'to' => '/person-blocked-form_finder',
                 'icon' => 'fa fa-circle',
                 'heading' => 0,
                 'menu_label' => 'Busqueda',
