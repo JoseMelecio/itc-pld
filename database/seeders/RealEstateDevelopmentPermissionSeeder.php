@@ -6,8 +6,9 @@ use App\Models\Permission;
 use App\Models\PLDNotice;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
-class MutualLoanNoticePermissionSeeder extends Seeder
+class RealEstateDevelopmentPermissionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,14 +16,14 @@ class MutualLoanNoticePermissionSeeder extends Seeder
     public function run(): void
     {
         $parentPermission = Permission::where('name', 'notification_pld')->first();
-        if (!Permission::where('name', 'mutual_loan_credit')->exists()) {
+        if (!Permission::where('name', 'real_estate_development')->exists()) {
             Permission::create([
-                'name' => 'mutual_loan_credit',
+                'name' => 'real_estate_development',
                 'guard_name' => 'web',
-                'to' => '/pld-notices/mutual_loan_credit',
+                'to' => '/pld-notices/real_estate_development',
                 'icon' => 'fa fa-circle',
                 'heading' => 0,
-                'menu_label' => 'Mutuo préstamo y crédito',
+                'menu_label' => 'Desarrollo de inmuebles',
                 'order_to_show' => null,
                 'permission_id' => $parentPermission->id,
             ]);

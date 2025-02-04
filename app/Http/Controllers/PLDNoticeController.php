@@ -33,24 +33,31 @@ class PLDNoticeController extends Controller
         $dataRequest = $request->validated();
         $dataRequest['tax_id'] = \Auth::user()->tax_id;
         $pldNotice = PLDNotice::findOrFail($dataRequest['pld_notice_id']);
+
         $importName = str_replace(' ', '', ucwords($pldNotice->name));
         $importClass = "\App\Imports\\" . $importName . "Import";
         $import = new $importClass();
+
+        $exportClass = "\App\Exports\\" . $importName . "ExportXML";
 
         Excel::import($import, $request->file('file'));
         $data = $import->getData();
         Log::info($data);
 
-        $exportClassName = ucwords($pldNotice->route_param);
-        Log::info($exportClassName);
-
-        $makeXml = new MutualLoanCreditExportXML(
+        $makeXml = new $exportClass(
             data: $data,
             headers: $dataRequest
         );
         $xmlContent = $makeXml->makeXML();
 
-        $fileName = $pldNotice->spanish_name . ' - ' . now()->format('YmdHis') . ".xml";
+        $specialCharacters = [
+            'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
+            'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
+            'ñ' => 'n', 'Ñ' => 'N', 'ü' => 'u', 'Ü' => 'U'
+        ];
+        $noticeName = strtr($pldNotice->spanish_name, $specialCharacters);
+
+        $fileName = $noticeName . ' - ' . now()->format('YmdHis') . ".xml";
         Storage::put($fileName, $xmlContent);
 
         return Response::download(Storage::path($fileName), $fileName)->deleteFileAfterSend(true);
