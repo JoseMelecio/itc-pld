@@ -13,10 +13,10 @@ class PersonBlockedPermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!Permission::where('name', 'person_bloqued')->exists()) {
+        if (!Permission::where('name', 'person_blocked')->exists()) {
             $parentPermission = Permission::where('name', 'menu')->first();
             Permission::create([
-                'name' => 'person_bloqued',
+                'name' => 'person_blocked',
                 'guard_name' => 'web',
                 'to' => '/',
                 'icon' => 'fa fa-file-code',
