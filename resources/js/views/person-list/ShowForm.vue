@@ -74,8 +74,8 @@ const downloadTemplate = () => {
   <Head title="Dashboard" />
 
   <BasePageHeading
-    title="Notificaciones"
-    :subtitle="`Generador de notificaciones`"
+    title="Personas Bloqueadas"
+    :subtitle="`Buscador de personas bloqueadas`"
   >
     <template #extra>
       <nav class="flex-shrink-0 mt-3 mt-sm-0 ms-sm-3" aria-label="breadcrumb">
