@@ -55,7 +55,7 @@ const menuItems = computed(() => page.props.auth?.user?.user_menu || []);
     <!-- Using the available v-slot, we can override the default Side Overlay content from layouts/partials/SideOvelay.vue -->
     <template #side-overlay-content>
       <div class="content-side">
-        <p class="fs-sm">Side Overlay content..</p>
+        <p class="fs-sm">Mensaje de prueba..</p>
       </div>
     </template>
     <!-- END Side Overlay Content -->
