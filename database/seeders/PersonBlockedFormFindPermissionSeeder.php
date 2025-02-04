@@ -8,7 +8,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
 
-class PersonBlockedFormFindPermissionSeeder extends Seeder
+class PersonBlockedFormFinderPermissionSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,7 +16,7 @@ class PersonBlockedFormFindPermissionSeeder extends Seeder
     public function run(): void
     {
         $parentPermission = Permission::where('name', 'person_blocked')->first();
-        if (!Permission::where('name', 'person_bloqued_finder')->exists()) {
+        if (!Permission::where('name', 'person_bloqued_form_finder')->exists()) {
             Permission::create([
                 'name' => 'person_blocked_form_finder',
                 'guard_name' => 'web',
