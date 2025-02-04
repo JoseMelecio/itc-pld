@@ -20,7 +20,7 @@ class PersonBlockedFormFinderPermissionSeeder extends Seeder
             Permission::create([
                 'name' => 'person_blocked_form_finder',
                 'guard_name' => 'web',
-                'to' => '/person-blocked-form_finder',
+                'to' => '/person_blocked_form_finder',
                 'icon' => 'fa fa-circle',
                 'heading' => 0,
                 'menu_label' => 'Busqueda',
