@@ -15,6 +15,11 @@ const user = usePage().props.auth.user;
 const form = useForm({
   name: user.name,
   email: user.email,
+  last_name: user.last_name,
+  phone: user.phone,
+  current_password: '',
+  new_password: '',
+  repeat_new_password: '',
 });
 </script>
 
@@ -45,7 +50,7 @@ const form = useForm({
       </div>
     </div> -->
     <div class="mb-4">
-      <label class="form-label" for="name">Name</label>
+      <label class="form-label" for="name">Nombre</label>
       <input
         id="name"
         type="text"
@@ -57,10 +62,29 @@ const form = useForm({
         required
         autocomplete="name"
       />
-      <div v-show="form.errors.email" class="invalid-feedback">
+      <div v-show="form.errors.name" class="invalid-feedback">
         {{ form.errors.name }}
       </div>
     </div>
+
+    <div class="mb-4">
+      <label class="form-label" for="name">Apellido</label>
+      <input
+        id="name"
+        type="text"
+        class="form-control form-control-lg form-control-alt"
+        :class="{
+          'is-invalid': form.errors.last_name,
+        }"
+        v-model="form.last_name"
+        required
+        autocomplete="name"
+      />
+      <div v-show="form.errors.last_name" class="invalid-feedback">
+        {{ form.errors.last_name }}
+      </div>
+    </div>
+
     <div class="mb-4">
       <label class="form-label" for="email">Email</label>
       <input
@@ -77,13 +101,26 @@ const form = useForm({
       <div v-show="form.errors.email" class="invalid-feedback">
         {{ form.errors.email }}
       </div>
-      <div
-        v-if="mustVerifyEmail && user.email_verified_at === null"
-        class="fs-sm text-muted mt-2"
-      >
-        Your email address is unverified!
+    </div>
+
+    <div class="mb-4">
+      <label class="form-label" for="name">Telefono</label>
+      <input
+        id="name"
+        type="text"
+        class="form-control form-control-lg form-control-alt"
+        :class="{
+          'is-invalid': form.errors.phone,
+        }"
+        v-model="form.phone"
+        required
+        autocomplete="phone"
+      />
+      <div v-show="form.errors.phone" class="invalid-feedback">
+        {{ form.errors.phone }}
       </div>
     </div>
+
     <div class="d-flex align-items-center gap-2">
       <Link
         v-if="mustVerifyEmail && user.email_verified_at === null"
@@ -95,9 +132,9 @@ const form = useForm({
         Re-send the verification email
       </Link>
       <button type="submit" class="btn btn-primary" :disabled="form.processing">
-        Save
+        Guardar
       </button>
-      <div v-if="form.recentlySuccessful" class="fs-sm text-muted">Saved!</div>
+      <div v-if="form.recentlySuccessful" class="fs-sm text-muted">Guardado!</div>
     </div>
   </form>
 </template>

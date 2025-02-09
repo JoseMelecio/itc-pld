@@ -52,29 +52,19 @@ defineProps({
       </div>
     </BaseBlock>
 
-    <BaseBlock title="Update Password">
-      <div class="row push">
-        <div class="col-lg-4">
-          <p class="fs-sm text-muted">
-            Ensure your account is using a long, random password to stay secure.
-          </p>
-        </div>
-        <div class="col-lg-8 col-xl-5">
-          <UpdatePasswordForm />
-        </div>
-      </div>
-    </BaseBlock>
+<!--    <BaseBlock title="Cambiar Contraseña">-->
+<!--      <div class="row push">-->
+<!--        <div class="col-lg-4">-->
+<!--          <p class="fs-sm text-muted">-->
+<!--            La contraseña debe tener al menos 8 caracteres alfanumericos-->
+<!--          </p>-->
+<!--        </div>-->
+<!--        <div class="col-lg-8 col-xl-5">-->
+<!--          <UpdatePasswordForm />-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </BaseBlock>-->
 
-    <BaseBlock title="Delete Account">
-      <div class="row push">
-        <div class="col-lg-4">
-          <p class="fs-sm text-muted">Permanently delete your account.</p>
-        </div>
-        <div class="col-lg-8 col-xl-5">
-          <DeleteUserForm />
-        </div>
-      </div>
-    </BaseBlock>
   </div>
   <!-- END Page Content -->
 </template>
