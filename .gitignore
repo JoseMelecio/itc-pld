@@ -1,6 +1,9 @@
 /.phpunit.cache
 /node_modules
 /public/hot
+/public/assets/media/img/logo.jpg
+/public/assets/media/img/logo.png
+/public/assets/media/img/logo.jpeg
 /public/storage
 /storage/*.key
 /vendor
