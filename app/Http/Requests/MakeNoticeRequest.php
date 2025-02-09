@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 
 class MakeNoticeRequest extends FormRequest
 {
@@ -27,7 +26,7 @@ class MakeNoticeRequest extends FormRequest
             'month' => [
                 'required',
                 'string',
-                'regex:/^(0[1-9]|1[0-2])\d{4}$/'
+                'regex:/^\d{4}(0[1-9]|1[0-2])$/'
             ],
             'collegiate_entity_tax_id' => 'nullable|string',
             'notice_reference' => 'nullable|string',
@@ -41,7 +40,7 @@ class MakeNoticeRequest extends FormRequest
         return [
             'month.required' => 'El campo mes reportado es obligatorio.',
             'month.string' => 'El campo mes reportado debe ser una cadena de texto.',
-            'month.regex' => 'El campo mes reportado debe cumplir con el formato MMAAAA.',
+            'month.regex' => 'El campo mes reportado debe cumplir con el formato AAAAMM.',
             'exempt.required' => 'El campo exento es obligatorio.',
             'exempt.in' => 'El campo exento debe ser "si" o "no".',
             'file.required' => 'El campo archivo de excel es obligatorio.',

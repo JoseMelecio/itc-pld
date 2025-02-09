@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\MutualLoanCreditExportXML;
-use App\Exports\RealEstateLeasingExportXML;
 use App\Http\Requests\MakeNoticeRequest;
 use App\Models\PLDNotice;
-use Illuminate\Support\Facades\Log;
+use DOMDocument;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -28,7 +27,7 @@ class PLDNoticeController extends Controller
         return response()->download($filePath);
     }
 
-    public function makeNotice(MakeNoticeRequest $request): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function makeNotice(MakeNoticeRequest $request): \Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\JsonResponse
     {
         $dataRequest = $request->validated();
         $dataRequest['tax_id'] = \Auth::user()->tax_id;
@@ -48,6 +47,22 @@ class PLDNoticeController extends Controller
             headers: $dataRequest
         );
         $xmlContent = $makeXml->makeXML();
+
+        $xsdName = Str::camel($pldNotice->name);
+        $xsd = public_path('xsd/' . $xsdName . '.xsd');
+
+        $dom = new DOMDocument;
+        $dom->loadXML($xmlContent);
+        libxml_use_internal_errors(true);
+        if (!$dom->schemaValidate($xsd)) {
+            $errors = libxml_get_errors();
+            $errorMessages = array_map(fn($error) => $error->message, $errors);
+
+            libxml_clear_errors();
+
+            return response()->json(['errors' => $errorMessages], 422);
+        }
+
 
         $specialCharacters = [
             'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',

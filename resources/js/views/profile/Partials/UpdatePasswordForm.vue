@@ -32,7 +32,7 @@ const updatePassword = () => {
 <template>
   <form @submit.prevent="updatePassword">
     <div class="mb-4">
-      <label class="form-label" for="current_password">Current Password</label>
+      <label class="form-label" for="current_password">Contraseña Actual</label>
       <input
         type="password"
         id="current_password"
@@ -50,7 +50,7 @@ const updatePassword = () => {
       </div>
     </div>
     <div class="mb-4">
-      <label class="form-label" for="password">Password</label>
+      <label class="form-label" for="password">Contraseña</label>
       <input
         type="password"
         id="password"
@@ -69,7 +69,7 @@ const updatePassword = () => {
     </div>
     <div class="mb-4">
       <label class="form-label" for="password_confirmation"
-        >Confirm Password</label
+        >Confirmar Contraseña</label
       >
       <input
         type="password"
@@ -88,9 +88,9 @@ const updatePassword = () => {
     </div>
     <div class="d-flex align-items-center gap-2">
       <button type="submit" class="btn btn-primary" :disabled="form.processing">
-        Save
+        Guardar
       </button>
-      <div v-if="form.recentlySuccessful" class="fs-sm text-muted">Saved!</div>
+      <div v-if="form.recentlySuccessful" class="fs-sm text-muted">Guardado!</div>
     </div>
   </form>
 </template>

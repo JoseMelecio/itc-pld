@@ -1,8 +1,9 @@
 <script setup>
 
 import {route} from "ziggy-js";
-import {router, useForm, usePage} from "@inertiajs/vue3";
+import { useForm, usePage} from "@inertiajs/vue3";
 import axios from "axios";
+import { ref} from "vue";
 const page = usePage();
 
 const props = defineProps({
@@ -19,22 +20,24 @@ const form = useForm({
   file: '',
 });
 
+const hasFormErrors = ref(false);
+const formErrors = ref([]);
+
 const submit = async () => {
+  hasFormErrors.value = false;
   try {
     const response = await axios.post(route('pld-notice.makeNotice'), form, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
-      responseType: 'blob', // Necesario para manejar archivos binarios
+      responseType: 'blob',
 
     });
 
-    // Crear un enlace para descargar el archivo
     const url = window.URL.createObjectURL(new Blob([response.data]));
     const link = document.createElement('a');
     link.href = url;
 
-    // Extraer el nombre del archivo del encabezado Content-Disposition
     const contentDisposition = response.headers['content-disposition'];
     const fileName = contentDisposition
       ? contentDisposition.split('filename=')[1].replace(/['"]/g, '')
@@ -44,11 +47,23 @@ const submit = async () => {
     document.body.appendChild(link);
     link.click();
 
-    // Limpiar el enlace después de usarlo
     link.parentNode.removeChild(link);
     window.URL.revokeObjectURL(url);
   } catch (error) {
     console.error('Error al descargar el archivo:', error);
+    if (error.response) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        try {
+          const errorData = JSON.parse(reader.result);
+          hasFormErrors.value = true;
+          formErrors.value =  Object.values(errorData.errors).flat();
+        } catch (e) {
+          console.log('No se pudo leer el error:', reader.result);
+        }
+      };
+      reader.readAsText(error.response.data);
+    }
   }
 };
 
@@ -97,6 +112,15 @@ const downloadTemplate = () => {
   </BasePageHeading>
 
   <div class="content">
+
+    <div class="alert alert-danger alert-dismissible" role="alert" v-if="hasFormErrors">
+      <p class="mb-0" v-for="error in formErrors">
+        {{ error }}
+      </p>
+      <button type="button" class="btn-close" @click="hasFormErrors = false"></button>
+    </div>
+
+
     <div class="row items-push">
       <div class="col-sm-12 col-xl-12">
         <form @submit.prevent="submit">
@@ -107,7 +131,7 @@ const downloadTemplate = () => {
                 <div class="col-12">
                   <div class="mb-4">
                     <label class="form-label" for="month">Mes reportado <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" :class="{ 'is-invalid': errors.month }"  id="month" name="month" placeholder="MMAAAA" v-model="form.month">
+                    <input type="text" class="form-control" :class="{ 'is-invalid': errors.month }"  id="month" name="month" placeholder="AAAAMM" v-model="form.month">
                     <div id="month-error" class="text-danger" >{{ errors.month }}</div>
                   </div>
                 </div>
@@ -149,7 +173,7 @@ const downloadTemplate = () => {
               <div class="row">
                 <div class="col-12">
                   <div class="mb-4">
-                    <label class="form-label" for="file">Archivo de Excel</label>
+                    <label class="form-label" for="file">Archivo de Excel <span class="text-danger">*</span></label>
                     <input class="form-control" :class="{ 'is-invalid': errors.file }" type="file" id="file" name="file" @input="form.file = $event.target.files[0]">
                     <div id="file-error" class="text-danger">{{ errors.file}}</div>
                   </div>
