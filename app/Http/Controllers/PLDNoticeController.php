@@ -16,7 +16,11 @@ class PLDNoticeController extends Controller
     public function showForm(string $notice): \Inertia\Response
     {
         $pldNotice = PLDNotice::where('route_param', $notice)->firstOrFail();
-        return Inertia::render('pld-notice/ShowForm', ['pldNotice' => $pldNotice]);
+        $customFields = $pldNotice->customFields;
+        return Inertia::render('pld-notice/ShowForm', [
+            'pldNotice' => $pldNotice,
+            'customFields' => $customFields,
+        ]);
     }
 
     public function downloadTemplate(string $notice): \Symfony\Component\HttpFoundation\BinaryFileResponse
@@ -41,7 +45,6 @@ class PLDNoticeController extends Controller
 
         Excel::import($import, $request->file('file'));
         $data = $import->getData();
-        Log::info($data);
 
         $makeXml = new $exportClass(
             data: $data,
@@ -64,7 +67,6 @@ class PLDNoticeController extends Controller
             return response()->json(['errors' => $errorMessages], 422);
         }
 
-
         $specialCharacters = [
             'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
             'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
@@ -76,6 +78,5 @@ class PLDNoticeController extends Controller
         Storage::put($fileName, $xmlContent);
 
         return Response::download(Storage::path($fileName), $fileName)->deleteFileAfterSend(true);
-
     }
 }

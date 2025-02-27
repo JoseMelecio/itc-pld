@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
 use App\Models\PLDNotice;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class MutualLoanNoticeSeeder extends Seeder
@@ -20,6 +20,20 @@ class MutualLoanNoticeSeeder extends Seeder
                 'spanish_name' => 'mutuo prestamo y credito',
                 'template' => 'plantillaMutuoPrestamoCredito.xlsx',
                 'is_active' => true,
+            ]);
+        }
+
+        $parentPermission = Permission::where('name', 'notification_pld')->first();
+        if (!Permission::where('name', 'mutual_loan_credit')->exists()) {
+            Permission::create([
+                'name' => 'mutual_loan_credit',
+                'guard_name' => 'web',
+                'to' => '/pld-notices/mutual_loan_credit',
+                'icon' => 'fa fa-circle',
+                'heading' => 0,
+                'menu_label' => 'Mutuo préstamo y crédito',
+                'order_to_show' => null,
+                'permission_id' => $parentPermission->id,
             ]);
         }
     }

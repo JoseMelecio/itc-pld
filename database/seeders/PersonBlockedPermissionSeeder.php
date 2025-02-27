@@ -26,5 +26,33 @@ class PersonBlockedPermissionSeeder extends Seeder
                 'permission_id' => $parentPermission->id,
             ]);
         }
+
+        $parentPermission = Permission::where('name', 'person_blocked')->first();
+        if (!Permission::where('name', 'person_bloqued_form_finder')->exists()) {
+            Permission::create([
+                'name' => 'person_blocked_form_finder',
+                'guard_name' => 'web',
+                'to' => '/person_blocked_form_finder',
+                'icon' => 'fa fa-circle',
+                'heading' => 0,
+                'menu_label' => 'Busqueda',
+                'order_to_show' => null,
+                'permission_id' => $parentPermission->id,
+            ]);
+        }
+
+        if (!Permission::where('name', 'person_blocked_list')->exists()) {
+            Permission::create([
+                'name' => 'person_blocked_list',
+                'guard_name' => 'web',
+                'to' => '/person-blocked-list',
+                'icon' => 'fa fa-circle',
+                'heading' => 0,
+                'menu_label' => 'Listado',
+                'order_to_show' => null,
+                'permission_id' => $parentPermission->id,
+            ]);
+        }
+
     }
 }
