@@ -9,7 +9,10 @@ const page = usePage();
 const props = defineProps({
   errors: Object,
   pldNotice: null,
+  customFields: null,
 })
+
+console.log(props.customFields)
 
 const form = useForm({
   pld_notice_id: props.pldNotice.id,
@@ -19,6 +22,12 @@ const form = useForm({
   exempt: 'no',
   file: '',
 });
+
+if (Array.isArray(props.customFields)) {
+  props.customFields.forEach(field => {
+    form[field.name] = field.defaultValue || ''
+  })
+}
 
 const hasFormErrors = ref(false);
 const formErrors = ref([]);
@@ -151,7 +160,7 @@ const downloadTemplate = () => {
                 <div class="col-12">
                   <div class="mb-4">
                     <label class="form-label" for="notice_reference">Referencia del aviso</label>
-                    <input type="text" class="form-control" :class="{ 'is-invalid': errors.notice_reference }"  id="notice_reference" name="notice_reference" placeholder="Referencia.." v-model="form.notice_reference">
+                    <input type="text" class="form-control" :class="{ 'is-invalid': errors.notice_reference }"  id="notice_reference" name="notice_reference" placeholder="Referencia" v-model="form.notice_reference">
                     <div id="notice_reference-error" class="invalid-feedback animated fadeIn">{{ errors.notice_reference}}</div>
                   </div>
                 </div>
@@ -166,6 +175,29 @@ const downloadTemplate = () => {
                       <option value="yes">Si</option>
                     </select>
                     <div id="exempt-error" class="text-danger">{{ errors.exempt}}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row" v-for="customField in customFields">
+                <div class="col-12">
+                  <div class="mb-4">
+                    <label class="form-label" for="notice_reference">{{ customField.label }}  <span class="text-danger" v-if="customField.validation.includes('required')">*</span></label>
+                    <input type="text" class="form-control" v-if="!customField.data_select"
+                           :id="customFields.name"
+                           :name="customField.name"
+                           :placeholder="customField.label"
+                           v-model="form[customField.name]">
+
+                    <select class="form-select" v-if="customField.data_select"
+                            :id="customFields.name"
+                            :name="customField.name"
+                            v-model="form[customField.name]">
+                      <option :value="index" v-for="(item,index) in customField.data_select">{{item}}</option>
+
+                    </select>
+
+                    <div id="notice_reference-error" class="invalid-feedback animated fadeIn">{{ errors.notice_reference}}</div>
                   </div>
                 </div>
               </div>
