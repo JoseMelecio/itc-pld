@@ -37,8 +37,8 @@ class AdminBankAccountCustomFieldsSeeder extends Seeder
         ]);
 
         $notice = PLDNotice::where('route_param', 'bank_account_management')->first();
-        $notice->customFields()->attach($customTypeOccupation->id);
-        $notice->customFields()->attach($customOccupationDescription->id);
+        $notice->customFields->attach($customTypeOccupation->id);
+        $notice->customFields->attach($customOccupationDescription->id);
 
     }
 }
