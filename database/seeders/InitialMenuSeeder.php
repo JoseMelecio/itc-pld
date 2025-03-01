@@ -105,19 +105,5 @@ class InitialMenuSeeder extends Seeder
                 'permission_id' => $parentPermission->id,
             ]);
         }
-
-        if (!Permission::where('name', 'real_estate_leasing')->exists()) {
-            $parentPermission = Permission::where('name', 'notification_pld')->first();
-            Permission::create([
-                'name' => 'real_estate_leasing',
-                'guard_name' => 'web',
-                'to' => '/pld-notices/real_estate_leasing',
-                'icon' => 'fa fa-circle',
-                'heading' => false,
-                'menu_label' => 'Arrendamiento de inmuebles',
-                'order_to_show' => null,
-                'permission_id' => $parentPermission->id,
-            ]);
-        }
     }
 }
