@@ -9,9 +9,6 @@ class PersonListFinderImport implements ToCollection
 {
     private array $data = [];
 
-    /**
-    * @param Collection $collection
-    */
     public function collection(Collection $collection)
     {
         foreach ($collection->skip(1) as $row) {
@@ -31,7 +28,7 @@ class PersonListFinderImport implements ToCollection
     public function sheets(): array
     {
         return [
-            'Busqueda' => $this
+            'Busqueda' => $this,
         ];
     }
 }

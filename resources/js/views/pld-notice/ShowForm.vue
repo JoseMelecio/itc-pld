@@ -10,9 +10,8 @@ const props = defineProps({
   errors: Object,
   pldNotice: null,
   customFields: null,
+  have_xsd: null,
 })
-
-console.log(props.customFields)
 
 const form = useForm({
   pld_notice_id: props.pldNotice.id,
@@ -135,7 +134,19 @@ const downloadTemplate = () => {
         <form @submit.prevent="submit">
           <BaseBlock :title="pldNotice.spanish_name" class="h-100 mb-0" content-class="fs-sm">
 
+            <div class="alert alert-secondary d-flex align-items-center" role="alert" v-if="!have_xsd">
+              <div class="flex-shrink-0">
+                <i class="fa fa-circle-exclamation"></i>
+              </div>
+              <div class="flex-grow-1 ms-3">
+                <p class="mb-0">
+                  Validación XSD desactivada.
+                </p>
+              </div>
+            </div>
+
             <div class="block-content block-content-full">
+
               <div class="row">
                 <div class="col-12">
                   <div class="mb-4">

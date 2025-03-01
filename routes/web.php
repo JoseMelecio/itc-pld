@@ -12,11 +12,9 @@ use Inertia\Inertia;
 |--------------------------------------------------------------------------
 */
 
-
 Route::get('/', function () {
-   return redirect('login');
+    return redirect('login');
 });
-
 
 Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
 Route::post('login', [AuthenticatedSessionController::class, 'store']);
@@ -47,7 +45,6 @@ Route::middleware('auth')->group(function () {
     //Route::get('/person-list-blocked-', [\App\Http\Controllers\PersonListController::class, 'index'])->name('person-list-blocked');
 });
 
-
 //// Landing (Guest)
 //Route::get('/', function () {
 //    return Inertia::render('Welcome', [
@@ -62,5 +59,3 @@ Route::middleware('auth')->group(function () {
 //})->middleware(['auth', 'verified'])->name('dashboard');
 //
 // Dashboard - Profile (Authenticated)
-
-

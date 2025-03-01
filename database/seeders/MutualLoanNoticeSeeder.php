@@ -13,7 +13,7 @@ class MutualLoanNoticeSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!PLDNotice::where('route_param', 'mutual_loan_credit')->exists()) {
+        if (! PLDNotice::where('route_param', 'mutual_loan_credit')->exists()) {
             PLDNotice::create([
                 'route_param' => 'mutual_loan_credit',
                 'name' => 'mutual loan credit',
@@ -24,7 +24,7 @@ class MutualLoanNoticeSeeder extends Seeder
         }
 
         $parentPermission = Permission::where('name', 'notification_pld')->first();
-        if (!Permission::where('name', 'mutual_loan_credit')->exists()) {
+        if (! Permission::where('name', 'mutual_loan_credit')->exists()) {
             Permission::create([
                 'name' => 'mutual_loan_credit',
                 'guard_name' => 'web',

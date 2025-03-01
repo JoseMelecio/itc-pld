@@ -13,7 +13,7 @@ class RealEstateSaleNoticeSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!PLDNotice::where('route_param', 'real_estate_sale')->exists()) {
+        if (! PLDNotice::where('route_param', 'real_estate_sale')->exists()) {
             PLDNotice::create([
                 'route_param' => 'real_estate_sale',
                 'name' => 'real estate sale',
@@ -24,7 +24,7 @@ class RealEstateSaleNoticeSeeder extends Seeder
         }
 
         $parentPermission = Permission::where('name', 'notification_pld')->first();
-        if (!Permission::where('name', 'real_estate_sale')->exists()) {
+        if (! Permission::where('name', 'real_estate_sale')->exists()) {
             Permission::create([
                 'name' => 'real_estate_sale',
                 'guard_name' => 'web',

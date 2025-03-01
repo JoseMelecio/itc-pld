@@ -21,7 +21,7 @@ class PersonBlockedFinderService
         return $array;
     }
 
-    public function singleSearch(string $name, string $alias = null, string $date = null): string
+    public function singleSearch(string $name, ?string $alias = null, ?string $date = null): string
     {
         $nameToSearch = $this->clearText($name);
         $aliasToSearch = $this->clearText($alias);
@@ -46,7 +46,7 @@ class PersonBlockedFinderService
             ->get();
 
         if ($results->count() === 0) {
-            return "Sin coincidencias";
+            return 'Sin coincidencias';
         }
 
         foreach ($results as $result) {
@@ -54,12 +54,12 @@ class PersonBlockedFinderService
             $aliasFounded = null;
             $dateFounded = null;
 
-            $resultName = $this->clearText($result->first_name . $result->second_name . $result->third_name);
+            $resultName = $this->clearText($result->first_name.$result->second_name.$result->third_name);
             $resultAlias = $this->clearText($result->alias);
             $resultDateYear = str_pad($this->clearText($result->year), 4, '0', STR_PAD_LEFT);
             $resultDateMonth = str_pad($this->clearText($result->month), 2, '0', STR_PAD_LEFT);
             $resultDateDay = str_pad($this->clearText($result->day), 2, '0', STR_PAD_LEFT);
-            $resultDateConcat = $resultDateYear . $resultDateMonth . $resultDateDay;
+            $resultDateConcat = $resultDateYear.$resultDateMonth.$resultDateDay;
 
             if ($resultName === $nameToSearch) {
                 $nameFounded = true;
@@ -76,42 +76,35 @@ class PersonBlockedFinderService
             }
 
             if ($nameFounded && $aliasFounded && $dateFounded) {
-                return "Coincidencia estricta";
+                return 'Coincidencia estricta';
             }
 
             if (($nameFounded && $dateFounded) || ($aliasFounded && $dateFounded)) {
                 $countExact++;
             }
 
-            if (($nameFounded && !$aliasFounded) || ($aliasFounded && !$nameFounded)) {
+            if (($nameFounded && ! $aliasFounded) || ($aliasFounded && ! $nameFounded)) {
                 $countApproximate++;
             }
         }
 
         if ($countExact >= $countApproximate) {
-            return "Coincidencia exacta";
+            return 'Coincidencia exacta';
         } else {
-            return "Coincidencia aproximada";
+            return 'Coincidencia aproximada';
         }
     }
 
-    public function exactSearch(string $name, string $alias, string $date)
+    public function exactSearch(string $name, string $alias, string $date) {}
+
+    public function aproximateSearch(string $name, string $alias) {}
+
+    public function clearText(?string $input): array|string|null
     {
-
-    }
-
-    public function aproximateSearch(string $name, string $alias)
-    {
-
-    }
-
-    public function clearText(string|null $input): array|string|null
-    {
-        if (!$input) {
+        if (! $input) {
             return null;
         }
+
         return preg_replace('/[^a-zA-Z0-9]/', '', $input);
     }
-
-
 }

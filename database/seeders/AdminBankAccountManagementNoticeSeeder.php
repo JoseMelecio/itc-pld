@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Permission;
 use App\Models\PLDNotice;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class AdminBankAccountManagementNoticeSeeder extends Seeder
@@ -14,7 +13,7 @@ class AdminBankAccountManagementNoticeSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!PLDNotice::where('route_param', 'bank_account_management')->exists()) {
+        if (! PLDNotice::where('route_param', 'bank_account_management')->exists()) {
             PLDNotice::create([
                 'route_param' => 'bank_account_management',
                 'name' => 'bank account management',
@@ -25,7 +24,7 @@ class AdminBankAccountManagementNoticeSeeder extends Seeder
         }
 
         $parentPermission = Permission::where('name', 'notification_pld')->first();
-        if (!Permission::where('name', 'bank_account_management')->exists()) {
+        if (! Permission::where('name', 'bank_account_management')->exists()) {
             Permission::create([
                 'name' => 'bank_account_management',
                 'guard_name' => 'web',

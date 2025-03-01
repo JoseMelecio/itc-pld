@@ -2,12 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-
 /**
- *
- *
  * @property int $id
  * @property string $name
  * @property string $guard_name
@@ -28,6 +23,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property-read int|null $roles_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $users
  * @property-read int|null $users_count
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission permission($permissions, $without = false)
@@ -46,12 +42,13 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission withoutPermission($permissions)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Permission withoutRole($roles, $guard = null)
+ *
  * @mixin \Eloquent
  */
 class Permission extends \Spatie\Permission\Models\Permission
 {
     protected $casts = [
-        'heading' => 'boolean'
+        'heading' => 'boolean',
     ];
 
     public function parent()

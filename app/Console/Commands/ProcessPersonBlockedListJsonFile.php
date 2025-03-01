@@ -30,17 +30,19 @@ class ProcessPersonBlockedListJsonFile extends Command
     {
         $filename = $this->argument('filename');
 
-        if (!Storage::exists('Imports/' . $filename)) {
+        if (! Storage::exists('Imports/'.$filename)) {
             $this->error("File '{$filename}' does not exist.");
+
             return CommandAlias::FAILURE;
         }
 
-        $content = Storage::get('Imports/' . $filename);
+        $content = Storage::get('Imports/'.$filename);
 
         $data = json_decode($content, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             $this->error(json_last_error_msg());
+
             return CommandAlias::FAILURE;
         }
 
@@ -50,7 +52,7 @@ class ProcessPersonBlockedListJsonFile extends Command
             $nameToFind = $this->clearText($record['nombre']);
             $personExist = PersonList::where('first_name', $nameToFind)->first();
 
-            if (!$personExist) {
+            if (! $personExist) {
                 $person = PersonList::create([
                     'origin' => $this->clearText($record['origen']),
                     'record_type' => $record['tipo_registro'],
@@ -119,7 +121,6 @@ class ProcessPersonBlockedListJsonFile extends Command
                     'notes' => $record['notas'],
                 ]);
             }
-
 
         }
 
