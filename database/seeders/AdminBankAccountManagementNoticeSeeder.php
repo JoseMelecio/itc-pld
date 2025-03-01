@@ -7,7 +7,7 @@ use App\Models\PLDNotice;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class BankAccountManagementNoticeSeeder extends Seeder
+class AdminBankAccountManagementNoticeSeeder extends Seeder
 {
     /**
      * Run the database seeds.
