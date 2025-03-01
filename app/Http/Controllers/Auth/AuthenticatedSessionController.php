@@ -33,7 +33,7 @@ class AuthenticatedSessionController extends Controller
     {
         $user = User::where('user_name', $request->get('user_name'))->first();
 
-        if (!empty($user) && $user->status == 'disabled') {
+        if (! empty($user) && $user->status == 'disabled') {
             throw ValidationException::withMessages([
                 'user_name' => trans('Usuario deshabilitado'), //auth.failed
             ]);

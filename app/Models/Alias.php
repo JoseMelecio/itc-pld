@@ -12,6 +12,6 @@ class Alias extends Model
 
     protected $fillable = [
         'alias',
-        'quality'
+        'quality',
     ];
 }

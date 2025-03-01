@@ -17,16 +17,21 @@ class PLDNoticeController extends Controller
     {
         $pldNotice = PLDNotice::where('route_param', $notice)->firstOrFail();
         $customFields = $pldNotice->customFields;
+
+        $xsdName = Str::camel($pldNotice->name);
+        $xsd = public_path('xsd/'.$xsdName.'.xsd');
+
         return Inertia::render('pld-notice/ShowForm', [
             'pldNotice' => $pldNotice,
             'customFields' => $customFields,
+            'have_xsd' => file_exists($xsd),
         ]);
     }
 
     public function downloadTemplate(string $notice): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $pldNotice = PLDNotice::where('route_param', $notice)->firstOrFail();
-        $filePath = public_path('templates/' . $pldNotice->template);
+        $filePath = public_path('templates/'.$pldNotice->template);
 
         return response()->download($filePath);
     }
@@ -38,10 +43,10 @@ class PLDNoticeController extends Controller
         $pldNotice = PLDNotice::findOrFail($dataRequest['pld_notice_id']);
 
         $importName = str_replace(' ', '', ucwords($pldNotice->name));
-        $importClass = "\App\Imports\\" . $importName . "Import";
-        $import = new $importClass();
+        $importClass = "\App\Imports\\".$importName.'Import';
+        $import = new $importClass;
 
-        $exportClass = "\App\Exports\\" . $importName . "ExportXML";
+        $exportClass = "\App\Exports\\".$importName.'ExportXML';
 
         Excel::import($import, $request->file('file'));
         $data = $import->getData();
@@ -53,28 +58,30 @@ class PLDNoticeController extends Controller
         $xmlContent = $makeXml->makeXML();
 
         $xsdName = Str::camel($pldNotice->name);
-        $xsd = public_path('xsd/' . $xsdName . '.xsd');
+        $xsd = public_path('xsd/'.$xsdName.'.xsd');
 
-        $dom = new DOMDocument;
-        $dom->loadXML($xmlContent);
-        libxml_use_internal_errors(true);
-        if (!$dom->schemaValidate($xsd)) {
-            $errors = libxml_get_errors();
-            $errorMessages = array_map(fn($error) => $error->message, $errors);
+        if (file_exists($xsd)) {
+            $dom = new DOMDocument;
+            $dom->loadXML($xmlContent);
+            libxml_use_internal_errors(true);
+            if (! $dom->schemaValidate($xsd)) {
+                $errors = libxml_get_errors();
+                $errorMessages = array_map(fn ($error) => $error->message, $errors);
 
-            libxml_clear_errors();
+                libxml_clear_errors();
 
-            return response()->json(['errors' => $errorMessages], 422);
+                return response()->json(['errors' => $errorMessages], 422);
+            }
         }
 
         $specialCharacters = [
             'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u',
             'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U',
-            'ñ' => 'n', 'Ñ' => 'N', 'ü' => 'u', 'Ü' => 'U'
+            'ñ' => 'n', 'Ñ' => 'N', 'ü' => 'u', 'Ü' => 'U',
         ];
         $noticeName = strtr($pldNotice->spanish_name, $specialCharacters);
 
-        $fileName = $noticeName . ' - ' . now()->format('YmdHis') . ".xml";
+        $fileName = $noticeName.' - '.now()->format('YmdHis').'.xml';
         Storage::put($fileName, $xmlContent);
 
         return Response::download(Storage::path($fileName), $fileName)->deleteFileAfterSend(true);

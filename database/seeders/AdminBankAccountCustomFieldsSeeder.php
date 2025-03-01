@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\CustomField;
 use App\Models\PLDNotice;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class AdminBankAccountCustomFieldsSeeder extends Seeder

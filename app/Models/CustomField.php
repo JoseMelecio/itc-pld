@@ -15,7 +15,7 @@ class CustomField extends Model
         'name',
         'label',
         'validation',
-        'validation_message'
+        'validation_message',
     ];
 
     protected $casts = [
