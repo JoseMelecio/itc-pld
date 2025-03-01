@@ -11,6 +11,6 @@ class Nationality extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'nationality'
+        'nationality',
     ];
 }

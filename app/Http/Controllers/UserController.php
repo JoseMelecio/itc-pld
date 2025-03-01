@@ -8,8 +8,6 @@ use App\Http\Resources\UserResource;
 use App\Models\Permission;
 use App\Models\User;
 use App\Services\MenuBuilderService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -34,7 +32,7 @@ class UserController extends Controller
         $permissions = MenuBuilderService::allPermissionsTable();
 
         return Inertia::render('user/Create', [
-            'permissions' => $permissions
+            'permissions' => $permissions,
         ]);
     }
 
@@ -64,9 +62,10 @@ class UserController extends Controller
     public function show(User $user): \Inertia\Response
     {
         $permissionsTable = MenuBuilderService::allPermissionsTable($user->getIdPermissions());
+
         return Inertia::render('user/Create', [
             'user' => $user,
-            'permissions' => $permissionsTable
+            'permissions' => $permissionsTable,
         ]);
     }
 

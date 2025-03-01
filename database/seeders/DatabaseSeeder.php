@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -17,7 +16,14 @@ class DatabaseSeeder extends Seeder
             InitialMenuSeeder::class,
             RealEstateLeasingNoticeSeeder::class,
             MutualLoanNoticeSeeder::class,
-            MutualLoanNoticePermissionSeeder::class,
+            RealEstateDevelopmentNoticeSeeder::class,
+            RealEstateLeasingNoticeSeeder::class,
+            RealEstateSaleNoticeSeeder::class,
+            VehicleSaleNoticeSeeder::class,
+            PersonBlockedPermissionSeeder::class,
+            VehicleSaleNoticeSeeder::class,
+            AdminBankAccountManagementNoticeSeeder::class,
+            AdminBankAccountCustomFieldsSeeder::class,
             //Last seeder to sync permissions
             UserSeeder::class,
         ]);

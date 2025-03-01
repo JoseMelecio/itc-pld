@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- *
- *
  * @property int $id
  * @property string $route_param
  * @property string $name
@@ -17,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property string|null $deleted_at
+ *
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice query()
@@ -28,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice whereRouteParam($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice whereSpanishName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PLDNotice whereUpdatedAt($value)
+ *
  * @mixin \Eloquent
  */
 class PLDNotice extends Model
@@ -45,7 +45,7 @@ class PLDNotice extends Model
     ];
 
     protected $casts = [
-        'is_active' => 'boolean'
+        'is_active' => 'boolean',
     ];
 
     public function customFields(): BelongsToMany

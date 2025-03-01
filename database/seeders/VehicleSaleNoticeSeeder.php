@@ -13,7 +13,7 @@ class VehicleSaleNoticeSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!PLDNotice::where('route_param', 'vehicle_sale')->exists()) {
+        if (! PLDNotice::where('route_param', 'vehicle_sale')->exists()) {
             PLDNotice::create([
                 'route_param' => 'vehicle_sale',
                 'name' => 'vehicle sale',
@@ -24,7 +24,7 @@ class VehicleSaleNoticeSeeder extends Seeder
         }
 
         $parentPermission = Permission::where('name', 'notification_pld')->first();
-        if (!Permission::where('name', 'vehicle_sale')->exists()) {
+        if (! Permission::where('name', 'vehicle_sale')->exists()) {
             Permission::create([
                 'name' => 'vehicle_sale',
                 'guard_name' => 'web',

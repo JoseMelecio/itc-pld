@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 
 class UserUpdateRequest extends FormRequest
 {
@@ -33,7 +32,7 @@ class UserUpdateRequest extends FormRequest
             'phone' => "required|string|min:13|unique:users,phone,$userId",
             'password' => 'nullable|string|min:8|confirmed',
             'password_confirmation' => 'nullable|string|min:8',
-            'status' => 'required|string|in:active,inactive,suspended',
+            'status' => 'required|string|in:active,disabled,suspended',
             'permissions' => 'required|array|min:1',
         ];
     }

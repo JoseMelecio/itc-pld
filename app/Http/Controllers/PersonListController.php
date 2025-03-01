@@ -22,7 +22,7 @@ class PersonListController extends Controller
         foreach ($persons as $person) {
             $record = [
                 'name' => "{$person->first_name} {$person->second_name} {$person->third_name}",
-                'origin' => $person->id . "-" . $person->origin,
+                'origin' => $person->id.'-'.$person->origin,
                 'record_type' => $person->record_type,
                 'un_list_type' => $person->un_list_type,
                 'birth_place' => null,
@@ -33,7 +33,7 @@ class PersonListController extends Controller
                 $text = '';
                 $count = 1;
                 foreach ($person->aliases as $alias) {
-                    $text .= $count . ": " . $alias->alias. "<br>";
+                    $text .= $count.': '.$alias->alias.'<br>';
                     $count++;
                 }
                 $record['alias'] = $text;
@@ -46,7 +46,7 @@ class PersonListController extends Controller
                     $year = $birthDate->year ?? 'AAAA';
                     $month = $birthDate->month ?? 'MM';
                     $day = $birthDate->day ?? 'DD';
-                    $date .= $count . ": " . $year . "-" . $month . "-" . $day . "<br>";
+                    $date .= $count.': '.$year.'-'.$month.'-'.$day.'<br>';
                     $count++;
                 }
                 $record['birth_date'] = $date;
@@ -56,7 +56,7 @@ class PersonListController extends Controller
                 $places = '';
                 $count = 1;
                 foreach ($person->birthPlaces as $place) {
-                    $places .= $count . ": " . $place->place . "<br>";
+                    $places .= $count.': '.$place->place.'<br>';
                     $count++;
                 }
                 $record['birth_place'] = $places;
@@ -66,7 +66,7 @@ class PersonListController extends Controller
                 $documents = '';
                 $count = 1;
                 foreach ($person->documents as $document) {
-                    $documents .= $count . ": " . $document->document . "<br>";
+                    $documents .= $count.': '.$document->document.'<br>';
                     $count++;
                 }
                 $record['documents'] = $documents;
@@ -86,8 +86,7 @@ class PersonListController extends Controller
     public function find(PersonListFindRequest $request): \Illuminate\Http\Response
     {
         $dataToFind = $request->validated();
-        $findService = new PersonBlockedFinderService();
-
+        $findService = new PersonBlockedFinderService;
 
         if ($dataToFind['name']) {
             $data[] = [
@@ -98,7 +97,7 @@ class PersonListController extends Controller
 
             $dataResult = $findService->finder($data);
         } else {
-            $import = new PersonListFinderImport();
+            $import = new PersonListFinderImport;
             Excel::import($import, $request->file('file'));
             $data = $import->getData();
             $dataResult = $findService->finder($data);
@@ -106,6 +105,7 @@ class PersonListController extends Controller
 
         $html = View::make('person-list/pdf-person-list-found', ['data' => $dataResult])->render();
         $pdf = Pdf::loadHTML($html);
+
         return $pdf->download('resultado.pdf');
 
     }
@@ -113,6 +113,7 @@ class PersonListController extends Controller
     public function downloadTemplate(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $filePath = public_path('templates/plantillaBuscarPersonasBloqueadas.xlsx');
+
         return response()->download($filePath);
     }
 }

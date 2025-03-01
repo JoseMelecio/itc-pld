@@ -12,7 +12,7 @@ class InitialMenuSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!Permission::where('name', 'dashboard')->exists()) {
+        if (! Permission::where('name', 'dashboard')->exists()) {
             Permission::create([
                 'name' => 'dashboard',
                 'guard_name' => 'web',
@@ -25,7 +25,7 @@ class InitialMenuSeeder extends Seeder
             ]);
         }
 
-        if (!Permission::where('name', 'administration')->exists()) {
+        if (! Permission::where('name', 'administration')->exists()) {
             Permission::create([
                 'name' => 'administration',
                 'guard_name' => 'web',
@@ -38,7 +38,7 @@ class InitialMenuSeeder extends Seeder
             ]);
         }
 
-        if (!Permission::where('name', 'users')->exists()) {
+        if (! Permission::where('name', 'users')->exists()) {
             $parentPermission = Permission::where('name', 'administration')->first();
             Permission::create([
                 'name' => 'users',
@@ -52,7 +52,7 @@ class InitialMenuSeeder extends Seeder
             ]);
         }
 
-        if (!Permission::where('name', 'account')->exists()) {
+        if (! Permission::where('name', 'account')->exists()) {
             Permission::create([
                 'name' => 'account',
                 'guard_name' => 'web',
@@ -65,7 +65,7 @@ class InitialMenuSeeder extends Seeder
             ]);
         }
 
-        if (!Permission::where('name', 'profile')->exists()) {
+        if (! Permission::where('name', 'profile')->exists()) {
             $parentPermission = Permission::where('name', 'account')->first();
             Permission::create([
                 'name' => 'profile',
@@ -79,7 +79,7 @@ class InitialMenuSeeder extends Seeder
             ]);
         }
 
-        if (!Permission::where('name', 'menu')->exists()) {
+        if (! Permission::where('name', 'menu')->exists()) {
             Permission::create([
                 'name' => 'menu',
                 'guard_name' => 'web',
@@ -92,7 +92,7 @@ class InitialMenuSeeder extends Seeder
             ]);
         }
 
-        if (!Permission::where('name', 'notification_pld')->exists()) {
+        if (! Permission::where('name', 'notification_pld')->exists()) {
             $parentPermission = Permission::where('name', 'menu')->first();
             Permission::create([
                 'name' => 'notification_pld',
@@ -101,20 +101,6 @@ class InitialMenuSeeder extends Seeder
                 'icon' => 'fa fa-file-code',
                 'heading' => false,
                 'menu_label' => 'Notificaciones PLD',
-                'order_to_show' => null,
-                'permission_id' => $parentPermission->id,
-            ]);
-        }
-
-        if (!Permission::where('name', 'real_estate_leasing')->exists()) {
-            $parentPermission = Permission::where('name', 'notification_pld')->first();
-            Permission::create([
-                'name' => 'real_estate_leasing',
-                'guard_name' => 'web',
-                'to' => '/pld-notices/real_estate_leasing',
-                'icon' => 'fa fa-circle',
-                'heading' => false,
-                'menu_label' => 'Arrendamiento de inmuebles',
                 'order_to_show' => null,
                 'permission_id' => $parentPermission->id,
             ]);

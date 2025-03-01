@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Permission;
 use Illuminate\Database\Seeder;
 
-
 class PersonBlockedPermissionSeeder extends Seeder
 {
     /**
@@ -13,7 +12,7 @@ class PersonBlockedPermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        if (!Permission::where('name', 'person_blocked')->exists()) {
+        if (! Permission::where('name', 'person_blocked')->exists()) {
             $parentPermission = Permission::where('name', 'menu')->first();
             Permission::create([
                 'name' => 'person_blocked',
@@ -28,7 +27,7 @@ class PersonBlockedPermissionSeeder extends Seeder
         }
 
         $parentPermission = Permission::where('name', 'person_blocked')->first();
-        if (!Permission::where('name', 'person_bloqued_form_finder')->exists()) {
+        if (! Permission::where('name', 'person_bloqued_form_finder')->exists()) {
             Permission::create([
                 'name' => 'person_blocked_form_finder',
                 'guard_name' => 'web',
@@ -41,7 +40,7 @@ class PersonBlockedPermissionSeeder extends Seeder
             ]);
         }
 
-        if (!Permission::where('name', 'person_blocked_list')->exists()) {
+        if (! Permission::where('name', 'person_blocked_list')->exists()) {
             Permission::create([
                 'name' => 'person_blocked_list',
                 'guard_name' => 'web',

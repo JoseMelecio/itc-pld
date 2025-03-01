@@ -4,11 +4,11 @@ namespace App\Http\Requests;
 
 use App\Models\PLDNotice;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 
 class MakeNoticeRequest extends FormRequest
 {
     protected array $dynamicRules = [];
+
     protected array $dynamicMessages = [];
 
     public function prepareForValidation(): void
@@ -20,10 +20,11 @@ class MakeNoticeRequest extends FormRequest
 
             $messages = $customField->validation_message;
             foreach ($messages as $index => $message) {
-                $this->dynamicMessages[$customField->name . "." . $index] = $message;
+                $this->dynamicMessages[$customField->name.'.'.$index] = $message;
             }
         }
     }
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -37,11 +38,11 @@ class MakeNoticeRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-
     private function dbRules(): array
     {
         return $this->dynamicRules;
     }
+
     public function rules(): array
     {
         return array_merge([
@@ -49,7 +50,7 @@ class MakeNoticeRequest extends FormRequest
             'month' => [
                 'required',
                 'string',
-                'regex:/^\d{4}(0[1-9]|1[0-2])$/'
+                'regex:/^\d{4}(0[1-9]|1[0-2])$/',
             ],
             'collegiate_entity_tax_id' => 'nullable|string',
             'notice_reference' => 'nullable|string',

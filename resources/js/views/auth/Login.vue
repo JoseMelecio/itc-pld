@@ -87,7 +87,7 @@ const submit = () => {
           <div class="w-100">
             <!-- Header -->
             <div class="text-center mb-5">
-              <img src="/assets/media/img/logo.jpg" alt="Logo de la empresa" class="mb-3" style="max-width: 300px;">
+              <img src="/assets/media/img/logo/logo.jpg" alt="Logo de la empresa" class="mb-3" style="max-width: 300px;">
               <h1 class="fw-black mb-2">Entrar</h1>
               <p class="fw-medium text-muted">
                 Bienvenido, Inicia sesión, por favor.

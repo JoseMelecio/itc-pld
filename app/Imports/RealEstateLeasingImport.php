@@ -9,9 +9,7 @@ use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
 {
     private array $data = [];
-    /**
-    * @param Collection $collection
-    */
+
     public function collection(Collection $collection): void
     {
         $isLeasing = false;
@@ -22,7 +20,7 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
              * We read the type of lease to know if there is registration or only payments
              * if there is a type of lease it means that it is a new registration,
              * If there is no type of lease it means that they are only payments.
-            */
+             */
             if (strlen(trim(strtoupper($row[58]))) > 0) { //BG
                 $isLeasing = true;
                 $numLeasing++;
@@ -34,15 +32,15 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
             $modification = [
                 'folio' => trim(strtoupper($row[0])), //A
                 'description' => trim(strtoupper($row[1])),
-                'priority' => trim(strtoupper($row[2]))
+                'priority' => trim(strtoupper($row[2])),
             ];
 
             if (strlen($modification['priority']) > 0) {
-                $tempPriority = explode(",",$modification['priority']);
+                $tempPriority = explode(',', $modification['priority']);
                 $modification['priority'] = trim($tempPriority[0]);
             }
 
-            if($isLeasing) {
+            if ($isLeasing) {
                 $this->data['items'][$numLeasing]['modification'] = $modification;
             }
 
@@ -55,16 +53,16 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
                 'tax_id' => trim(strtoupper($row[7])),
                 'population_id' => trim(strtoupper($row[8])),
                 'nationality' => trim(strtoupper($row[9])),
-                'economic_activity' => trim(strtoupper($row[10])) //K
+                'economic_activity' => trim(strtoupper($row[10])), //K
             ];
 
-            if(strlen($physicalPerson['economic_activity']) > 0){
-                $tempActivity = explode("||",$physicalPerson['economic_activity']);
+            if (strlen($physicalPerson['economic_activity']) > 0) {
+                $tempActivity = explode('||', $physicalPerson['economic_activity']);
                 $physicalPerson['economic_activity'] = $tempActivity[1];
             }
 
-            if(strlen($physicalPerson['nationality']) > 0){
-                $tempNationality = explode(",",$physicalPerson['nationality']);
+            if (strlen($physicalPerson['nationality']) > 0) {
+                $tempNationality = explode(',', $physicalPerson['nationality']);
                 $physicalPerson['nationality'] = $tempNationality[1];
             }
 
@@ -81,13 +79,13 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
                 'commercial_business' => trim(strtoupper($row[15])), //P
             ];
 
-            if(strlen($legalPerson['commercial_business']) > 0 ){
-                $tempCommercialBusiness = explode("||",$legalPerson['commercial_business']);
+            if (strlen($legalPerson['commercial_business']) > 0) {
+                $tempCommercialBusiness = explode('||', $legalPerson['commercial_business']);
                 $legalPerson['commercial_business'] = $tempCommercialBusiness[1];
             }
 
-            if(strlen($legalPerson['nationality']) > 0){
-                $tempNationality = explode(",",$legalPerson['nationality']);
+            if (strlen($legalPerson['nationality']) > 0) {
+                $tempNationality = explode(',', $legalPerson['nationality']);
                 $legalPerson['nationality'] = $tempNationality[1];
             }
 
@@ -99,7 +97,7 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
             $trust = [
                 'denomination' => trim(strtoupper($row[16])), //Q
                 'tax_id' => trim(strtoupper($row[17])),
-                'identification' => trim(strtoupper($row[18]))
+                'identification' => trim(strtoupper($row[18])),
             ];
 
             if ($isLeasing) {
@@ -121,11 +119,11 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
             }
 
             $nationalAddress = [
-                'settlement' => trim(strtoupper($row[25])),//Z
+                'settlement' => trim(strtoupper($row[25])), //Z
                 'street' => trim(strtoupper($row[26])),
                 'external_number' => trim(strtoupper($row[27])),
                 'internal_number' => trim(strtoupper($row[29])),
-                'postal_code' => trim(strtoupper($row[29])) //AD
+                'postal_code' => trim(strtoupper($row[29])), //AD
             ];
 
             if ($isLeasing) {
@@ -133,18 +131,18 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
             }
 
             $foreignAddress = [
-                'country' => trim(strtoupper($row[30])),//AE
+                'country' => trim(strtoupper($row[30])), //AE
                 'state' => trim(strtoupper($row[31])),
                 'municipality' => trim(strtoupper($row[32])),
                 'settlement' => trim(strtoupper($row[33])),
                 'street' => trim(strtoupper($row[34])),
                 'external_number' => trim(strtoupper($row[35])),
                 'internal_number' => trim(strtoupper($row[36])),
-                'postal_code' => trim(strtoupper($row[37])) //AL
+                'postal_code' => trim(strtoupper($row[37])), //AL
             ];
 
-            if(strlen($foreignAddress['country']) > 0){
-                $temCountry = explode(",",$foreignAddress['country']);
+            if (strlen($foreignAddress['country']) > 0) {
+                $temCountry = explode(',', $foreignAddress['country']);
                 $foreignAddress['country'] = $temCountry[1];
             }
 
@@ -156,11 +154,11 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
             $contact = [
                 'country' => trim(strtoupper($row[38])), //AM
                 'phone' => trim(strtoupper($row[39])),
-                'email' => trim(strtoupper($row[40])) //AO
+                'email' => trim(strtoupper($row[40])), //AO
             ];
 
-            if(strlen($contact['country']) > 0){
-                $temCountry = explode(",",$contact['country']);
+            if (strlen($contact['country']) > 0) {
+                $temCountry = explode(',', $contact['country']);
                 $contact['country'] = $temCountry[1];
             }
 
@@ -177,11 +175,11 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
                 'birthdate' => trim(strtoupper($row[44])),
                 'tax_id' => trim(strtoupper($row[45])),
                 'population_id' => trim(strtoupper($row[46])),
-                'nationality' => trim(strtoupper($row[47])),// AV
+                'nationality' => trim(strtoupper($row[47])), // AV
             ];
 
-            if(strlen($physicalPerson['nationality']) > 0){
-                $tempNationality = explode(",",$physicalPerson['nationality']);
+            if (strlen($physicalPerson['nationality']) > 0) {
+                $tempNationality = explode(',', $physicalPerson['nationality']);
                 $physicalPerson['nationality'] = $tempNationality[1];
             }
 
@@ -194,11 +192,11 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
                 'company_name' => trim(strtoupper($row[48])), //AW
                 'constitution_date' => trim(strtoupper($row[49])),
                 'tax_id' => trim(strtoupper($row[50])),
-                'nationality' => trim(strtoupper($row[51])) //AZ
+                'nationality' => trim(strtoupper($row[51])), //AZ
             ];
 
-            if(strlen($legalPerson['nationality']) > 0){
-                $tempNationality = explode(",",$legalPerson['nationality']);
+            if (strlen($legalPerson['nationality']) > 0) {
+                $tempNationality = explode(',', $legalPerson['nationality']);
                 $legalPerson['nationality'] = $tempNationality[1];
             }
 
@@ -210,7 +208,7 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
             $trust = [
                 'tax_id' => trim(strtoupper($row[52])), //BA
                 'denomination' => trim(strtoupper($row[53])),
-                'identification' => trim(strtoupper($row[54])) //BC
+                'identification' => trim(strtoupper($row[54])), //BC
             ];
 
             if ($isLeasing) {
@@ -220,8 +218,8 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
             //Operation data section
             //Operation data
             $operation = [
-                'date_operation' => trim(strtoupper($row['55'])),//BD
-                'type_operation' => "1501",
+                'date_operation' => trim(strtoupper($row['55'])), //BD
+                'type_operation' => '1501',
             ];
 
             if ($isLeasing) {
@@ -242,8 +240,8 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
                 'real_folio' => trim(strtoupper($row[65])), //BN
             ];
 
-            if(strlen($leasingCharacteristic['property_type']) > 0){
-                $tempPropertyType = explode(",",$leasingCharacteristic['property_type']);
+            if (strlen($leasingCharacteristic['property_type']) > 0) {
+                $tempPropertyType = explode(',', $leasingCharacteristic['property_type']);
                 $leasingCharacteristic['property_type'] = $tempPropertyType[0];
             }
 
@@ -253,25 +251,25 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
 
             //sale data
             $saleData = [
-                'payment_date' => trim(strtoupper($row[66])),//BO
+                'payment_date' => trim(strtoupper($row[66])), //BO
                 'payment_way' => trim(strtoupper($row[67])),
                 'monetary_instrument' => trim(strtoupper($row[68])),
                 'currency' => trim(strtoupper($row[69])),
-                'amount_operation' => trim(strtoupper($row[70]))
+                'amount_operation' => trim(strtoupper($row[70])),
             ];
 
-            if(strlen($saleData['payment_way']) > 0){
-                $tempPaymentWay = explode(",",$saleData['payment_way']);
+            if (strlen($saleData['payment_way']) > 0) {
+                $tempPaymentWay = explode(',', $saleData['payment_way']);
                 $saleData['payment_way'] = $tempPaymentWay[0];
             }
 
-            if(strlen($saleData['monetary_instrument']) > 0){
-                $tempMonetaryInstrument = explode(",",$saleData['monetary_instrument']);
+            if (strlen($saleData['monetary_instrument']) > 0) {
+                $tempMonetaryInstrument = explode(',', $saleData['monetary_instrument']);
                 $saleData['monetary_instrument'] = $tempMonetaryInstrument[0];
             }
 
-            if(strlen($saleData['currency']) > 0){
-                $tempCurrency = explode(",",$saleData['currency']);
+            if (strlen($saleData['currency']) > 0) {
+                $tempCurrency = explode(',', $saleData['currency']);
                 $saleData['currency'] = $tempCurrency[0];
             }
 
@@ -281,8 +279,6 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
 
     /**
      * Retorna los datos procesados.
-     *
-     * @return array
      */
     public function getData(): array
     {
@@ -292,7 +288,7 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
     public function sheets(): array
     {
         return [
-            'Plantilla' => $this
+            'Plantilla' => $this,
         ];
     }
 }

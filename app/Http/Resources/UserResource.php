@@ -24,7 +24,7 @@ class UserResource extends JsonResource
             'tax_id' => $this->tax_id,
             'user_type' => Str::ucfirst($this->user_type),
             'status' => $this->status,
-            'role' => 'adin'
+            'role' => 'adin',
         ];
     }
 }
