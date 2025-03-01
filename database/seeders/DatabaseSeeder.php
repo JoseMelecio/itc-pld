@@ -17,7 +17,14 @@ class DatabaseSeeder extends Seeder
             InitialMenuSeeder::class,
             RealEstateLeasingNoticeSeeder::class,
             MutualLoanNoticeSeeder::class,
-            MutualLoanNoticePermissionSeeder::class,
+            RealEstateDevelopmentNoticeSeeder::class,
+            RealEstateLeasingNoticeSeeder::class,
+            RealEstateSaleNoticeSeeder::class,
+            VehicleSaleNoticeSeeder::class,
+            PersonBlockedPermissionSeeder::class,
+            VehicleSaleNoticeSeeder::class,
+            AdminBankAccountManagementNoticeSeeder::class,
+            AdminBankAccountCustomFieldsSeeder::class,
             //Last seeder to sync permissions
             UserSeeder::class,
         ]);
