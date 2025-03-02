@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 /**
  * @property int $id
  * @property string $name
@@ -47,6 +49,8 @@ namespace App\Models;
  */
 class Permission extends \Spatie\Permission\Models\Permission
 {
+    use SoftDeletes;
+
     protected $casts = [
         'heading' => 'boolean',
     ];
