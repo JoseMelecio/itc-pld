@@ -212,6 +212,11 @@ class VehicleSaleImport implements ToCollection, WithMultipleSheets
                 'nivelBlindaje' => trim(strtoupper($row[74])),    // BW -> 74
             ];
 
+            if (strlen($m_datosVehiculo['bandera']) > 0) {
+                $tempBandera = explode(',', $m_datosVehiculo['bandera']);
+                $m_datosVehiculo['bandera'] = $tempBandera[1];
+            }
+
             if (strlen($m_datosVehiculo['nivelBlindaje']) > 0) {
                 $tempVehiculo = explode(',', $m_datosVehiculo['nivelBlindaje']);
                 $m_datosVehiculo['nivelBlindaje'] = $tempVehiculo[0];

@@ -137,108 +137,110 @@ class VehicleSaleExportXML
                 $xmlObject->endElement(); // Elemento persona_fisica
             }
             // Persona Moral
-            elseif (strlen($notice['identificacionPersonaObjetoAviso']['personaMoral']['nombre']) > 0) {
+            elseif (strlen($notice['identificacionPersonaObjetoAviso']['personaMoral']['razonSocial']) > 0) {
                 $xmlObject->startElement('persona_moral');
-                $xmlObject->startElement('denominacion_razon');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['denominacion_razon']);
-                $xmlObject->endElement(); // Elemento denominacion_razon
+                    $xmlObject->startElement('denominacion_razon');
+                    $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['razonSocial']);
+                    $xmlObject->endElement(); // Elemento denominacion_razon
 
-                $xmlObject->startElement('fecha_constitucion');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['apellidoPaterno']);
-                $xmlObject->endElement(); // Elemento fecha_constitucion
+                    $xmlObject->startElement('fecha_constitucion');
+                    $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['fechaConstitucion']);
+                    $xmlObject->endElement(); // Elemento fecha_constitucion
 
-                $xmlObject->startElement('rfc');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['apellidoMaterno']);
-                $xmlObject->endElement(); // Elemento rfc
+                    $xmlObject->startElement('rfc');
+                    $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['rfc']);
+                    $xmlObject->endElement(); // Elemento rfc
 
-                $xmlObject->startElement('pais_nacionalidad');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['fechaNacimiento']);
-                $xmlObject->endElement(); // Elemento pais_nacionalidad
+                    $xmlObject->startElement('pais_nacionalidad');
+                    $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['nacionalidad']);
+                    $xmlObject->endElement(); // Elemento pais_nacionalidad
 
-                $xmlObject->startElement('giro_mercantil');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['giro_mercantil']);
-                $xmlObject->endElement(); // Elemento giro_mercantil
+                    $xmlObject->startElement('giro_mercantil');
+                    $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['giroMercantil']);
+                    $xmlObject->endElement(); // Elemento giro_mercantil
+
+                    $xmlObject->startElement('representante_apoderado');
+                        $xmlObject->startElement('nombre');
+                            $xmlObject->text($notice['identificacionPersonaObjetoAviso']['representante']['nombre']);
+                        $xmlObject->endElement(); // Elemento nombre
+
+                        $xmlObject->startElement('apellido_paterno');
+                            $xmlObject->text($notice['identificacionPersonaObjetoAviso']['representante']['apellidoPaterno']);
+                        $xmlObject->endElement(); // Elemento apellido_paterno
+
+                        $xmlObject->startElement('apellido_materno');
+                            $xmlObject->text($notice['identificacionPersonaObjetoAviso']['representante']['apellidoMaterno']);
+                        $xmlObject->endElement(); // Elemento apellido_materno
+
+                        $xmlObject->startElement('fecha_nacimiento');
+                            $xmlObject->text($notice['identificacionPersonaObjetoAviso']['representante']['fechaNacimiento']);
+                        $xmlObject->endElement(); // Elemento fecha_nacimiento
+
+                        if (strlen($notice['identificacionPersonaObjetoAviso']['representante']['rfc']) > 0) {
+                            $xmlObject->startElement('rfc');
+                                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['representante']['rfc']);
+                            $xmlObject->endElement(); // Elemento rfc
+                        }
+
+                        if (strlen($notice['identificacionPersonaObjetoAviso']['representante']['curp']) > 0) {
+                            $xmlObject->startElement('curp');
+                                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['representante']['curp']);
+                            $xmlObject->endElement(); // Elemento curp
+                        }
+
+                    $xmlObject->endElement(); // Elemento representante_apoderado
 
                 $xmlObject->endElement(); // Elemento persona_moral
 
-                $xmlObject->startElement('representante_apoderado');
-                $xmlObject->startElement('nombre');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['nombre']);
-                $xmlObject->endElement(); // Elemento nombre
 
-                $xmlObject->startElement('apellido_paterno');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['apellidoPaterno']);
-                $xmlObject->endElement(); // Elemento apellido_paterno
-
-                $xmlObject->startElement('apellido_materno');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['apellidoMaterno']);
-                $xmlObject->endElement(); // Elemento apellido_materno
-
-                $xmlObject->startElement('fecha_nacimiento');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['fechaNacimiento']);
-                $xmlObject->endElement(); // Elemento fecha_nacimiento
-
-                if (strlen($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['rfc']) > 0) {
-                    $xmlObject->startElement('rfc');
-                    $xmlObject->text($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['rfc']);
-                    $xmlObject->endElement(); // Elemento rfc
-                }
-
-                if (strlen($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['curp']) > 0) {
-                    $xmlObject->startElement('curp');
-                    $xmlObject->text($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['curp']);
-                    $xmlObject->endElement(); // Elemento curp
-                }
-
-                $xmlObject->endElement(); // Elemento representante_apoderado
             }
             // Fideicomiso
             else {
                 $xmlObject->startElement('fideicomiso');
-                $xmlObject->startElement('denominacion_razon');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['denominacion_razon']);
-                $xmlObject->endElement(); // Elemento denominacion_razon
+                    $xmlObject->startElement('denominacion_razon');
+                        $xmlObject->text($notice['identificacionPersonaObjetoAviso']['fideicomiso']['denominacion']);
+                    $xmlObject->endElement(); // Elemento denominacion_razon
 
-                $xmlObject->startElement('rfc');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['apellidoPaterno']);
-                $xmlObject->endElement(); // Elemento rfc
+                    $xmlObject->startElement('rfc');
+                        $xmlObject->text($notice['identificacionPersonaObjetoAviso']['fideicomiso']['rfc']);
+                    $xmlObject->endElement(); // Elemento rfc
 
-                $xmlObject->startElement('identificador_fideicomiso');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['apellidoMaterno']);
-                $xmlObject->endElement(); // Elemento identificador_fideicomiso
+                    $xmlObject->startElement('identificador_fideicomiso');
+                        $xmlObject->text($notice['identificacionPersonaObjetoAviso']['fideicomiso']['identificador']);
+                    $xmlObject->endElement(); // Elemento identificador_fideicomiso
+
+                    $xmlObject->startElement('representante_apoderado');
+                        $xmlObject->startElement('nombre');
+                            $xmlObject->text($notice['identificacionPersonaObjetoAviso']['apoderadoLegal']['nombre']);
+                        $xmlObject->endElement(); // Elemento nombre
+
+                        $xmlObject->startElement('apellido_paterno');
+                            $xmlObject->text($notice['identificacionPersonaObjetoAviso']['apoderadoLegal']['apellidoPaterno']);
+                        $xmlObject->endElement(); // Elemento apellido_paterno
+
+                        $xmlObject->startElement('apellido_materno');
+                            $xmlObject->text($notice['identificacionPersonaObjetoAviso']['apoderadoLegal']['apellidoMaterno']);
+                        $xmlObject->endElement(); // Elemento apellido_materno
+
+                        $xmlObject->startElement('fecha_nacimiento');
+                            $xmlObject->text($notice['identificacionPersonaObjetoAviso']['apoderadoLegal']['fechaNacimiento']);
+                        $xmlObject->endElement(); // Elemento fecha_nacimiento
+
+                        if (strlen($notice['identificacionPersonaObjetoAviso']['apoderadoLegal']['rfc']) > 0) {
+                            $xmlObject->startElement('rfc');
+                                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['apoderadoLegal']['rfc']);
+                            $xmlObject->endElement(); // Elemento rfc
+                        }
+
+                        if (strlen($notice['identificacionPersonaObjetoAviso']['apoderadoLegal']['curp']) > 0) {
+                            $xmlObject->startElement('curp');
+                                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['apoderadoLegal']['curp']);
+                            $xmlObject->endElement(); // Elemento curp
+                        }
+                    $xmlObject->endElement(); // Elemento representante_apoderado
 
                 $xmlObject->endElement(); // Elemento fideicomiso
 
-                $xmlObject->startElement('representante_apoderado');
-                $xmlObject->startElement('nombre');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['nombre']);
-                $xmlObject->endElement(); // Elemento nombre
-
-                $xmlObject->startElement('apellido_paterno');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['apellidoPaterno']);
-                $xmlObject->endElement(); // Elemento apellido_paterno
-
-                $xmlObject->startElement('apellido_materno');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['apellidoMaterno']);
-                $xmlObject->endElement(); // Elemento apellido_materno
-
-                $xmlObject->startElement('fecha_nacimiento');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['fechaNacimiento']);
-                $xmlObject->endElement(); // Elemento fecha_nacimiento
-
-                if (strlen($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['rfc']) > 0) {
-                    $xmlObject->startElement('rfc');
-                    $xmlObject->text($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['rfc']);
-                    $xmlObject->endElement(); // Elemento rfc
-                }
-
-                if (strlen($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['curp']) > 0) {
-                    $xmlObject->startElement('curp');
-                    $xmlObject->text($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['curp']);
-                    $xmlObject->endElement(); // Elemento curp
-                }
-
-                $xmlObject->endElement(); // Elemento representante_apoderado
             }
 
             $xmlObject->endElement(); // Elemento tipo_persona
@@ -269,44 +271,44 @@ class VehicleSaleExportXML
                 }
 
                 $xmlObject->startElement('codigo_postal');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioNacional']['cp']);
+                    $xmlObject->text(str_pad($notice['identificacionPersonaObjetoAviso']['domicilioNacional']['cp'], 5, '0', STR_PAD_LEFT));
                 $xmlObject->endElement(); // Elemento codigo_postal
 
                 $xmlObject->endElement(); // Elemento nacional
             } else {
                 $xmlObject->startElement('extranjero');
                 $xmlObject->startElement('pais');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioextranjero']['pais']);
+                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioExtranjero']['pais']);
                 $xmlObject->endElement(); // Elemento pais
 
                 $xmlObject->startElement('estado_provincia');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioextranjero']['estado']);
+                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioExtranjero']['estado']);
                 $xmlObject->endElement(); // Elemento estado_provincia
 
                 $xmlObject->startElement('ciudad_poblacion');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioextranjero']['ciudad']);
+                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioExtranjero']['municipio']);
                 $xmlObject->endElement(); // Elemento ciudad_poblacion
 
                 $xmlObject->startElement('colonia');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioextranjero']['colonia']);
+                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioExtranjero']['colonia']);
                 $xmlObject->endElement(); // Elemento colonia
 
                 $xmlObject->startElement('calle');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioextranjero']['calle']);
+                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioExtranjero']['calle']);
                 $xmlObject->endElement(); // Elemento calle
 
                 $xmlObject->startElement('numero_exterior');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioextranjero']['numeroExterior']);
+                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioExtranjero']['numeroExterior']);
                 $xmlObject->endElement(); // Elemento numero_exterior
 
                 if (strlen($notice['identificacionPersonaObjetoAviso']['domicilioextranjero']['numeroInterior']) > 0) {
                     $xmlObject->startElement('numero_interior');
-                    $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioextranjero']['numeroInterior']);
+                    $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioExtranjero']['numeroInterior']);
                     $xmlObject->endElement(); // Elemento numero_interior
                 }
 
                 $xmlObject->startElement('codigo_postal');
-                $xmlObject->text($notice['identificacionPersonaObjetoAviso']['domicilioextranjero']['cp']);
+                    $xmlObject->text(str_pad($notice['identificacionPersonaObjetoAviso']['domicilioExtranjero']['cp'], 5, '0', STR_PAD_LEFT));
                 $xmlObject->endElement(); // Elemento codigo_postal
 
                 $xmlObject->endElement(); // Elemento extranjero
@@ -336,7 +338,7 @@ class VehicleSaleExportXML
             // Datos del dueño o beneficiario
             // Validamos si hay datos del dueño o beneficiario
             if (strlen($notice['identificacionPersonaBeneficiaria']['personaFisica']['nombre']) > 0 ||
-                strlen($notice['identificacionPersonaBeneficiaria']['personaMoral']['nombre']) > 0 ||
+                strlen($notice['identificacionPersonaBeneficiaria']['personaMoral']['razonSocial']) > 0 ||
                 strlen($notice['identificacionPersonaBeneficiaria']['fideicomiso']['denominacion']) > 0) {
 
                 $xmlObject->startElement('dueno_beneficiario');
@@ -382,19 +384,19 @@ class VehicleSaleExportXML
                 elseif (strlen($notice['identificacionPersonaBeneficiaria']['personaMoral']['nombre']) > 0) {
                     $xmlObject->startElement('persona_moral');
                     $xmlObject->startElement('denominacion_razon');
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['denominacion_razon']);
+                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['razonSocial']);
                     $xmlObject->endElement(); // Elemento denominacion_razon
 
                     $xmlObject->startElement('fecha_constitucion');
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['apellidoPaterno']);
+                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['fechaConstitucion']);
                     $xmlObject->endElement(); // Elemento fecha_constitucion
 
                     $xmlObject->startElement('rfc');
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['apellidoMaterno']);
+                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['rfc']);
                     $xmlObject->endElement(); // Elemento rfc
 
                     $xmlObject->startElement('pais_nacionalidad');
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['fechaNacimiento']);
+                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['nacionalidad']);
                     $xmlObject->endElement(); // Elemento pais_nacionalidad
 
                     $xmlObject->endElement(); // Elemento persona_moral
@@ -403,15 +405,15 @@ class VehicleSaleExportXML
                 else {
                     $xmlObject->startElement('fideicomiso');
                     $xmlObject->startElement('denominacion_razon');
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['denominacion_razon']);
+                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['fideicomiso']['denominacion']);
                     $xmlObject->endElement(); // Elemento denominacion_razon
 
                     $xmlObject->startElement('rfc');
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['apellidoPaterno']);
+                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['fideicomiso']['rfc']);
                     $xmlObject->endElement(); // Elemento rfc
 
                     $xmlObject->startElement('identificador_fideicomiso');
-                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['personaMoral']['apellidoMaterno']);
+                    $xmlObject->text($notice['identificacionPersonaBeneficiaria']['fideicomiso']['identificador']);
                     $xmlObject->endElement(); // Elemento identificador_fideicomiso
 
                     $xmlObject->endElement(); // Elemento fideicomiso
@@ -420,101 +422,101 @@ class VehicleSaleExportXML
                 $xmlObject->endElement(); // Elemento dueno_beneficiario
             }
 
-            $xmlObject->startElement('detalle_operacion');
-            $xmlObject->startElement('datos_operacion');
+            $xmlObject->startElement('detalle_operaciones');
+                $xmlObject->startElement('datos_operacion');
 
-            $xmlObject->startElement('fecha_operacion');
-            $xmlObject->text($notice['datosOperacion']['operacion']['fechaOperacion']);
-            $xmlObject->endElement(); // Elemento fecha operacion
+                $xmlObject->startElement('fecha_operacion');
+                    $xmlObject->text($notice['datosOperacion']['operacion']['fechaOperacion']);
+                $xmlObject->endElement(); // Elemento fecha operacion
 
-            $xmlObject->startElement('codigo_postal');
-            $xmlObject->text($notice['datosOperacion']['operacion']['cp']);
-            $xmlObject->endElement(); // Elemento codigo_postal
+                $xmlObject->startElement('codigo_postal');
+                    $xmlObject->text(str_pad($notice['datosOperacion']['operacion']['cp'], 5, "0", STR_PAD_LEFT));
+                $xmlObject->endElement(); // Elemento codigo_postal
 
-            $xmlObject->startElement('tipo_operacion');
-            $xmlObject->text($notice['datosOperacion']['operacion']['tipoOperacion']);
-            $xmlObject->endElement(); // Elemento tipo_operacion
+                $xmlObject->startElement('tipo_operacion');
+                $xmlObject->text($notice['datosOperacion']['operacion']['tipoOperacion']);
+                $xmlObject->endElement(); // Elemento tipo_operacion
 
-            $xmlObject->startElement('tipo_vehiculo');
+                $xmlObject->startElement('tipo_vehiculo');
 
-            $e_tipoVehiculo = strtolower($notice['datosOperacion']['vehiculo']['tipoVehiculo']);
-            $xmlObject->startElement("datos_vehiculo_{$e_tipoVehiculo}");
+                $tipoVehiculo = strtolower($notice['datosOperacion']['vehiculo']['tipoVehiculo']);
+                $xmlObject->startElement("datos_vehiculo_{$tipoVehiculo}");
 
-            $xmlObject->startElement('marca_fabricante');
-            $xmlObject->text($notice['datosOperacion']['vehiculo']['marcaFabricante']);
-            $xmlObject->endElement(); // Elemento marca_fabricante
+                $xmlObject->startElement('marca_fabricante');
+                $xmlObject->text($notice['datosOperacion']['vehiculo']['marcaFabricante']);
+                $xmlObject->endElement(); // Elemento marca_fabricante
 
-            $xmlObject->startElement('modelo');
-            $xmlObject->text($notice['datosOperacion']['vehiculo']['modelo']);
-            $xmlObject->endElement(); // Elemento modelo
+                $xmlObject->startElement('modelo');
+                $xmlObject->text($notice['datosOperacion']['vehiculo']['modelo']);
+                $xmlObject->endElement(); // Elemento modelo
 
-            $xmlObject->startElement('anio');
-            $xmlObject->text($notice['datosOperacion']['vehiculo']['anio']);
-            $xmlObject->endElement(); // Elemento anio
+                $xmlObject->startElement('anio');
+                $xmlObject->text($notice['datosOperacion']['vehiculo']['anio']);
+                $xmlObject->endElement(); // Elemento anio
 
-            if ($e_tipoVehiculo == 'terreste') {
-                $e_numeroSerieVim = 'vin';
-                $e_repuveBandera = 'repube';
-                $e_placaMatricula = 'placa';
-            } else {
-                $e_numeroSerieVim = 'numero_serie';
-                $e_repuveBandera = 'bandera';
-                $e_placaMatricula = 'matricula';
-            }
+                if ($tipoVehiculo == 'terrestre') {
+                    $numeroSerieVim = 'vin';
+                    $repuveBandera = 'repuve';
+                    $placaMatricula = 'placas';
+                } else {
+                    $numeroSerieVim = 'numero_serie';
+                    $repuveBandera = 'bandera';
+                    $placaMatricula = 'matricula';
+                }
 
-            $xmlObject->startElement("{$e_numeroSerieVim}");
-            $xmlObject->text($notice['datosOperacion']['vehiculo']['vinSerie']);
-            $xmlObject->endElement(); // Elemento numeroSerieVin
+                $xmlObject->startElement("{$numeroSerieVim}");
+                    $xmlObject->text($notice['datosOperacion']['vehiculo']['vinSerie']);
+                $xmlObject->endElement(); // Elemento numeroSerieVin
 
-            $xmlObject->startElement("{$e_repuveBandera}");
+                $xmlObject->startElement("{$repuveBandera}");
 
-            if ($e_tipoVehiculo == 'terreste') {
-                $xmlObject->text($notice['datosOperacion']['vehiculo']['repuve']);
-            } else {
-                $xmlObject->text($notice['datosOperacion']['vehiculo']['bandera']);
-            }
+                    if ($tipoVehiculo == 'terrestre') {
+                        $xmlObject->text($notice['datosOperacion']['vehiculo']['repuve']);
+                    } else {
+                        $xmlObject->text($notice['datosOperacion']['vehiculo']['bandera']);
+                    }
 
-            $xmlObject->endElement(); // Elemento repuveBandera
+                $xmlObject->endElement(); // Elemento repuveBandera
 
-            $xmlObject->startElement("{$e_placaMatricula}");
-            $xmlObject->text($notice['datosOperacion']['vehiculo']['placasMatricula']);
-            $xmlObject->endElement(); // Elemento placaMatricula
+                $xmlObject->startElement("{$placaMatricula}");
+                    $xmlObject->text($notice['datosOperacion']['vehiculo']['placasMatricula']);
+                $xmlObject->endElement(); // Elemento placaMatricula
 
-            $xmlObject->startElement('nivel_blindaje');
-            $xmlObject->text($notice['datosOperacion']['vehiculo']['nivelBlindaje']);
-            $xmlObject->endElement(); // Elemento nivel_blindaje
+                $xmlObject->startElement('nivel_blindaje');
+                    $xmlObject->text($notice['datosOperacion']['vehiculo']['nivelBlindaje']);
+                $xmlObject->endElement(); // Elemento nivel_blindaje
 
-            $xmlObject->endElement(); // Elemento dato_vehiculo
+                $xmlObject->endElement(); // Elemento dato_vehiculo
 
-            $xmlObject->endElement(); // Elemento tipo_vehiculo
+                $xmlObject->endElement(); // Elemento tipo_vehiculo
 
-            //Datos de liquidacion
-            $xmlObject->startElement('datos_liquidacion');
+                //Datos de liquidacion
+                $xmlObject->startElement('datos_liquidacion');
 
-            $xmlObject->startElement('fecha_pago');
-            $xmlObject->text($notice['datosOperacion']['liquidacion']['fechaPago']);
-            $xmlObject->endElement(); // Elemento fecha_pago
+                $xmlObject->startElement('fecha_pago');
+                $xmlObject->text($notice['datosOperacion']['liquidacion']['fechaPago']);
+                $xmlObject->endElement(); // Elemento fecha_pago
 
-            $xmlObject->startElement('forma_pago');
-            $xmlObject->text($notice['datosOperacion']['liquidacion']['formaPago']);
-            $xmlObject->endElement(); // Elemento forma_pago
+                $xmlObject->startElement('forma_pago');
+                $xmlObject->text($notice['datosOperacion']['liquidacion']['formaPago']);
+                $xmlObject->endElement(); // Elemento forma_pago
 
-            $xmlObject->startElement('instrumento_monetario');
-            $xmlObject->text($notice['datosOperacion']['liquidacion']['instrumentoMonetario']);
-            $xmlObject->endElement(); // Elemento instrumento_monetario
+                $xmlObject->startElement('instrumento_monetario');
+                $xmlObject->text($notice['datosOperacion']['liquidacion']['instrumentoMonetario']);
+                $xmlObject->endElement(); // Elemento instrumento_monetario
 
-            $xmlObject->startElement('moneda');
-            $xmlObject->text($notice['datosOperacion']['liquidacion']['monedaDivisa']);
-            $xmlObject->endElement(); // Elemento moneda
+                $xmlObject->startElement('moneda');
+                $xmlObject->text($notice['datosOperacion']['liquidacion']['monedaDivisa']);
+                $xmlObject->endElement(); // Elemento moneda
 
-            $xmlObject->startElement('monto_operacion');
-            $xmlObject->text(number_format($notice['datosOperacion']['liquidacion']['montoOperacion'], 2, '.', ''));
-            $xmlObject->endElement(); // Elemento monto_operacion
+                $xmlObject->startElement('monto_operacion');
+                $xmlObject->text(number_format($notice['datosOperacion']['liquidacion']['montoOperacion'], 2, '.', ''));
+                $xmlObject->endElement(); // Elemento monto_operacion
 
-            $xmlObject->endElement(); // Elemento datos_liquidacion
+                $xmlObject->endElement(); // Elemento datos_liquidacion
 
-            $xmlObject->endElement(); // Elemento datos_operacion
-            $xmlObject->endElement(); // Elemento detalle_operacion
+                $xmlObject->endElement(); // Elemento datos_operacion
+                $xmlObject->endElement(); // Elemento detalle_operaciones
 
             $xmlObject->endElement(); // Elemento aviso
         }
