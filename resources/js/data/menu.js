@@ -1007,7 +1007,7 @@ export default {
           to: "#",
         },
         {
-          name: "Log out",
+          name: "SystemLog out",
           to: "#",
         },
       ],

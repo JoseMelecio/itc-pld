@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MakeNoticeRequest;
 use App\Models\PLDNotice;
+use App\Services\SystemLogService;
 use DOMDocument;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
@@ -41,6 +42,9 @@ class PLDNoticeController extends Controller
         $dataRequest = $request->validated();
         $dataRequest['tax_id'] = \Auth::user()->tax_id;
         $pldNotice = PLDNotice::findOrFail($dataRequest['pld_notice_id']);
+        $logContent['type'] = 'create';
+        $logContent['model_type'] = get_class($pldNotice);
+        $logContent['model_id'] = $pldNotice->id;
 
         $importName = str_replace(' ', '', ucwords($pldNotice->name));
         $importClass = "\App\Imports\\".$importName.'Import';
@@ -48,6 +52,7 @@ class PLDNoticeController extends Controller
 
         $exportClass = "\App\Exports\\".$importName.'ExportXML';
 
+        $logContent['file_import_name'] = $request->file('file');
         Excel::import($import, $request->file('file'));
         $data = $import->getData();
 
@@ -69,7 +74,9 @@ class PLDNoticeController extends Controller
                 $errorMessages = array_map(fn ($error) => $error->message, $errors);
 
                 libxml_clear_errors();
-
+                $logContent['content']['status'] = 'error';
+                $logContent['content']['messages'] = $errorMessages;
+                SystemLogService::add($logContent);
                 return response()->json(['errors' => $errorMessages], 422);
             }
         }
@@ -83,6 +90,10 @@ class PLDNoticeController extends Controller
 
         $fileName = $noticeName.' - '.now()->format('YmdHis').'.xml';
         Storage::put($fileName, $xmlContent);
+
+        $logContent['content']['status'] = 'success';
+        $logContent['content']['file_name'] = $fileName;
+        SystemLogService::add($logContent);
 
         return Response::download(Storage::path($fileName), $fileName)->deleteFileAfterSend(true);
     }
