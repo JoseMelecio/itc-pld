@@ -9,7 +9,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Log Channel
+    | Default SystemLog Channel
     |--------------------------------------------------------------------------
     |
     | This option defines the default log channel that is utilized to write
@@ -22,7 +22,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Deprecations Log Channel
+    | Deprecations SystemLog Channel
     |--------------------------------------------------------------------------
     |
     | This option controls the log channel that should be used to log warnings
@@ -38,7 +38,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Log Channels
+    | SystemLog Channels
     |--------------------------------------------------------------------------
     |
     | Here you may configure the log channels for your application. Laravel
@@ -76,7 +76,7 @@ return [
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
-            'username' => env('LOG_SLACK_USERNAME', 'Laravel Log'),
+            'username' => env('LOG_SLACK_USERNAME', 'Laravel SystemLog'),
             'emoji' => env('LOG_SLACK_EMOJI', ':boom:'),
             'level' => env('LOG_LEVEL', 'critical'),
             'replace_placeholders' => true,

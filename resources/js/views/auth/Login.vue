@@ -96,7 +96,7 @@ const submit = () => {
             </div>
             <!-- END Header -->
 
-            <!-- Log in Form -->
+            <!-- SystemLog in Form -->
             <div class="row g-0 justify-content-center">
               <div class="col-sm-8 col-xl-4">
                 <div
@@ -186,7 +186,7 @@ const submit = () => {
                 </form>
               </div>
             </div>
-            <!-- END Log in Form -->
+            <!-- END SystemLog in Form -->
           </div>
         </div>
         <div
