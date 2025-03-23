@@ -12,21 +12,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $adminTenant = Tenant::where('name', 'admin')->first();
-        Schema::table('permissions', function (Blueprint $table) use ($adminTenant) {
-            $table->foreignIdFor(\App\Models\Tenant::class)->after('id')->default($adminTenant->id)->constrained();
+        Schema::table('permissions', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\Tenant::class)->after('id')->constrained();
+            $table->dropUnique('permissions_name_guard_name_unique');
+            $table->unique(['name', 'guard_name', 'tenant_id']);
         });
 
-        Schema::table('pld_notice', function (Blueprint $table) use ($adminTenant) {
-            $table->foreignIdFor(\App\Models\Tenant::class)->after('id')->default($adminTenant->id)->constrained();
+        Schema::table('pld_notice', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\Tenant::class)->after('id')->constrained();
         });
 
-        Schema::table('system_logs', function (Blueprint $table) use ($adminTenant) {
-            $table->foreignIdFor(\App\Models\Tenant::class)->after('id')->default($adminTenant->id)->constrained();
+        Schema::table('system_logs', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\Tenant::class)->after('id')->constrained();
         });
 
-        Schema::table('users', function (Blueprint $table) use ($adminTenant) {
-            $table->foreignIdFor(\App\Models\Tenant::class)->after('id')->default($adminTenant->id)->constrained();
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\Tenant::class)->after('id')->constrained();
         });
     }
 
@@ -36,8 +37,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('permissions', function (Blueprint $table) {
+            $table->dropUnique(['name', 'guard_name', 'tenant_id']);
             $table->dropForeign(['tenant_id']);
             $table->dropColumn('tenant_id');
+            $table->unique(['name', 'guard_name'], 'permissions_name_guard_name_unique');
         });
 
         Schema::table('pld_notice', function (Blueprint $table) {
@@ -53,6 +56,8 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropForeign(['tenant_id']);
             $table->dropColumn('tenant_id');
+
+            $table->unique(['name', 'tenant_id']);
         });
     }
 };

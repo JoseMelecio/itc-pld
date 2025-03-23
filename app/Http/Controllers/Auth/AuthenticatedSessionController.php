@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -31,7 +33,14 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $user = User::where('user_name', $request->get('user_name'))->first();
+        $tenantName = explode('.', $request->getHost())[0];
+        $tenant = Tenant::where('name', $tenantName)->first();
+
+        if (!$tenant) {
+            abort(403, 'No existe el tenant');
+        }
+
+        $user = User::where('user_name', $request->get('user_name'))->where('tenant_id', $tenant->id)->first();
 
         if (! empty($user) && $user->status == 'disabled') {
             throw ValidationException::withMessages([
@@ -39,9 +48,10 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
-        $request->authenticate();
+        $request->authenticate($tenant->id);
 
         $request->session()->regenerate();
+        Log::info($user);
 
         return redirect()->intended(route('dashboard', absolute: false));
     }

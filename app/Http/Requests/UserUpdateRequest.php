@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserUpdateRequest extends FormRequest
 {
@@ -22,14 +23,32 @@ class UserUpdateRequest extends FormRequest
     public function rules(): array
     {
         $userId = $this->route('user') ? $this->route('user')->id : null;
+        $tenantId = auth()->user()->tenant_id;
 
         return [
-            'user_name' => "required|unique:users,user_name,$userId",
+            'user_name' => [
+                'required',
+                Rule::unique('users')->where('tenant_id', $tenantId)->ignore($userId),
+            ],
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'tax_id' => "required|string|max:13|unique:users,tax_id,$userId",
-            'email' => "required|email|unique:users,email,$userId",
-            'phone' => "required|string|min:13|unique:users,phone,$userId",
+            'tax_id' => [
+                'required',
+                'string',
+                'max:13',
+                Rule::unique('users')->where('tenant_id', $tenantId)->ignore($userId),
+            ],
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->where('tenant_id', $tenantId)->ignore($userId),
+            ],
+            'phone' => [
+                'required',
+                'string',
+                'min:13',
+                Rule::unique('users')->where('tenant_id', $tenantId)->ignore($userId),
+            ],
             'password' => 'nullable|string|min:8|confirmed',
             'password_confirmation' => 'nullable|string|min:8',
             'status' => 'required|string|in:active,disabled,suspended',

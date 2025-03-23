@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UserCreateRequest extends FormRequest
 {
@@ -21,13 +22,32 @@ class UserCreateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $tenantId = auth()->user()->tenant_id;
+
         return [
-            'user_name' => 'required|unique:users,user_name',
+            'user_name' => [
+                'required',
+                Rule::unique('users')->where('tenant_id', $tenantId),
+            ],
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'tax_id' => 'required|string|max:13|unique:users,tax_id',
-            'email' => 'required|email|unique:users,email',
-            'phone' => 'required|string|min:13|unique:users,phone',
+            'tax_id' => [
+                'required',
+                'string',
+                'max:13',
+                Rule::unique('users')->where('tenant_id', $tenantId),
+            ],
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->where('tenant_id', $tenantId),
+            ],
+            'phone' => [
+                'required',
+                'string',
+                'min:13',
+                Rule::unique('users')->where('tenant_id', $tenantId),
+            ],
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',
             'permissions' => 'required|array|min:1',

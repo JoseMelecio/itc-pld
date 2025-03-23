@@ -6,9 +6,11 @@ use App\Http\Requests\UserCreateRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Permission;
+use App\Models\Tenant;
 use App\Models\User;
 use App\Services\MenuBuilderService;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -17,7 +19,8 @@ class UserController extends Controller
      */
     public function index(): \Inertia\Response
     {
-        $users = User::orderBy('last_name')->get();
+        $tenantId = \Auth::user()->tenant_id;
+        $users = User::where('tenant_id', $tenantId)->orderBy('last_name')->get();
 
         return Inertia::render('user/Index', [
             'users' => UserResource::collection($users),
@@ -42,7 +45,7 @@ class UserController extends Controller
     public function store(UserCreateRequest $request): \Illuminate\Http\RedirectResponse
     {
         $data = $request->validated();
-        $newUser = User::create($data);
+        $newUser = User::create(array_merge($data, ['tenant_id' => \Auth::user()->tenant_id]));
 
         $newPermissions = [];
         foreach ($data['permissions'] as $permission) {

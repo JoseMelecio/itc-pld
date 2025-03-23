@@ -51,6 +51,12 @@ class Permission extends \Spatie\Permission\Models\Permission
 {
     use SoftDeletes;
 
+    protected $fillable = [
+        'name',
+        'guard_name',
+        'tenant_id'
+    ];
+
     protected $casts = [
         'heading' => 'boolean',
     ];

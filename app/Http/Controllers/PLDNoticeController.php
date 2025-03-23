@@ -16,7 +16,8 @@ class PLDNoticeController extends Controller
 {
     public function showForm(string $notice): \Inertia\Response
     {
-        $pldNotice = PLDNotice::where('route_param', $notice)->firstOrFail();
+        $tenantId = \Auth::user()->tenant_id;
+        $pldNotice = PLDNotice::where('route_param', $notice)->where('tenant_id', $tenantId)->firstOrFail();
         $customFields = $pldNotice->customFields;
 
         $xsdName = Str::camel($pldNotice->name);
@@ -31,7 +32,8 @@ class PLDNoticeController extends Controller
 
     public function downloadTemplate(string $notice): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        $pldNotice = PLDNotice::where('route_param', $notice)->firstOrFail();
+        $tenantId = \Auth::user()->tenant_id;
+        $pldNotice = PLDNotice::where('route_param', $notice)->where('tenant_id', $tenantId)->firstOrFail();
         $filePath = public_path('templates/'.$pldNotice->template);
 
         return response()->download($filePath);
@@ -39,9 +41,11 @@ class PLDNoticeController extends Controller
 
     public function makeNotice(MakeNoticeRequest $request): \Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\JsonResponse
     {
+        $tenantId = \Auth::user()->tenant_id;
         $dataRequest = $request->validated();
         $dataRequest['tax_id'] = \Auth::user()->tax_id;
-        $pldNotice = PLDNotice::findOrFail($dataRequest['pld_notice_id']);
+        $pldNotice = PLDNotice::where('id', $dataRequest['pld_notice_id'])->where('tenant_id', $tenantId)->firstOrFail();
+        $logContent['tenant_id'] = $tenantId;
         $logContent['type'] = 'create';
         $logContent['model_type'] = get_class($pldNotice);
         $logContent['model_id'] = $pldNotice->id;
