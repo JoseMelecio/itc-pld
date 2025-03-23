@@ -35,9 +35,10 @@ class AdminBankAccountCustomFieldsSeeder extends Seeder
             'validation_message' => ['required_if' => 'La descripción de la obligatoria cuando el tipo de ocupación es Otro'],
         ]);
 
-        $notice = PLDNotice::where('route_param', 'bank_account_management')->first();
-        $notice->customFields()->attach($customTypeOccupation->id);
-        $notice->customFields()->attach($customOccupationDescription->id);
-
+        $notices = PLDNotice::where('route_param', 'bank_account_management')->get();
+        foreach ($notices as $notice) {
+            $notice->customFields()->attach($customTypeOccupation->id);
+            $notice->customFields()->attach($customOccupationDescription->id);
+        }
     }
 }
