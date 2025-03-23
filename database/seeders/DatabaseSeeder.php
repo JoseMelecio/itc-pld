@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            AddBasicTenantsSeeder::class,
             InitialMenuSeeder::class,
             RealEstateLeasingNoticeSeeder::class,
             MutualLoanNoticeSeeder::class,
@@ -21,7 +22,6 @@ class DatabaseSeeder extends Seeder
             RealEstateSaleNoticeSeeder::class,
             VehicleSaleNoticeSeeder::class,
             PersonBlockedPermissionSeeder::class,
-            VehicleSaleNoticeSeeder::class,
             AdminBankAccountManagementNoticeSeeder::class,
             AdminBankAccountCustomFieldsSeeder::class,
             //Last seeder to sync permissions

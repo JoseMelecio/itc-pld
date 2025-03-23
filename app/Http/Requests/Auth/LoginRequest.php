@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -37,17 +38,23 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate(): void
+    public function authenticate(int $tenantId): void
     {
         $this->ensureIsNotRateLimited();
+        $credentials = $this->only('user_name', 'password');
 
-        if (! Auth::attempt($this->only('user_name', 'password'), $this->boolean('remember'))) {
+        $user = User::where('tenant_id', $tenantId)
+            ->where('user_name', $credentials['user_name'])
+            ->first();
+
+        if (!$user || !\Hash::check($credentials['password'], $user->password)) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
                 'user_name' => trans('Datos incorrectos'), //auth.failed
             ]);
         }
+        Auth::login($user, $this->boolean('remember'));
 
         RateLimiter::clear($this->throttleKey());
     }

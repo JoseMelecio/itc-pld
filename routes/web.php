@@ -27,6 +27,10 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
+
+    Route::resource('/tenants', \App\Http\Controllers\TenantController::class)->middleware([\App\Http\Middleware\AdminSubdomainMiddleware::class]);
+
+
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     //Route::patch('/profile-update-password', [ProfileController::class, 'update'])->name('profile.update');
