@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class PersonListFindRequest extends FormRequest
 {
@@ -24,7 +25,7 @@ class PersonListFindRequest extends FormRequest
         return [
             'name' => 'nullable|string',
             'alias' => 'nullable|string',
-            'date' => 'nullable|string|regex:/^\d{4}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/',
+            'date' => ['nullable', 'string', 'regex:/^\d{4}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])$/'],
             'file' => 'nullable|file|mimes:xlsx,xls|max:2048',
         ];
     }
