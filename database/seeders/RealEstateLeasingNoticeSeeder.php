@@ -28,7 +28,7 @@ class RealEstateLeasingNoticeSeeder extends Seeder
             }
 
             if (! Permission::where('name', 'real_estate_leasing')->where('tenant_id', $tenant->id)->exists()) {
-                $parentPermission = Permission::where('name', 'notification_pld')->first();
+                $parentPermission = Permission::where('name', 'notification_pld')->where('tenant_id', $tenant->id)->first();
                 Permission::create([
                     'tenant_id' => $tenant->id,
                     'name' => 'real_estate_leasing',
