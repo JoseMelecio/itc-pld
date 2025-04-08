@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             AdminBankAccountCustomFieldsSeeder::class,
             //Last seeder to sync permissions
             UserSeeder::class,
+            EBRSeeder::class,
         ]);
     }
 }

@@ -31,7 +31,7 @@ class PersonBlockedPermissionSeeder extends Seeder
             }
 
             $parentPermission = Permission::where('name', 'person_blocked')->where('tenant_id', $tenant->id)->first();
-            if (! Permission::where('name', 'person_bloqued_form_finder')->where('tenant_id', $tenant->id)->exists()) {
+            if (! Permission::where('name', 'person_blocked_form_finder')->where('tenant_id', $tenant->id)->exists()) {
                 Permission::create([
                     'tenant_id' => $tenant->id,
                     'name' => 'person_blocked_form_finder',
