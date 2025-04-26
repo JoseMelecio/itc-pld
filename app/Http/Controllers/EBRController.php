@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EBRTemplate;
 use App\Models\EBR;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 use Inertia\Inertia;
+use PhpOffice\PhpSpreadsheet\Exception;
 use Str;
 
 class EBRController extends Controller
@@ -20,14 +22,6 @@ class EBRController extends Controller
         return Inertia::render('ebr/Index', [
             'ebrs' => $ebrs,
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -55,11 +49,12 @@ class EBRController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function show(EBR $eBR)
+    public function downloadTemplate(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        //
+        return Excel::download(new EBRTemplate(), 'Plantilla EBR.xlsx');
     }
 
     /**

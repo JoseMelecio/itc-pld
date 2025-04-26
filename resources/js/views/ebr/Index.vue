@@ -25,7 +25,7 @@ const formErrors = ref([]);
 
 
 const downloadTemplate = () => {
-  const url = route('pld-notice.downloadTemplate', {noticeType: props.pldNotice.route_param });
+  const url = route('ebr.downloadTemplate');
 
   axios({
     url: url,
@@ -37,7 +37,7 @@ const downloadTemplate = () => {
 
     const link = document.createElement('a');
     link.href = downloadUrl;
-    link.setAttribute('download', props.pldNotice.template);
+    link.setAttribute('download', 'EBR Template.xlsx');
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -180,11 +180,8 @@ const ebrsValidos = computed(() => {
                 </table>
               </div>
 
-
             <div class="block-content block-content-full">
-
             </div>
-
             </div>
           </BaseBlock>
         </form>
