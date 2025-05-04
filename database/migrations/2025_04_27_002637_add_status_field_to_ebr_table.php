@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ebr_customers', function (Blueprint $table) {
-            $table->id();
-            $table->string('name_or_business_name');
-            
-            $table->timestamps();
+        Schema::table('ebrs', function (Blueprint $table) {
+            $table->enum('status', ['processing', 'done'])->default('processing')->after('file_name');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ebr_customers');
+        Schema::table('ebrs', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 };

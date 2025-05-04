@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\EBRTemplate;
+use App\Exports\EBRTemplateExport;
+use App\Imports\EBRTemplateImport;
 use App\Models\EBR;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -15,7 +16,7 @@ class EBRController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): \Inertia\Response
     {
         $ebrs = EBR::all();
 
@@ -39,11 +40,17 @@ class EBRController extends Controller
             'tenant_id' => auth()->user()->tenant_id,
             'user_id' => auth()->user()->id,
             'file_name' => $file->getClientOriginalName(),
+            'status' => 'processing',
         ]);
 
         $newFileName = $newEbr->id . '.' . $file->getClientOriginalExtension();
 
-        $file->storeAs('ebr_files', $newFileName, 'local');
+        $path = $file->storeAs('ebr_files', $newFileName, 'local');
+
+        // Pasar el UUID al importador para asociar con los datos
+        $import = new EBRTemplateImport($newEbr->id);
+
+        Excel::import($import, $path);
 
         return redirect()->route('ebr.index');
     }
@@ -54,7 +61,7 @@ class EBRController extends Controller
      */
     public function downloadTemplate(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        return Excel::download(new EBRTemplate(), 'Plantilla EBR.xlsx');
+        return Excel::download(new EBRTemplateExport(), 'Plantilla EBR.xlsx');
     }
 
     /**

@@ -7,13 +7,14 @@ use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class EBRCustomers implements FromArray, WithTitle, WithColumnWidths, WithStyles
+class EBROperationExport implements FromArray, WithTitle, WithColumnWidths, WithStyles
 {
     public function array(): array
     {
-        $labels = EBRTemplateComposition::where('spreadsheet', 'BDdeClientes')
+        $labels = EBRTemplateComposition::where('spreadsheet', 'BDdeOperaciones')
             ->orderBy('order')
             ->pluck('label')
             ->toArray();
@@ -25,27 +26,27 @@ class EBRCustomers implements FromArray, WithTitle, WithColumnWidths, WithStyles
 
     public function title(): string
     {
-        return 'BDdeClientes';
+        return 'BDdeOperaciones';
     }
 
     public function columnWidths(): array
     {
-        foreach (range('A', 'Z') as $column) {
+        $columns = [];
+        foreach (range('A', 'P') as $column) {
             $columns[$column] = 15;
-        }
-
-        foreach (range('A', 'T') as $secondLetter) {
-            $columns['A' . $secondLetter] = 15;
         }
 
         return $columns;
     }
 
+    /**
+     * @throws Exception
+     */
     public function styles(Worksheet $sheet): void
     {
         $sheet->getRowDimension(1)->setRowHeight(200);
 
-        $sheet->getStyle('A1:AT1')->applyFromArray([
+        $sheet->getStyle('A1:P1')->applyFromArray([
             'alignment' => [
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                 'vertical'   => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
@@ -54,12 +55,12 @@ class EBRCustomers implements FromArray, WithTitle, WithColumnWidths, WithStyles
             'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                 'startColor' => [
-                    'rgb' => 'E2EFD9',
+                    'rgb' => 'D9E1F2',
                 ],
             ],
             'borders' => [
                 'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN, // Borde delgado y discreto
                     'color' => ['rgb' => 'A6A6A6'],
                 ],
             ],

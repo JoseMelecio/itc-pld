@@ -2,16 +2,15 @@
 
 namespace App\Exports;
 
-use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
-class EBRTemplate implements WithMultipleSheets
+class EBRTemplateExport implements WithMultipleSheets
 {
     public function sheets(): array
     {
         return [
-            new EBRCustomers(),
-            new EBROperations(),
+            new EBRCustomerExport(),
+            new EBROperationExport(),
         ];
     }
 }

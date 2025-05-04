@@ -88,6 +88,17 @@ const ebrsValidos = computed(() => {
   return props.ebrs.filter((ebr: any) => esValido(ebr.created_at))
 })
 
+const statusTranslate = (status: string) => {
+  switch (status) {
+    case 'processing':
+      return 'Procesando'
+    case 'ready':
+      return 'Listo'
+    case 'failed':
+      return 'Fallido'
+  }
+}
+
 </script>
 
 <template>
@@ -153,6 +164,7 @@ const ebrsValidos = computed(() => {
                     <th>ID</th>
                     <th class="d-none d-sm-table-cell">Archivo</th>
                     <th class="d-none d-sm-table-cell">Tiempo Restante</th>
+                    <th class="d-none d-sm-table-cell">Status</th>
                     <th class="text-center" style="width: 100px;">Actions</th>
                   </tr>
                   </thead>
@@ -167,6 +179,9 @@ const ebrsValidos = computed(() => {
                     </td>
                     <td class="fw-semibold fs-sm">
                       {{ tiempoRestante(ebr.created_at) }}
+                    </td>
+                    <td class="fw-semibold fs-sm">
+                      {{ statusTranslate(ebr.status) }}
                     </td>
                     <td class="text-center">
                       <div class="btn-group">
