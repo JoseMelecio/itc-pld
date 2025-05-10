@@ -44,6 +44,26 @@ const downloadTemplate = () => {
   })
 }
 
+const downloadDemoEBR = () => {
+  const url = route('ebr.downloadDemo');
+
+  axios({
+    url: url,
+    method: 'GET',
+    responseType: 'blob',
+  }).then((response) => {
+    const blob = new Blob([response.data]);
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', 'EBRAgentesRelacionadosDemo.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  })
+}
+
 const tiempoRestanteMap = ref<Record<string, string>>({})
 
 const tiempoRestante = (fechaStr: string) => {
