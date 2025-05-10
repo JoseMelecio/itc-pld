@@ -49,6 +49,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/ebr', [\App\Http\Controllers\EBRController::class, 'index'])->name('ebr.index');
     Route::post('/ebr', [\App\Http\Controllers\EBRController::class, 'store'])->name('ebr.store');
     Route::get('/ebr-template', [\App\Http\Controllers\EBRController::class, 'downloadTemplate'])->name('ebr.downloadTemplate');
+    Route::get('/ebr-demo', [\App\Http\Controllers\EBRController::class, 'downloadDemoEBR'])->name('ebr.downloadDemo');
     //Route::get('/person-list-blocked-', [\App\Http\Controllers\PersonListController::class, 'index'])->name('person-list-blocked');
 });
 
