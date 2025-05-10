@@ -64,27 +64,11 @@ class EBRController extends Controller
         return Excel::download(new EBRTemplateExport(), 'Plantilla EBR.xlsx');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(EBR $eBR)
+    public function downloadDemoEBR(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        //
+        $filePath = public_path('templates/EBRAgentesRelacionadosDemo.xlsx');
+
+        return response()->download($filePath);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, EBR $eBR)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(EBR $eBR)
-    {
-        //
-    }
 }
