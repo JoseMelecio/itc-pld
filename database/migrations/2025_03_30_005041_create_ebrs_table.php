@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ebrs', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->foreignIdFor(\App\Models\Tenant::class)->constrained();
             $table->foreignIdFor(\App\Models\User::class)->constrained();
             $table->string('file_name');

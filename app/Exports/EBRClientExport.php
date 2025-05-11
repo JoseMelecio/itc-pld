@@ -9,17 +9,20 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class EBRCustomerExport implements FromArray, WithTitle, WithColumnWidths, WithStyles
+class EBRClientExport implements FromArray, WithTitle, WithColumnWidths, WithStyles
 {
     public function array(): array
     {
-        $labels = EBRTemplateComposition::where('spreadsheet', 'BDdeClientes')
+        $compositions = EBRTemplateComposition::where('spreadsheet', 'BDdeClientes')
             ->orderBy('order')
-            ->pluck('label')
-            ->toArray();
+            ->get(['var_name', 'label']);
+
+        $varNames = $compositions->pluck('var_name')->toArray();
+        $labels = $compositions->pluck('label')->toArray();
 
         return [
-            $labels
+            $varNames,
+            $labels,
         ];
     }
 
@@ -43,9 +46,10 @@ class EBRCustomerExport implements FromArray, WithTitle, WithColumnWidths, WithS
 
     public function styles(Worksheet $sheet): void
     {
-        $sheet->getRowDimension(1)->setRowHeight(200);
+        $sheet->getRowDimension(1)->setRowHeight(30)->setVisible(false);
+        $sheet->getRowDimension(2)->setRowHeight(200);
 
-        $sheet->getStyle('A1:AT1')->applyFromArray([
+        $sheet->getStyle('A1:AT2')->applyFromArray([
             'alignment' => [
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                 'vertical'   => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,

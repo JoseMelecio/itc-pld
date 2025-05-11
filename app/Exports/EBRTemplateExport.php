@@ -9,7 +9,7 @@ class EBRTemplateExport implements WithMultipleSheets
     public function sheets(): array
     {
         return [
-            new EBRCustomerExport(),
+            new EBRClientExport(),
             new EBROperationExport(),
         ];
     }

@@ -14,13 +14,16 @@ class EBROperationExport implements FromArray, WithTitle, WithColumnWidths, With
 {
     public function array(): array
     {
-        $labels = EBRTemplateComposition::where('spreadsheet', 'BDdeOperaciones')
+        $compositions = EBRTemplateComposition::where('spreadsheet', 'BDdeOperaciones')
             ->orderBy('order')
-            ->pluck('label')
-            ->toArray();
+            ->get(['var_name', 'label']);
+
+        $varNames = $compositions->pluck('var_name')->toArray();
+        $labels = $compositions->pluck('label')->toArray();
 
         return [
-            $labels
+            $varNames,
+            $labels,
         ];
     }
 
@@ -44,9 +47,10 @@ class EBROperationExport implements FromArray, WithTitle, WithColumnWidths, With
      */
     public function styles(Worksheet $sheet): void
     {
-        $sheet->getRowDimension(1)->setRowHeight(200);
+        $sheet->getRowDimension(1)->setRowHeight(30)->setVisible(false);
+        $sheet->getRowDimension(2)->setRowHeight(200);
 
-        $sheet->getStyle('A1:P1')->applyFromArray([
+        $sheet->getStyle('A1:P2')->applyFromArray([
             'alignment' => [
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                 'vertical'   => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,

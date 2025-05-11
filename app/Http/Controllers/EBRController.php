@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\EBRClientExport;
+use App\Exports\EBROperationExport;
 use App\Exports\EBRTemplateExport;
 use App\Imports\EBRTemplateImport;
 use App\Models\EBR;
@@ -59,9 +61,18 @@ class EBRController extends Controller
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function downloadTemplate(): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function downloadClientTemplate(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        return Excel::download(new EBRTemplateExport(), 'Plantilla EBR.xlsx');
+        return Excel::download(new EBRClientExport(), 'Plantilla Clientes EBR.xlsx');
+    }
+
+    /**
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function downloadOperationTemplate(): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        return Excel::download(new EBROperationExport(), 'Plantilla Operaciones EBR.xlsx');
     }
 
     public function downloadDemoEBR(): \Symfony\Component\HttpFoundation\BinaryFileResponse

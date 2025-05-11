@@ -24,8 +24,8 @@ const hasFormErrors = ref(false);
 const formErrors = ref([]);
 
 
-const downloadTemplate = () => {
-  const url = route('ebr.downloadTemplate');
+const downloadClientTemplate = () => {
+  const url = route('ebr.downloadClientTemplate');
 
   axios({
     url: url,
@@ -37,7 +37,27 @@ const downloadTemplate = () => {
 
     const link = document.createElement('a');
     link.href = downloadUrl;
-    link.setAttribute('download', 'EBR Template.xlsx');
+    link.setAttribute('download', 'EBR Plantilla Clientes.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  })
+}
+
+const downloadOperationTemplate = () => {
+  const url = route('ebr.downloadOperationTemplate');
+
+  axios({
+    url: url,
+    method: 'GET',
+    responseType: 'blob',
+  }).then((response) => {
+    const blob = new Blob([response.data]);
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', 'EBR Plantilla Operaciones.xlsx');
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -168,8 +188,9 @@ const statusTranslate = (status: string) => {
             </div>
 
             <div class="mb-4">
+              <button type="button" @click="downloadClientTemplate()" class="btn btn-info me-2">Plantilla Clientes</button>
+              <button type="button" @click="downloadOperationTemplate()" class="btn btn-info me-2">Plantilla Operaciones</button>
               <button type="submit" class="btn btn-success me-2">Generar</button>
-              <button type="button" @click="downloadTemplate()" class="btn btn-info me-2">Plantilla</button>
             </div>
 
             <hr>
