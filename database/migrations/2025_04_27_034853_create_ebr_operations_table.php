@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('ebr_operations', function (Blueprint $table) {
             $table->id();
-            $table->uuid('ebr_id');
-            $table->uuid('ebr_customer_id');;
+            $table->unsignedBigInteger('ebr_id');
+            $table->unsignedBigInteger('ebr_customer_id');
             $table->string('operation_folio');
             $table->string('operation_date');
             $table->string('operation_time');

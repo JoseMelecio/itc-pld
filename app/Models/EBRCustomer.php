@@ -11,8 +11,6 @@ class EBRCustomer extends Model
 
     protected $table = 'ebr_customers';
     protected $fillable = [];
-    protected $keyType = 'string';
-    public $incrementing = false;
 
     public function __construct()
     {

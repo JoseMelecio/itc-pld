@@ -10,14 +10,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToCollection;use Maatwebsite\Excel\Concerns\WithChunkReading;
 
-
-class EBRCustomerImport implements ToCollection,ShouldQueue, WithChunkReading
+class EBRClientImport implements ToCollection,ShouldQueue, WithChunkReading
 {
-    protected string $ebrUUID;
+    protected string $ebrId;
 
-    public function __construct(string $ebrUUID)
+    public function __construct(string $ebrId)
     {
-        $this->ebrUUID = $ebrUUID;
+        $this->ebrId = $ebrId;
     }
     /**
     * @param Collection $collection

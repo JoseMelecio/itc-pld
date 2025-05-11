@@ -15,11 +15,11 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 
 class EBROperationImport implements ToCollection,ShouldQueue,WithChunkReading
 {
-    protected string $ebrUUID;
+    protected string $ebrId;
 
-    public function __construct(string $ebrUUID)
+    public function __construct(string $ebrId)
     {
-        $this->ebrUUID = $ebrUUID;
+        $this->ebrId = $ebrId;
     }
     /**
     * @param Collection $collection

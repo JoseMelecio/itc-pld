@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\PLDNotice;
 use App\Models\Tenant;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Permission;
 
 class RealEstateLeasingNoticeSeeder extends Seeder
@@ -15,6 +16,8 @@ class RealEstateLeasingNoticeSeeder extends Seeder
     public function run(): void
     {
         $tenants = Tenant::all();
+        Log::info('Seeding real estate leasing notice');
+        Log::info($tenants);
         foreach ($tenants as $tenant) {
             if (! PLDNotice::where('route_param', 'real_estate_leasing')->where('tenant_id', $tenant->id)->exists()) {
                 PLDNotice::create([

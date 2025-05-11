@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Exports\EBRClientExport;
 use App\Exports\EBROperationExport;
-use App\Exports\EBRTemplateExport;
 use App\Imports\EBRTemplateImport;
+use App\Jobs\ImportClientsFileJob;
+use App\Jobs\ImportOperationsFileJob;
 use App\Models\EBR;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Inertia\Inertia;
 use PhpOffice\PhpSpreadsheet\Exception;
-use Str;
 
 class EBRController extends Controller
 {
@@ -33,26 +33,33 @@ class EBRController extends Controller
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $request->validate([
-            'file' => 'required|file|max:10240',
+            'file_clients' => 'required|file|max:10240',
+            'file_operations' => 'required|file|max:10240',
         ]);
-        $file = $request->file('file');
+
+        $fileClients = $request->file('file_clients');
+        $fileOperations = $request->file('file_operations');
 
         $newEbr = EBR::create([
-            'id' => Str::uuid(),
             'tenant_id' => auth()->user()->tenant_id,
             'user_id' => auth()->user()->id,
-            'file_name' => $file->getClientOriginalName(),
+            'file_name_clients' => $fileClients->getClientOriginalName(),
+            'file_name_operations' => $fileOperations->getClientOriginalName(),
             'status' => 'processing',
         ]);
 
-        $newFileName = $newEbr->id . '.' . $file->getClientOriginalExtension();
+        $clientsFileName = $newEbr->id . '_clients.' . $fileClients->getClientOriginalExtension();
+        $operationsFileName = $newEbr->id . '_operations.' . $fileOperations->getClientOriginalExtension();
 
-        $path = $file->storeAs('ebr_files', $newFileName, 'local');
+        $clientsPath = $fileClients->storeAs('ebr_files', $clientsFileName, 'local');
+        $operationsPath = $fileOperations->storeAs('ebr_files', $operationsFileName, 'local');
 
         // Pasar el UUID al importador para asociar con los datos
-        $import = new EBRTemplateImport($newEbr->id);
+        //$import = new EBRTemplateImport($newEbr->id);
 
-        Excel::import($import, $path);
+        ImportClientsFileJob::withChain([
+            new ImportOperationsFileJob($newEbr->id, $operationsPath),
+        ])->dispatch($newEbr->id, $clientsPath);
 
         return redirect()->route('ebr.index');
     }

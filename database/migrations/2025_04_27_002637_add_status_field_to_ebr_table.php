@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ebrs', function (Blueprint $table) {
-            $table->enum('status', ['processing', 'done'])->default('processing')->after('file_name');
+            $table->enum('status', ['processing', 'done'])->default('processing')->after('file_name_operations');
         });
     }
 

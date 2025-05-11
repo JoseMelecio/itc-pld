@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\Tenant::class)->constrained();
             $table->foreignIdFor(\App\Models\User::class)->constrained();
-            $table->string('file_name');
+            $table->string('file_name_clients');
+            $table->string('file_name_operations');
             $table->timestamps();
         });
     }

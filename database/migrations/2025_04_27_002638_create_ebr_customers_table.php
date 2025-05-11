@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('ebr_customers', function (Blueprint $table) {
             $table->id();
-            $table->uuid('ebr_id');
+            $table->unsignedBigInteger('ebr_id');
             $table->string('id_client_user');
             $table->string('full_name_or_business_name');
             $table->string('client_type');
@@ -60,11 +60,9 @@ return new class extends Migration
             $table->string('transfers_gafi_lists');
             $table->string('transfers_tax_havens');
             $table->string('bank_clabe');
-
             $table->timestamps();
 
             $table->foreign('ebr_id')->references('id')->on('ebrs');
-
         });
     }
 
