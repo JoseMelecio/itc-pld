@@ -11,19 +11,17 @@ class EBROperation extends Model
 
     protected $table = 'ebr_operations';
     protected $fillable = [];
-    protected $keyType = 'string';
-    public $incrementing = false;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->fillable = EBRTemplateComposition::where('spreadsheet', 'BDdeOperaciones')
+        $columns= EBRTemplateComposition::where('spreadsheet', 'BDdeOperaciones')
             ->orderBY('order')
             ->pluck('var_name')
             ->toArray();
 
-        $this->fillable = array_merge($this->fillable, ['ebr_id', 'id', 'ebr_customer_id']);
+        $this->fillable = array_merge($columns, ['id', 'ebr_id', 'ebr_client_id']);
     }
 
 }

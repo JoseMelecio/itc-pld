@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\EBRTemplateExport;
+use App\Exports\EBRClientExport;
+use App\Exports\EBROperationExport;
+use App\Http\Requests\EBRStoreRequest;
 use App\Imports\EBRTemplateImport;
+use App\Jobs\ImportClientsFileJob;
+use App\Jobs\ImportOperationsFileJob;
 use App\Models\EBR;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Inertia\Inertia;
 use PhpOffice\PhpSpreadsheet\Exception;
-use Str;
 
 class EBRController extends Controller
 {
@@ -28,29 +31,29 @@ class EBRController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    public function store(EBRStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $request->validate([
-            'file' => 'required|file|max:10240',
-        ]);
-        $file = $request->file('file');
+        $fileClients = $request->file('file_clients');
+        $fileOperations = $request->file('file_operations');
 
         $newEbr = EBR::create([
-            'id' => Str::uuid(),
             'tenant_id' => auth()->user()->tenant_id,
             'user_id' => auth()->user()->id,
-            'file_name' => $file->getClientOriginalName(),
+            'file_name_clients' => $fileClients->getClientOriginalName(),
+            'file_name_operations' => $fileOperations->getClientOriginalName(),
             'status' => 'processing',
         ]);
 
-        $newFileName = $newEbr->id . '.' . $file->getClientOriginalExtension();
+        $clientsFileName = $newEbr->id . '_clients.' . $fileClients->getClientOriginalExtension();
+        $operationsFileName = $newEbr->id . '_operations.' . $fileOperations->getClientOriginalExtension();
 
-        $path = $file->storeAs('ebr_files', $newFileName, 'local');
+        $clientsPath = $fileClients->storeAs('ebr_files', $clientsFileName, 'local');
+        $operationsPath = $fileOperations->storeAs('ebr_files', $operationsFileName, 'local');
 
-        // Pasar el UUID al importador para asociar con los datos
-        $import = new EBRTemplateImport($newEbr->id);
+        ImportClientsFileJob::withChain([
+            new ImportOperationsFileJob($newEbr->id, $operationsPath),
+        ])->dispatch($newEbr->id, $clientsPath);
 
-        Excel::import($import, $path);
 
         return redirect()->route('ebr.index');
     }
@@ -59,9 +62,18 @@ class EBRController extends Controller
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function downloadTemplate(): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function downloadClientTemplate(): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        return Excel::download(new EBRTemplateExport(), 'Plantilla EBR.xlsx');
+        return Excel::download(new EBRClientExport(), 'Plantilla Clientes EBR.xlsx');
+    }
+
+    /**
+     * @throws Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function downloadOperationTemplate(): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        return Excel::download(new EBROperationExport(), 'Plantilla Operaciones EBR.xlsx');
     }
 
     public function downloadDemoEBR(): \Symfony\Component\HttpFoundation\BinaryFileResponse

@@ -4,7 +4,6 @@ import {route} from "ziggy-js";
 import { useForm, usePage} from "@inertiajs/vue3";
 import axios from "axios";
 import {ref, computed} from "vue";
-import {eb} from "@fullcalendar/core/internal-common";
 const page = usePage();
 
 const props = defineProps({
@@ -13,7 +12,8 @@ const props = defineProps({
 })
 
 const form = useForm({
-  file: '',
+  file_clients: '',
+  file_operations: '',
 });
 
 function submit() {
@@ -24,8 +24,8 @@ const hasFormErrors = ref(false);
 const formErrors = ref([]);
 
 
-const downloadTemplate = () => {
-  const url = route('ebr.downloadTemplate');
+const downloadClientTemplate = () => {
+  const url = route('ebr.downloadClientTemplate');
 
   axios({
     url: url,
@@ -37,7 +37,27 @@ const downloadTemplate = () => {
 
     const link = document.createElement('a');
     link.href = downloadUrl;
-    link.setAttribute('download', 'EBR Template.xlsx');
+    link.setAttribute('download', 'EBR Plantilla Clientes.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  })
+}
+
+const downloadOperationTemplate = () => {
+  const url = route('ebr.downloadOperationTemplate');
+
+  axios({
+    url: url,
+    method: 'GET',
+    responseType: 'blob',
+  }).then((response) => {
+    const blob = new Blob([response.data]);
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', 'EBR Plantilla Operaciones.xlsx');
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -160,16 +180,23 @@ const statusTranslate = (status: string) => {
             <div class="row">
               <div class="col-12">
                 <div class="mb-4">
-                  <label class="form-label" for="file">Archivo de Excel <span class="text-danger">*</span></label>
-                  <input class="form-control" :class="{ 'is-invalid': errors.file }" type="file" id="file" name="file" @input="form.file = $event.target.files[0]">
-                  <div id="file-error" class="text-danger">{{ errors.file}}</div>
+                  <label class="form-label" for="file">Archivo de clientes <span class="text-danger">*</span></label>
+                  <input class="form-control" :class="{ 'is-invalid': errors.file_clients }" type="file" id="file_clients" name="file_clients" @input="form.file_clients = $event.target.files[0]">
+                  <div id="file_clients-error" class="text-danger">{{ errors.file_clients}}</div>
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label" for="file">Archivo de operaciones <span class="text-danger">*</span></label>
+                  <input class="form-control" :class="{ 'is-invalid': errors.file_operations }" type="file" id="file_operations" name="file_operations" @input="form.file_operations = $event.target.files[0]">
+                  <div id="file_operations-error" class="text-danger">{{ errors.file_operations}}</div>
                 </div>
               </div>
             </div>
 
             <div class="mb-4">
+              <button type="button" @click="downloadClientTemplate()" class="btn btn-info me-2">Plantilla Clientes</button>
+              <button type="button" @click="downloadOperationTemplate()" class="btn btn-info me-2">Plantilla Operaciones</button>
               <button type="submit" class="btn btn-success me-2">Generar</button>
-              <button type="button" @click="downloadTemplate()" class="btn btn-info me-2">Plantilla</button>
             </div>
 
             <hr>
