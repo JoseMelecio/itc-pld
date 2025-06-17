@@ -4,7 +4,6 @@ import {route} from "ziggy-js";
 import { useForm, usePage} from "@inertiajs/vue3";
 import axios from "axios";
 import {ref, computed} from "vue";
-import {eb} from "@fullcalendar/core/internal-common";
 const page = usePage();
 
 const props = defineProps({

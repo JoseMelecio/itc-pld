@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\EBRTemplateComposition;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;

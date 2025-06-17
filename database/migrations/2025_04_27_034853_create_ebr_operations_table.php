@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\EBR;
+use App\Models\EBRClients;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,28 +15,25 @@ return new class extends Migration
     {
         Schema::create('ebr_operations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('ebr_id');
-            $table->unsignedBigInteger('ebr_customer_id');
-            $table->string('operation_folio');
-            $table->string('operation_date');
-            $table->string('operation_time');
-            $table->string('client_user_id');
-            $table->string('account_or_contract_number');
-            $table->string('operation_type');
-            $table->string('operation_amount');
-            $table->string('currency_type');
-            $table->string('equivalent_amount_mxn');
-            $table->string('exchange_rate_used');
-            $table->string('monetary_instrument');
-            $table->string('operation_location');
-            $table->string('external_bank_account');
-            $table->string('resource_reception_operation');
-            $table->string('operation_status');
-            $table->string('payment_frequency');
+            $table->foreignIdFor(EBR::class, 'ebr_id')->constrained();
+            $table->foreignIdFor(EBRClients::class, 'ebr_client_id')->constrained();
+            $table->string('operation_folio')->nullable();
+            $table->string('operation_date')->nullable();
+            $table->string('operation_time')->nullable();
+            $table->string('client_user_id_performed_operation')->nullable();
+            $table->string('account_or_contract_number')->nullable();
+            $table->string('operation_type')->nullable();
+            $table->decimal('operation_amount', 15, 2)->default(0);
+            $table->string('currency_type_used')->nullable();
+            $table->string('amount_equivalent_mxn')->nullable();
+            $table->string('exchange_rate')->nullable();
+            $table->string('monetary_instrument')->nullable();
+            $table->string('office_or_establishment')->nullable();
+            $table->string('deposit_bank_account')->nullable();
+            $table->string('resource_reception_operation')->nullable();
+            $table->string('operation_status')->nullable();
+            $table->string('payment_frequency')->nullable();
             $table->timestamps();
-
-            $table->foreign('ebr_id')->references('id')->on('ebrs');
-            $table->foreign('ebr_customer_id')->references('id')->on('ebr_customers');
         });
     }
 

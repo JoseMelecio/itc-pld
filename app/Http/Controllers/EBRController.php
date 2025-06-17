@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\EBRClientExport;
 use App\Exports\EBROperationExport;
+use App\Http\Requests\EBRStoreRequest;
 use App\Imports\EBRTemplateImport;
 use App\Jobs\ImportClientsFileJob;
 use App\Jobs\ImportOperationsFileJob;
@@ -30,13 +31,8 @@ class EBRController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    public function store(EBRStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
-        $request->validate([
-            'file_clients' => 'required|file|max:10240',
-            'file_operations' => 'required|file|max:10240',
-        ]);
-
         $fileClients = $request->file('file_clients');
         $fileOperations = $request->file('file_operations');
 
@@ -54,12 +50,10 @@ class EBRController extends Controller
         $clientsPath = $fileClients->storeAs('ebr_files', $clientsFileName, 'local');
         $operationsPath = $fileOperations->storeAs('ebr_files', $operationsFileName, 'local');
 
-        // Pasar el UUID al importador para asociar con los datos
-        //$import = new EBRTemplateImport($newEbr->id);
-
         ImportClientsFileJob::withChain([
             new ImportOperationsFileJob($newEbr->id, $operationsPath),
         ])->dispatch($newEbr->id, $clientsPath);
+
 
         return redirect()->route('ebr.index');
     }
