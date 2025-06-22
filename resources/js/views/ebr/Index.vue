@@ -8,12 +8,14 @@ const page = usePage();
 
 const props = defineProps({
   ebrs: Object,
+  ebrTypeUser: Object,
   errors: Object,
 })
 
 const form = useForm({
   file_clients: '',
   file_operations: '',
+  ebr_type_id: '',
 });
 
 function submit() {
@@ -174,7 +176,7 @@ const statusTranslate = (status: string) => {
 
     <div class="row items-push">
       <div class="col-sm-12 col-xl-12">
-        <form @submit.prevent="submit()">
+        <form @submit.prevent="submit()" enctype="multipart/form-data">
           <BaseBlock title="EBR" class="h-100 mb-0" content-class="fs-sm">
 
             <div class="row">
@@ -189,6 +191,14 @@ const statusTranslate = (status: string) => {
                   <label class="form-label" for="file">Archivo de operaciones <span class="text-danger">*</span></label>
                   <input class="form-control" :class="{ 'is-invalid': errors.file_operations }" type="file" id="file_operations" name="file_operations" @input="form.file_operations = $event.target.files[0]">
                   <div id="file_operations-error" class="text-danger">{{ errors.file_operations}}</div>
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label" for="example-select">Tipo EBR</label>
+                  <select class="form-select" name="ebr_type" id="ebr_type" v-model="form.ebr_type_id">
+                    <option v-for="ebrType in ebrTypeUser" :key="ebrType.id" :value="ebrType.id">{{ ebrType.type.toUpperCase() }}</option>
+                  </select>
+                  <div id="evt_type-error" class="text-danger">{{ errors.ebr_type }}</div>
                 </div>
               </div>
             </div>

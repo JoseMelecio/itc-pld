@@ -17,5 +17,6 @@ class EBR extends Model
         'user_id',
         'file_name_clients',
         'file_name_operations',
+        'ebr_type_id'
     ];
 }
