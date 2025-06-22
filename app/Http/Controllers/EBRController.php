@@ -10,6 +10,7 @@ use App\Jobs\ImportClientsFileJob;
 use App\Jobs\ImportOperationsFileJob;
 use App\Models\EBR;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Inertia\Inertia;
 use PhpOffice\PhpSpreadsheet\Exception;
@@ -22,9 +23,11 @@ class EBRController extends Controller
     public function index(): \Inertia\Response
     {
         $ebrs = EBR::all();
+        $ebrTypeUser = auth()->user()->ebrTypes;
 
         return Inertia::render('ebr/Index', [
             'ebrs' => $ebrs,
+            'ebrTypeUser' => $ebrTypeUser,
         ]);
     }
 
@@ -42,6 +45,7 @@ class EBRController extends Controller
             'file_name_clients' => $fileClients->getClientOriginalName(),
             'file_name_operations' => $fileOperations->getClientOriginalName(),
             'status' => 'processing',
+            'ebr_type_id' => $request->ebr_type_id,
         ]);
 
         $clientsFileName = $newEbr->id . '_clients.' . $fileClients->getClientOriginalExtension();
