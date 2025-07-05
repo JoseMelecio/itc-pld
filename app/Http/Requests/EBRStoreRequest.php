@@ -7,10 +7,6 @@ use Illuminate\Support\Facades\Log;
 
 class EBRStoreRequest extends FormRequest
 {
-    public function prepareForValidation(): void
-    {
-        Log::info($this->all());
-    }
     /**
      * Determine if the user is authorized to make this request.
      */

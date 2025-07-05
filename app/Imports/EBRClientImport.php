@@ -2,7 +2,7 @@
 
 namespace App\Imports;
 
-use App\Models\EBRClients;
+use App\Models\EBRClient;
 use App\Models\EBRTemplateComposition;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
@@ -36,7 +36,7 @@ class EBRClientImport implements ToCollection,ShouldQueue, WithChunkReading, Wit
                 $dataToInsert[$var_name] = $row[$key];
             }
             $dataToInsert['ebr_id'] = $this->ebrId;
-            EBRClients::create($dataToInsert);
+            EBRClient::create($dataToInsert);
         }
     }
 
@@ -47,7 +47,7 @@ class EBRClientImport implements ToCollection,ShouldQueue, WithChunkReading, Wit
      */
     public function chunkSize(): int
     {
-        return 50;
+        return 1000;
     }
 
     /**

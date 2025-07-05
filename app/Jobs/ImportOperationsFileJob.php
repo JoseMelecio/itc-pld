@@ -14,7 +14,7 @@ class ImportOperationsFileJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public int $ebrId, public string $filePath)
+    public function __construct(public int $ebrId, public string $path)
     {
         //
     }
@@ -24,6 +24,6 @@ class ImportOperationsFileJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Excel::import(new EBROperationImport($this->ebrId), $this->filePath);
+        Excel::import(new EBROperationImport($this->ebrId), $this->path);
     }
 }
