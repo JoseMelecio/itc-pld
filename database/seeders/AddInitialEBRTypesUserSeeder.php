@@ -7,7 +7,7 @@ use App\Models\Tenant;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class AddInitialEbrTypesUserSeeder extends Seeder
+class AddInitialEBRTypesUserSeeder extends Seeder
 {
     /**
      * Run the database seeds.

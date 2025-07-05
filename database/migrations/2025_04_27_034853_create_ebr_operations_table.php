@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\EBR;
-use App\Models\EBRClients;
+use App\Models\EBRClient;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('ebr_operations', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(EBR::class, 'ebr_id')->constrained();
-            $table->foreignIdFor(EBRClients::class, 'ebr_client_id')->constrained();
+            $table->foreignIdFor(EBRClient::class, 'ebr_client_id')->constrained();
             $table->string('operation_folio')->nullable();
             $table->string('operation_date')->nullable();
             $table->string('operation_time')->nullable();

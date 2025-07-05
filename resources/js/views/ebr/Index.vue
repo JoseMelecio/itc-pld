@@ -3,7 +3,8 @@
 import {route} from "ziggy-js";
 import { useForm, usePage} from "@inertiajs/vue3";
 import axios from "axios";
-import {ref, computed} from "vue";
+import {ref, computed, onMounted } from "vue";
+import { router } from '@inertiajs/vue3'
 const page = usePage();
 
 const props = defineProps({
@@ -19,7 +20,12 @@ const form = useForm({
 });
 
 function submit() {
-  form.post('/ebr')
+  form.post('/ebr', {
+    onSuccess: () => {
+      form.reset();
+
+    }
+  })
 }
 
 const hasFormErrors = ref(false);
@@ -134,12 +140,18 @@ const statusTranslate = (status: string) => {
   switch (status) {
     case 'processing':
       return 'Procesando'
-    case 'ready':
+    case 'done':
       return 'Listo'
     case 'failed':
       return 'Fallido'
   }
 }
+
+onMounted(() => {
+  setInterval(() => {
+    router.reload({ only: ['ebrs'] })
+  }, 60000)
+})
 
 </script>
 
@@ -222,7 +234,7 @@ const statusTranslate = (status: string) => {
                     <th class="d-none d-sm-table-cell">Archivo</th>
                     <th class="d-none d-sm-table-cell">Tiempo Restante</th>
                     <th class="d-none d-sm-table-cell">Status</th>
-                    <th class="text-center" style="width: 100px;">Actions</th>
+                    <th class="text-center" style="width: 100px;">Descargar</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -232,7 +244,8 @@ const statusTranslate = (status: string) => {
                       {{ ebr.id }}
                     </td>
                     <td class="fw-semibold fs-sm">
-                      {{ ebr.file_name }}
+                      <div>{{ ebr.file_name_clients }}</div>
+                      <div>{{ ebr.file_name_operations }}</div>
                     </td>
                     <td class="fw-semibold fs-sm">
                       {{ tiempoRestante(ebr.created_at) }}
@@ -241,10 +254,17 @@ const statusTranslate = (status: string) => {
                       {{ statusTranslate(ebr.status) }}
                     </td>
                     <td class="text-center">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-alt-primary js-bs-tooltip-enabled" data-bs-toggle="tooltip" aria-label="Edit Client" data-bs-original-title="Edit Client">
+                      <div class="btn-group" v-if="ebr.status == 'done'">
+                        <a
+                          :href="`/storage/ebr_reports/reporte_ebr_${ebr.id}.xlsx`"
+                          download
+                          class="btn btn-sm btn-alt-primary js-bs-tooltip-enabled"
+                          data-bs-toggle="tooltip"
+                          aria-label="Descargar reporte"
+                          title="Descargar reporte"
+                        >
                           <i class="fa fa-fw fa-file-arrow-down"></i>
-                        </button>
+                        </a>
                       </div>
                     </td>
                   </tr>

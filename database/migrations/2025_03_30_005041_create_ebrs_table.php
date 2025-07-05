@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('file_name_clients');
             $table->string('file_name_operations');
             $table->enum('status', ['processing', 'done'])->default('processing');
-            $table->decimal('total_operation_amount', 8, 2)->nullable();
+            $table->decimal('total_operation_amount', 15, 2)->nullable();
             $table->bigInteger('total_clients')->nullable();;
             $table->bigInteger('total_operations')->nullable();;
             $table->integer('concentration')->nullable();;

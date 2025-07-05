@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EBRType extends Model
 {
@@ -16,4 +17,9 @@ class EBRType extends Model
     protected $casts = [
         'active' => 'boolean'
     ];
+
+    public function riskElements(): HasMany
+    {
+        return $this->hasMany(EBRRiskElement::class, 'ebr_type_id');
+    }
 }

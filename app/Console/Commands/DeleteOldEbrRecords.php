@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\EBR;
-use App\Models\EBRClients;
+use App\Models\EBRClient;
 use App\Models\EBROperation;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -36,7 +36,7 @@ class DeleteOldEbrRecords extends Command
         $ebrs = EBR::where('created_at', '<', $limitDate)->get();
         foreach ($ebrs as $ebr) {
             EBROperation::where('ebr_id', $ebr->id)->delete();
-            EBRClients::where('ebr_id', $ebr->id)->delete();
+            EBRClient::where('ebr_id', $ebr->id)->delete();
             $ebr->delete();
         }
     }

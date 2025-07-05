@@ -2,7 +2,8 @@
 
 namespace App\Imports;
 
-use App\Models\EBRClients;
+use App\Jobs\FinalizeEBRProcessingJob;
+use App\Models\EBRClient;
 use App\Models\EBROperation;
 use App\Models\EBRTemplateComposition;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -12,9 +13,10 @@ use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\AfterImport;
 
-
-class EBROperationImport implements ToCollection,ShouldQueue,WithChunkReading, WithStartRow
+class EBROperationImport implements ToCollection,ShouldQueue,WithChunkReading, WithStartRow, WithEvents
 {
     protected string $ebrId;
 
@@ -39,7 +41,7 @@ class EBROperationImport implements ToCollection,ShouldQueue,WithChunkReading, W
                 $dataToInsert[$var_name] = $row[$key];
             }
 
-            $ebrCustomer = EBRClients::where('client_user_id', $dataToInsert['client_user_id_performed_operation'])
+            $ebrCustomer = EBRClient::where('client_user_id', $dataToInsert['client_user_id_performed_operation'])
                 ->where('ebr_id', $this->ebrId)
                 ->first();
 
@@ -57,12 +59,21 @@ class EBROperationImport implements ToCollection,ShouldQueue,WithChunkReading, W
      */
     public function chunkSize(): int
     {
-        return 1000; // Leer el archivo en bloques de 1000 filas
+        return 1000;
     }
 
     public function startRow(): int
     {
         return 3;
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterImport::class => function () {
+                FinalizeEBRProcessingJob::dispatch($this->ebrId);
+            },
+        ];
     }
 
 }

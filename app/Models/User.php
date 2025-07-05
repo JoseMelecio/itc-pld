@@ -113,6 +113,11 @@ class User extends Authenticatable // implements MustVerifyEmail
         return 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email))).'?s=128';
     }
 
+    public function getFullNameAttribute(): string
+    {
+        return $this->name.' '.$this->last_name;
+    }
+
     public function getIdPermissions(): array
     {
         $permissions = (new User)->join('model_has_permissions', 'model_has_permissions.model_id', '=', 'users.id')
