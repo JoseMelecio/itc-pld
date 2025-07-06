@@ -8,4 +8,3 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('ebr:delete-old-records')->everyFiveMinutes();
-Schedule::command('backup:run')->daily()->at('03:00');

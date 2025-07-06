@@ -48,10 +48,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/person-list-blocked-download-template', [\App\Http\Controllers\PersonListController::class, 'downloadTemplate'])->name('person-list-blocked-download-template');
     Route::get('/ebr', [\App\Http\Controllers\EBRController::class, 'index'])->name('ebr.index');
     Route::post('/ebr', [\App\Http\Controllers\EBRController::class, 'store'])->name('ebr.store');
-    Route::get('/ebr-client-template', [\App\Http\Controllers\EBRController::class, 'downloadClientTemplate'])->name('ebr.downloadClientTemplate');
-    Route::get('/ebr-operation-template', [\App\Http\Controllers\EBRController::class, 'downloadOperationTemplate'])->name('ebr.downloadOperationTemplate');
+    Route::get('/ebr-template', [\App\Http\Controllers\EBRController::class, 'downloadTemplate'])->name('ebr.downloadTemplate');
     Route::get('/ebr-demo', [\App\Http\Controllers\EBRController::class, 'downloadDemoEBR'])->name('ebr.downloadDemo');
-    Route::get('/calcular', [\App\Http\Controllers\EBRController::class, 'calcs']);
+    //Route::get('/person-list-blocked-', [\App\Http\Controllers\PersonListController::class, 'index'])->name('person-list-blocked');
 });
 
 //// Landing (Guest)

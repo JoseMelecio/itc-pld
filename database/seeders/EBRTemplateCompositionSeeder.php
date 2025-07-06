@@ -18,14 +18,14 @@ class EBRTemplateCompositionSeeder extends Seeder
             'BDdeClientes' => [
                 [
                     "label" => "ID de Cliente/ Usuario",
-                    "var_name" => "client_user_id",
+                    "var_name" => "id_client_user",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 1
                 ],
                 [
                     "label" => "Nombre completo o Razón  Social.",
-                    "var_name" => "full_name_or_company_name",
+                    "var_name" => "full_name_or_business_name",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 2
@@ -39,14 +39,14 @@ class EBRTemplateCompositionSeeder extends Seeder
                 ],
                 [
                     "label" => "Tipo de contrato del Cliente",
-                    "var_name" => "client_contract_type",
+                    "var_name" => "contract_type",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 4
                 ],
                 [
                     "label" => "Tipo de Producto o Servicio utilizado por el Cliente.",
-                    "var_name" => "type_of_product_or_service_used",
+                    "var_name" => "product_service_type",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 5
@@ -60,14 +60,14 @@ class EBRTemplateCompositionSeeder extends Seeder
                 ],
                 [
                     "label" => "Fecha de nacimiento o constitución del Cliente.",
-                    "var_name" => "date_of_birth_or_constitution",
+                    "var_name" => "birth_or_incorporation_date",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 7
                 ],
                 [
                     "label" => "Entidad Federativa de nacimiento / origen del Cliente.",
-                    "var_name" => "state_of_birth_or_origin",
+                    "var_name" => "birth_state",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 8
@@ -81,14 +81,14 @@ class EBRTemplateCompositionSeeder extends Seeder
                 ],
                 [
                     "label" => "LADA del número telefónico en que se pueda localizar al Cliente.",
-                    "var_name" => "area_code_of_phone_number",
+                    "var_name" => "phone_area_code",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 10
                 ],
                 [
                     "label" => "País de nacimiento / origen del Cliente,",
-                    "var_name" => "country_of_birth_or_origin",
+                    "var_name" => "country_of_birth",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 11
@@ -116,7 +116,7 @@ class EBRTemplateCompositionSeeder extends Seeder
                 ],
                 [
                     "label" => "Nombre de la calle, avenida o vía de que se trate del Domicilio particular del país de residencia en donde el Cliente puede recibir correspondencia dirigida a él.",
-                    "var_name" => "residence_street",
+                    "var_name" => "residence_street_address",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 15
@@ -130,14 +130,14 @@ class EBRTemplateCompositionSeeder extends Seeder
                 ],
                 [
                     "label" => "Ciudad o población, entidad federativa, estado, provincia, departamento o demarcación política similar que corresponda del Domicilio.",
-                    "var_name" => "residence_city",
+                    "var_name" => "residence_city_or_state",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 17
                 ],
                 [
                     "label" => "Alcaldía, delegación, municipio o demarcación política similar que corresponda del Domicilio",
-                    "var_name" => "residence_municipality_or_district",
+                    "var_name" => "residence_municipality",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 18
@@ -158,7 +158,7 @@ class EBRTemplateCompositionSeeder extends Seeder
                 ] ,
                 [
                     "label" => "RFC (con homoclave), en caso de aplicar",
-                    "var_name" => "rfc_homokey",
+                    "var_name" => "rfc",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 21
@@ -172,7 +172,7 @@ class EBRTemplateCompositionSeeder extends Seeder
                 ],
                 [
                     "label" => "Dirección de correo electrónico.",
-                    "var_name" => "email",
+                    "var_name" => "email_address",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 23
@@ -186,7 +186,7 @@ class EBRTemplateCompositionSeeder extends Seeder
                 ],
                 [
                     "label" => "Sucursal, establecimiento o tercero a través del que operó el cliente/ Usuario.",
-                    "var_name" => "branch_or_third_party_operator",
+                    "var_name" => "operating_branch_or_third_party",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 25
@@ -200,112 +200,112 @@ class EBRTemplateCompositionSeeder extends Seeder
                 ],
                 [
                     "label" => "Clientes/ Usuarios que sean Personas Políticamente Expuestas PEP",
-                    "var_name" => "clients_pep",
+                    "var_name" => "is_pep",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 27
                 ],
                 [
                     "label" => "Clientes/ Usuarios que sean Asimilados de PEP",
-                    "var_name" => "clients_similar_to_pep",
+                    "var_name" => "is_related_pep",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 28
                 ],
                 [
                     "label" => "Clientes/ Usuarios que hayan sido alertados como “Reporte de 24 horas”",
-                    "var_name" => "clients_24hr_report",
+                    "var_name" => "reported_24h_alert",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 29
                 ],
                 [
                     "label" => "Clientes/ Usuarios que hayan sido alertados como Personas Bloqueadas",
-                    "var_name" => "clients_alerted_blocked_person",
+                    "var_name" => "blocked_person_alert",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 30
                 ]  ,
                 [
                     "label" => "Clientes/ Usuarios que sean Fideicomisos.",
-                    "var_name" => "clients_trusts",
+                    "var_name" => "is_trust",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 31
                 ],
                 [
                     "label" => "Clientes/ Usuarios, activos que sean Sujetos Obligados en materia de PLD/FT supervisados por la CNBV",
-                    "var_name" => "clients_subject_to_aml_ctf_cnbv",
+                    "var_name" => "is_subject_cnbv_supervised",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 32
                 ],
                 [
                     "label" => "Clientes/ Usuarios activos que sean sociedades y dependencias a las que se refiere el Anexo 1 de las Disposiciones",
-                    "var_name" => "clients_annex_1",
+                    "var_name" => "is_annex1_entity",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 33
                 ],
                 [
                     "label" => "Cliente con alertamientos en el sistema de alertas",
-                    "var_name" => "client_alert_system_notifications",
+                    "var_name" => "has_alert_system_flags",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 34
                 ],
                 [
                     "label" => "Cliente relacionado a Operaciones Inusuales.",
-                    "var_name" => "client_related_to_unusual_operations",
+                    "var_name" => "related_to_unusual_ops",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 35
                 ],
                 [
                     "label" => "Cliente relacionado a una alerta u Operaciones Internas Preocupantes",
-                    "var_name" => "client_related_to_concerning_alert",
+                    "var_name" => "related_to_internal_concern",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 36
                 ],
                 [
                     "label" => "Cliente relacionado a una alerta u Operaciones 24 horas",
-                    "var_name" => "client_related_to_24hrs_alert_or_operations",
+                    "var_name" => "related_to_24h_ops",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 37
                 ],
                 [
                     "label" => "Cliente relacionado a una alerta u Operaciones Inusuales 24 horas por Lista de Personas Bloqueadas",
-                    "var_name" => "client_related_to_blocked_24hrs_alert_or_op",
+                    "var_name" => "related_to_24h_blocked_list",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 38
                 ],
                 [
                     "label" => "Cliente relacionado a una alerta u Operaciones Inusuales de 24 por suspensión del proceso de identificación",
-                    "var_name" => "client_related_to_suspended_24hrs_alert",
+                    "var_name" => "related_to_24h_id_suspension",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 39
                 ],
                 [
                     "label" => "Cliente con Cotitulares o terceros autorizados en la Operación o contrato.",
-                    "var_name" => "client_with_coholders_or_third_parties",
+                    "var_name" => "has_coholders_or_authorized",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 40
                 ] ,
                 [
                     "label" => "Cliente relacionado con Beneficiarios.",
-                    "var_name" => "client_related_to_beneficiaries",
+                    "var_name" => "related_to_beneficiaries",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 41
                 ],
                 [
                     "label" => "Cliente relacionado con Proveedores de recursos.",
-                    "var_name" => "client_related_to_resource_suppliers",
+                    "var_name" => "related_to_resource_providers",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 42
@@ -319,21 +319,21 @@ class EBRTemplateCompositionSeeder extends Seeder
                 ],
                 [
                     "label" => "Cliente con Transferencias que provienen o van dirigidos a países o Entidades Financieras extranjeras situadas en Listas GAFI (negra y gris).",
-                    "var_name" => "client_transfers_from_gafi",
+                    "var_name" => "transfers_gafi_lists",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 44
                 ],
                 [
                     "label" => "Cliente con Transferencias que van dirigidas a países o a Entidades Financieras extranjeras situadas en Regímenes Fiscales Preferentes/Paraísos fiscales.",
-                    "var_name" => "client_transfers_to_tax_havens",
+                    "var_name" => "transfers_tax_havens",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 45
                 ],
                 [
                     "label" => "Clave Bancaria Estandarizada (CLABE).",
-                    "var_name" => "clabe",
+                    "var_name" => "bank_clabe",
                     "rules" => ['required' => true],
                     "type" => "string",
                     "order" => 46
@@ -363,7 +363,7 @@ class EBRTemplateCompositionSeeder extends Seeder
                 ],
                 [
                     "label" => "ID del Cliente/ Usuario que realizó la operación",
-                    "var_name" => "client_user_id_performed_operation",
+                    "var_name" => "client_user_id",
                     "rules" => ['require' => true],
                     "type" => "string",
                     "order" => 4
@@ -391,21 +391,21 @@ class EBRTemplateCompositionSeeder extends Seeder
                 ],
                 [
                     "label" => "Tipo de moneda o Divisa utilizada (MXN, USD, otros)",
-                    "var_name" => "currency_type_used",
+                    "var_name" => "currency_type",
                     "rules" => ['require' => true],
                     "type" => "string",
                     "order" => 8
                 ] ,
                 [
                     "label" => "En caso de que la Operación no se haya realizado en pesos mexicanos, incluir el monto equivalente en moneda nacional",
-                    "var_name" => "amount_equivalent_mxn",
+                    "var_name" => "equivalent_amount_mxn",
                     "rules" => ['require' => true],
                     "type" => "string",
                     "order" => 9
                 ],
                 [
                     "label" => "Tipo de cambio utilizado",
-                    "var_name" => "exchange_rate",
+                    "var_name" => "exchange_rate_used",
                     "rules" => ['require' => true],
                     "type" => "string",
                     "order" => 10
@@ -419,14 +419,14 @@ class EBRTemplateCompositionSeeder extends Seeder
                 ],
                 [
                     "label" => "Oficina matriz, Sucursal o establecimiento en el que sea alojan los servidores o lugar donde se registró la operación",
-                    "var_name" => "office_or_establishment",
+                    "var_name" => "operation_location",
                     "rules" => ['require' => true],
                     "type" => "string",
                     "order" => 12
                 ],
                 [
                     "label" => "Cuenta bancaria o de depósito de dinero abierta en otra Entidad Financiera a través de la que se realizó la Operación",
-                    "var_name" => "deposit_bank_account",
+                    "var_name" => "external_bank_account",
                     "rules" => ['require' => true],
                     "type" => "string",
                     "order" => 13
