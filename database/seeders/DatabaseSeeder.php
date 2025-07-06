@@ -13,7 +13,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            // PLD Seeders
             AddBasicTenantsSeeder::class,
             InitialMenuSeeder::class,
             RealEstateLeasingNoticeSeeder::class,
@@ -25,14 +24,9 @@ class DatabaseSeeder extends Seeder
             PersonBlockedPermissionSeeder::class,
             AdminBankAccountManagementNoticeSeeder::class,
             AdminBankAccountCustomFieldsSeeder::class,
-            // EBR Seeders
-            EBRPermissionSeeder::class,
-            EBRTemplateCompositionSeeder::class,
-            EBRTypeSeeder::class,
-            EBRSofomRiskElementsSeeder::class,
             //Last seeder to sync permissions
             UserSeeder::class,
-            EBRPermissionSeeder::class,
+            EBRSeeder::class,
         ]);
     }
 }

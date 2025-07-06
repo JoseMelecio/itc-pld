@@ -27,7 +27,7 @@ class EBRTemplateImport implements WithMultipleSheets, ShouldQueue, WithChunkRea
     public function sheets(): array
     {
         return [
-            0 => new EBRClientImport($this->ebrUUID),
+            0 => new EBRCustomerImport($this->ebrUUID),
             1 => new EBROperationImport($this->ebrUUID),
         ];
     }

@@ -30,14 +30,5 @@ class AddBasicTenantsSeeder extends Seeder
             'status' => 'active',
         ]);
         }
-
-        $pldTenant = Tenant::where('name', 'demo')->first();
-        if (!$pldTenant) {
-            Tenant::create([
-                'name' => 'demo',
-                'description' => 'Sistema para demostraciones',
-                'status' => 'active',
-            ]);
-        }
     }
 }

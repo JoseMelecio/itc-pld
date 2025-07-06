@@ -3,27 +3,23 @@
 namespace App\Exports;
 
 use App\Models\EBRTemplateComposition;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class EBRClientExport implements FromArray, WithTitle, WithColumnWidths, WithStyles
+class EBRCustomerExport implements FromArray, WithTitle, WithColumnWidths, WithStyles
 {
     public function array(): array
     {
-        $compositions = EBRTemplateComposition::where('spreadsheet', 'BDdeClientes')
+        $labels = EBRTemplateComposition::where('spreadsheet', 'BDdeClientes')
             ->orderBy('order')
-            ->get(['var_name', 'label']);
-
-        $varNames = $compositions->pluck('var_name')->toArray();
-        $labels = $compositions->pluck('label')->toArray();
+            ->pluck('label')
+            ->toArray();
 
         return [
-            $varNames,
-            $labels,
+            $labels
         ];
     }
 
@@ -47,10 +43,9 @@ class EBRClientExport implements FromArray, WithTitle, WithColumnWidths, WithSty
 
     public function styles(Worksheet $sheet): void
     {
-        $sheet->getRowDimension(1)->setRowHeight(30)->setVisible(false);
-        $sheet->getRowDimension(2)->setRowHeight(200);
+        $sheet->getRowDimension(1)->setRowHeight(200);
 
-        $sheet->getStyle('A1:AT2')->applyFromArray([
+        $sheet->getStyle('A1:AT1')->applyFromArray([
             'alignment' => [
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                 'vertical'   => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,

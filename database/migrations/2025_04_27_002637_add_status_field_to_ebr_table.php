@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ebr_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('type');
-            $table->boolean('active')->default(true);
-            $table->timestamps();
+        Schema::table('ebrs', function (Blueprint $table) {
+            $table->enum('status', ['processing', 'done'])->default('processing')->after('file_name');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ebr_types');
+        Schema::table('ebrs', function (Blueprint $table) {
+            $table->dropColumn('status');
+        });
     }
 };

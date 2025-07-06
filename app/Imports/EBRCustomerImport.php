@@ -2,41 +2,44 @@
 
 namespace App\Imports;
 
-use App\Models\EBRClient;
+use App\Models\EBRCustomer;
 use App\Models\EBRTemplateComposition;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToCollection;use Maatwebsite\Excel\Concerns\WithChunkReading;
-use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class EBRClientImport implements ToCollection,ShouldQueue, WithChunkReading, WithStartRow
+
+class EBRCustomerImport implements ToCollection,ShouldQueue, WithChunkReading
 {
-    protected string $ebrId;
-    protected bool $firstChunk = true;
+    protected string $ebrUUID;
 
-    public function __construct(string $ebrId)
+    public function __construct(string $ebrUUID)
     {
-        $this->ebrId = $ebrId;
+        $this->ebrUUID = $ebrUUID;
     }
     /**
     * @param Collection $collection
     */
     public function collection(Collection $collection)
     {
+        $dataReaded = $collection->skip(1);
+
         $column_var_name = EBRTemplateComposition::where('spreadsheet', 'BDdeClientes')
             ->orderBY('order')
             ->pluck('var_name')
             ->toArray();
 
-        foreach ($collection as $row) {
+
+        foreach ($dataReaded as $row) {
             $dataToInsert = [];
             foreach ($column_var_name as $key => $var_name) {
                 $dataToInsert[$var_name] = $row[$key];
             }
-            $dataToInsert['ebr_id'] = $this->ebrId;
-            EBRClient::create($dataToInsert);
+            $dataToInsert['id'] = Str::uuid();
+            $dataToInsert['ebr_id'] = $this->ebrUUID;
+            EbrCustomer::create($dataToInsert);
         }
     }
 
@@ -47,15 +50,7 @@ class EBRClientImport implements ToCollection,ShouldQueue, WithChunkReading, Wit
      */
     public function chunkSize(): int
     {
-        return 1000;
-    }
-
-    /**
-     *
-     */
-    public function startRow(): int
-    {
-        return 3;
+        return 100;
     }
 
 }

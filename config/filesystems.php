@@ -74,6 +74,4 @@ return [
         public_path('storage') => storage_path('app/public'),
     ],
 
-    'default_path' => env('DEFAULT_STORAGE_PATH', ''),
-
 ];

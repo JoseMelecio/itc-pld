@@ -7,7 +7,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
-class EBRPermissionSeeder extends Seeder
+class EBRSeeder extends Seeder
 {
     /**
      * Run the database seeds.
