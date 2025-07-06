@@ -54,7 +54,13 @@ class Permission extends \Spatie\Permission\Models\Permission
     protected $fillable = [
         'name',
         'guard_name',
-        'tenant_id'
+        'tenant_id',
+        'to',
+        'icon',
+        'heading',
+        'menu_label',
+        'order_to_show',
+        'permission_id',
     ];
 
     protected $casts = [

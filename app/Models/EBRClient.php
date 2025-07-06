@@ -4,25 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Log;
 
-class EBRCustomer extends Model
+class EBRClient extends Model
 {
     use HasFactory;
 
-    protected $table = 'ebr_customers';
+    protected $table = 'ebr_clients';
     protected $fillable = [];
-    protected $keyType = 'string';
-    public $incrementing = false;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->fillable = EBRTemplateComposition::where('spreadsheet', 'BDdeClientes')
+        $columns = EBRTemplateComposition::where('spreadsheet', 'BDdeClientes')
             ->orderBY('order')
             ->pluck('var_name')
             ->toArray();
 
-        $this->fillable = array_merge($this->fillable, ['ebr_id', 'id']);
+        $this->fillable = array_merge($columns, ['ebr_id', 'id']);
     }
 }

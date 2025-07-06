@@ -3,29 +3,37 @@
 import {route} from "ziggy-js";
 import { useForm, usePage} from "@inertiajs/vue3";
 import axios from "axios";
-import {ref, computed} from "vue";
-import {eb} from "@fullcalendar/core/internal-common";
+import {ref, computed, onMounted } from "vue";
+import { router } from '@inertiajs/vue3'
 const page = usePage();
 
 const props = defineProps({
   ebrs: Object,
+  ebrTypeUser: Object,
   errors: Object,
 })
 
 const form = useForm({
-  file: '',
+  file_clients: '',
+  file_operations: '',
+  ebr_type_id: '',
 });
 
 function submit() {
-  form.post('/ebr')
+  form.post('/ebr', {
+    onSuccess: () => {
+      form.reset();
+
+    }
+  })
 }
 
 const hasFormErrors = ref(false);
 const formErrors = ref([]);
 
 
-const downloadTemplate = () => {
-  const url = route('ebr.downloadTemplate');
+const downloadClientTemplate = () => {
+  const url = route('ebr.downloadClientTemplate');
 
   axios({
     url: url,
@@ -37,7 +45,27 @@ const downloadTemplate = () => {
 
     const link = document.createElement('a');
     link.href = downloadUrl;
-    link.setAttribute('download', 'EBR Template.xlsx');
+    link.setAttribute('download', 'EBR Plantilla Clientes.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  })
+}
+
+const downloadOperationTemplate = () => {
+  const url = route('ebr.downloadOperationTemplate');
+
+  axios({
+    url: url,
+    method: 'GET',
+    responseType: 'blob',
+  }).then((response) => {
+    const blob = new Blob([response.data]);
+    const downloadUrl = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = downloadUrl;
+    link.setAttribute('download', 'EBR Plantilla Operaciones.xlsx');
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -112,12 +140,18 @@ const statusTranslate = (status: string) => {
   switch (status) {
     case 'processing':
       return 'Procesando'
-    case 'ready':
+    case 'done':
       return 'Listo'
     case 'failed':
       return 'Fallido'
   }
 }
+
+onMounted(() => {
+  setInterval(() => {
+    router.reload({ only: ['ebrs'] })
+  }, 60000)
+})
 
 </script>
 
@@ -154,22 +188,37 @@ const statusTranslate = (status: string) => {
 
     <div class="row items-push">
       <div class="col-sm-12 col-xl-12">
-        <form @submit.prevent="submit()">
+        <form @submit.prevent="submit()" enctype="multipart/form-data">
           <BaseBlock title="EBR" class="h-100 mb-0" content-class="fs-sm">
 
             <div class="row">
               <div class="col-12">
                 <div class="mb-4">
-                  <label class="form-label" for="file">Archivo de Excel <span class="text-danger">*</span></label>
-                  <input class="form-control" :class="{ 'is-invalid': errors.file }" type="file" id="file" name="file" @input="form.file = $event.target.files[0]">
-                  <div id="file-error" class="text-danger">{{ errors.file}}</div>
+                  <label class="form-label" for="file">Archivo de clientes <span class="text-danger">*</span></label>
+                  <input class="form-control" :class="{ 'is-invalid': errors.file_clients }" type="file" id="file_clients" name="file_clients" @input="form.file_clients = $event.target.files[0]">
+                  <div id="file_clients-error" class="text-danger">{{ errors.file_clients}}</div>
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label" for="file">Archivo de operaciones <span class="text-danger">*</span></label>
+                  <input class="form-control" :class="{ 'is-invalid': errors.file_operations }" type="file" id="file_operations" name="file_operations" @input="form.file_operations = $event.target.files[0]">
+                  <div id="file_operations-error" class="text-danger">{{ errors.file_operations}}</div>
+                </div>
+
+                <div class="mb-4">
+                  <label class="form-label" for="example-select">Tipo EBR</label>
+                  <select class="form-select" name="ebr_type" id="ebr_type" v-model="form.ebr_type_id">
+                    <option v-for="ebrType in ebrTypeUser" :key="ebrType.id" :value="ebrType.id">{{ ebrType.type.toUpperCase() }}</option>
+                  </select>
+                  <div id="evt_type-error" class="text-danger">{{ errors.ebr_type }}</div>
                 </div>
               </div>
             </div>
 
             <div class="mb-4">
+              <button type="button" @click="downloadClientTemplate()" class="btn btn-info me-2">Plantilla Clientes</button>
+              <button type="button" @click="downloadOperationTemplate()" class="btn btn-info me-2">Plantilla Operaciones</button>
               <button type="submit" class="btn btn-success me-2">Generar</button>
-              <button type="button" @click="downloadTemplate()" class="btn btn-info me-2">Plantilla</button>
             </div>
 
             <hr>
@@ -185,7 +234,7 @@ const statusTranslate = (status: string) => {
                     <th class="d-none d-sm-table-cell">Archivo</th>
                     <th class="d-none d-sm-table-cell">Tiempo Restante</th>
                     <th class="d-none d-sm-table-cell">Status</th>
-                    <th class="text-center" style="width: 100px;">Actions</th>
+                    <th class="text-center" style="width: 100px;">Descargar</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -195,7 +244,8 @@ const statusTranslate = (status: string) => {
                       {{ ebr.id }}
                     </td>
                     <td class="fw-semibold fs-sm">
-                      {{ ebr.file_name }}
+                      <div>{{ ebr.file_name_clients }}</div>
+                      <div>{{ ebr.file_name_operations }}</div>
                     </td>
                     <td class="fw-semibold fs-sm">
                       {{ tiempoRestante(ebr.created_at) }}
@@ -204,10 +254,17 @@ const statusTranslate = (status: string) => {
                       {{ statusTranslate(ebr.status) }}
                     </td>
                     <td class="text-center">
-                      <div class="btn-group">
-                        <button type="button" class="btn btn-sm btn-alt-primary js-bs-tooltip-enabled" data-bs-toggle="tooltip" aria-label="Edit Client" data-bs-original-title="Edit Client">
+                      <div class="btn-group" v-if="ebr.status == 'done'">
+                        <a
+                          :href="`/storage/ebr_reports/reporte_ebr_${ebr.id}.xlsx`"
+                          download
+                          class="btn btn-sm btn-alt-primary js-bs-tooltip-enabled"
+                          data-bs-toggle="tooltip"
+                          aria-label="Descargar reporte"
+                          title="Descargar reporte"
+                        >
                           <i class="fa fa-fw fa-file-arrow-down"></i>
-                        </button>
+                        </a>
                       </div>
                     </td>
                   </tr>
