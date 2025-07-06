@@ -4,7 +4,7 @@ namespace App\Jobs;
 
 use App\Models\EBR;
 use App\Models\EBRRiskElementRelated;
-use App\Exports\EBRExport;
+use App\Exports\EBRRiskInherentExport;
 use Illuminate\Foundation\Events\Dispatchable;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
@@ -59,6 +59,6 @@ class FinalizeEBRProcessingJob implements ShouldQueue
         $ebr->save();
 
         $path = "ebr_reports/reporte_ebr_{$ebr->id}.xlsx";
-        Excel::store(new EBRExport($ebr), $path, 'public');
+        Excel::store(new EBRRiskInherentExport($ebr), $path, 'public');
     }
 }

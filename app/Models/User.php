@@ -136,6 +136,6 @@ class User extends Authenticatable // implements MustVerifyEmail
 
     public function ebrTypes(): BelongsToMany
     {
-        return $this->belongsToMany(EBRType::class, 'ebr_types_users');
+        return $this->belongsToMany(EBRType::class, 'ebr_types_users', 'user_id', 'ebr_type_id');
     }
 }

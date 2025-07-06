@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Exports\EBRClientExport;
-use App\Exports\EBRExport;
+use App\Exports\EBRMultiSheetExport;
+use App\Exports\EBRRiskInherentExport;
 use App\Exports\EBROperationExport;
 use App\Http\Requests\EBRStoreRequest;
 use App\Jobs\ImportClientsFileJob;
@@ -118,14 +119,14 @@ class EBRController extends Controller
                     'risk_level_features' => 0,
                     'risk_level_integrated' => 0,
                 ];
-                EBRRiskElementRelated::create($newElement);
+                //EBRRiskElementRelated::create($newElement);
             }
         }
 
         $ebr->save();
 
 
-        return Excel::download(new EBRExport($ebr), 'reporte_ebr.xlsx');
+        return Excel::download(new EBRMultiSheetExport($ebr), 'reporte_ebr.xlsx');
         //return view('exports.ebr_summary')->with('ebr', $ebr);
     }
 

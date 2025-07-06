@@ -7,7 +7,7 @@ use App\Models\EBRType;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class SofomRiskElementsSeeder extends Seeder
+class EBRSofomRiskElementsSeeder extends Seeder
 {
     /**
      * Run the database seeds.

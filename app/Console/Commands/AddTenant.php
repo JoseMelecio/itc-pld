@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Tenant;
 use Illuminate\Console\Command;
 
 class AddTenant extends Command
@@ -11,20 +12,28 @@ class AddTenant extends Command
      *
      * @var string
      */
-    protected $signature = 'app:add-tenant';
+    protected $signature = 'app:add-tenant {name} {description';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Add a new tenant';
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
-        //
+        $name = $this->argument('name');
+        $description = $this->argument('description');
+
+        Tenant::create([
+            'name' => $name,
+            'description' => $description,
+        ]);
+
+        $this->info("Tenant '{$name}' creado con la descripción: {$description}");
     }
 }

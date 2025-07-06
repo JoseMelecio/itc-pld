@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('ebr_types_users', function (Blueprint $table) {
             $table->foreignIdFor(User::class)->constrained();
-            $table->foreignIdFor(EBRType::class)->constrained();
+            $table->foreignIdFor(EBRType::class, 'ebr_type_id')->constrained();
         });
     }
 

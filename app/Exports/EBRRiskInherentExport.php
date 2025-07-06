@@ -14,8 +14,9 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use Maatwebsite\Excel\Concerns\WithTitle;
 
-class EBRExport implements FromCollection, WithEvents, WithStyles, WithColumnWidths
+class EBRRiskInherentExport implements FromCollection, WithEvents, WithStyles, WithColumnWidths, WithTitle
 {
     protected EBR $ebr;
     protected $currentRow = 9;
@@ -441,6 +442,11 @@ class EBRExport implements FromCollection, WithEvents, WithStyles, WithColumnWid
         $sheet->getRowDimension(8)->setRowHeight(25);
         $sheet->getRowDimension(9)->setRowHeight(25);
         return [];
+    }
+
+    public function title(): string
+    {
+        return 'Elementos de Riesgo';
     }
 
     public function columnWidths(): array
