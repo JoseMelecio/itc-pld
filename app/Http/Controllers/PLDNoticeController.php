@@ -6,6 +6,7 @@ use App\Http\Requests\MakeNoticeRequest;
 use App\Models\PLDNotice;
 use App\Services\SystemLogService;
 use DOMDocument;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
