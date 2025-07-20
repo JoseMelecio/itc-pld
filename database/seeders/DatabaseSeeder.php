@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             EBRTemplateCompositionSeeder::class,
             EBRTypeSeeder::class,
             EBRSofomRiskElementsSeeder::class,
+            EBRMatrixQualitativeRiskSeeder::class,
             //Last seeder to sync permissions
             UserSeeder::class,
             EBRPermissionSeeder::class,
