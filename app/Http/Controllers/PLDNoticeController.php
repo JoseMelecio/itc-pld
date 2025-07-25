@@ -68,7 +68,7 @@ class PLDNoticeController extends Controller
         $xmlContent = $makeXml->makeXML();
 
         $xsdName = Str::camel($pldNotice->name);
-        $xsd = public_path('xsd/'.$xsdName.'.xsd');
+        $xsd = public_path('xsd/'.$xsdName.'.xsd');;
 
         if (file_exists($xsd)) {
             $dom = new DOMDocument;
