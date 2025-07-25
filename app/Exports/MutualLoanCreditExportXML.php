@@ -25,8 +25,8 @@ class MutualLoanCreditExportXML
         //Add headers
         $xmlObject->startDocument('1.0', 'utf-8');
         $xmlObject->startElement('archivo');
-        $xmlObject->writeAttribute('xsi:schemaLocation', 'http://www.uif.shcp.gob.mx/recepcion/ari ari.xsd');
-        $xmlObject->writeAttribute('xmlns', 'http://www.uif.shcp.gob.mx/recepcion/ari');
+        $xmlObject->writeAttribute('xsi:schemaLocation', 'http://www.uif.shcp.gob.mx/recepcion/mpc mpc.xsd');
+        $xmlObject->writeAttribute('xmlns', 'http://www.uif.shcp.gob.mx/recepcion/mpc');
         $xmlObject->writeAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
 
         $xmlObject->startElement('informe');
