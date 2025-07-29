@@ -535,7 +535,7 @@ class VirtualAssetsExportXML
                                 $xmlObject->endElement(); // activo_virtual
 
                                 $xmlObject->startElement('hash_operacion');
-                                    $xmlObject->text($operationBuy['has_operator']);
+                                    $xmlObject->text($operationBuy['hash_operation']);
                                 $xmlObject->endElement(); // hash_operacion
 
                             $xmlObject->endElement(); // compra
@@ -586,11 +586,393 @@ class VirtualAssetsExportXML
                                 $xmlObject->endElement(); // activo_virtual
 
                                 $xmlObject->startElement('hash_operacion');
-                                    $xmlObject->text($operationSell['has_operator']);
+                                    $xmlObject->text($operationSell['hash_operation']);
                                 $xmlObject->endElement(); // hash_operacion
 
                             $xmlObject->endElement(); // venta
                         }
+                        $xmlObject->endElement(); // operaciones_venta
+                    }
+
+                    //Exchange
+                    if (count($clientOperations['exchange']) > 0) {
+                        $xmlObject->startElement('operaciones_intercambio');
+                        foreach ($clientOperations['exchange'] as $operationDate => $pairExchangeOperation) {
+                            $hashOperation = '';
+
+                            $xmlObject->startElement('intercambio');
+
+                            $xmlObject->startElement('fecha_hora_operacion');
+                            $xmlObject->text($operationDate);
+                            $xmlObject->endElement(); // fecha_hora_operacion
+
+                            foreach ($pairExchangeOperation as $exchangeOperation) {
+                                if ($exchangeOperation['send_receive'] == "ENVIADO") {
+                                    $hashOperation = $exchangeOperation['hash_operation'];
+                                    $xmlObject->startElement('activo_virtual_enviado');
+
+                                    $xmlObject->startElement('activo_virtual');
+
+                                    $xmlObject->startElement('activo_virtual_operado');
+                                    $xmlObject->text($exchangeOperation['virtual_asset']);
+                                    $xmlObject->endElement(); // activo_virtual_operado
+
+                                    if ($exchangeOperation['virtual_asset'] == '999999') {
+                                        $xmlObject->startElement('descripcion_activo_virtual');
+                                        $xmlObject->text($exchangeOperation['virtual_asset_description']);
+                                        $xmlObject->endElement(); // descripcion_activo_virtual
+                                    }
+
+                                    $xmlObject->startElement('tipo_cambio_mn');
+                                    $xmlObject->text(number_format($exchangeOperation['exchange'], 2, '.', ''));
+                                    $xmlObject->endElement(); // tipo_cambio_mn
+
+                                    $xmlObject->startElement('cantidad_activo_virtual');
+                                    $xmlObject->text(number_format($exchangeOperation['quantity_virtual_asset'], 2, '.', ''));
+                                    $xmlObject->endElement(); // cantidad_activo_virtual
+
+                                    $xmlObject->endElement(); // activo_virtual
+
+                                    $xmlObject->startElement('monto_operacion_mn');
+                                    $xmlObject->text(number_format($exchangeOperation['operation_amount'], 2, '.', ''));;
+                                    $xmlObject->endElement(); // monto_operacion
+
+                                    $xmlObject->endElement(); // activo_virtual_enviado
+                                }
+
+                                if ($exchangeOperation['send_receive'] == "RECIBIDO") {
+                                    $xmlObject->startElement('activo_virtual_recibido');
+
+                                    $xmlObject->startElement('activo_virtual');
+
+                                    $xmlObject->startElement('activo_virtual_operado');
+                                    $xmlObject->text($exchangeOperation['virtual_asset']);
+                                    $xmlObject->endElement(); // activo_virtual_operado
+
+                                    if ($exchangeOperation['virtual_asset'] == '999999') {
+                                        $xmlObject->startElement('descripcion_activo_virtual');
+                                        $xmlObject->text($exchangeOperation['virtual_asset_description']);
+                                        $xmlObject->endElement(); // descripcion_activo_virtual
+                                    }
+
+                                    $xmlObject->startElement('tipo_cambio_mn');
+                                    $xmlObject->text(number_format($exchangeOperation['exchange'], 2, '.', ''));
+                                    $xmlObject->endElement(); // tipo_cambio_mn
+
+                                    $xmlObject->startElement('cantidad_activo_virtual');
+                                    $xmlObject->text(number_format($exchangeOperation['quantity_virtual_asset'], 2, '.', ''));
+                                    $xmlObject->endElement(); // cantidad_activo_virtual
+
+                                    $xmlObject->endElement(); // activo_virtual
+
+                                    $xmlObject->startElement('monto_operacion_mn');
+                                    $xmlObject->text(number_format($exchangeOperation['operation_amount'], 2, '.', ''));
+                                    $xmlObject->endElement(); // monto_operacion_mn
+
+                                    $xmlObject->endElement(); // activo_virtual_recibido
+                                }
+                            }
+                            $xmlObject->startElement('hash_operacion');
+                            $xmlObject->text($hashOperation);
+                            $xmlObject->endElement(); // hash_operacion
+
+                            $xmlObject->endElement(); // intercambio
+
+                        }
+                        $xmlObject->endElement(); // operaciones_intercambio
+                    }
+
+                    //Transfer
+                    if (count($clientOperations['transfer']) > 0) {
+                        $xmlObject->startElement('operaciones_transferencia');
+
+                        //Transfer Send
+                        if (count($clientOperations['transfer']['ENVIADO']) > 0) {
+                            $xmlObject->startElement('transferencias_enviadas');
+                            foreach ($clientOperations['transfer']['ENVIADO'] as $transferType => $transfer) {
+                                $xmlObject->startElement('envio');
+
+                                $xmlObject->startElement('fecha_hora_operacion');
+                                $xmlObject->text($transfer['date_time_operation']);
+                                $xmlObject->endElement(); // fecha_hora_operacion
+
+                                $xmlObject->startElement('monto_operacion_mn');
+                                $xmlObject->text(number_format($transfer['operation_amount_mn'], 2, '.', ''));
+                                $xmlObject->endElement(); // monto_operacion_mn
+
+                                $xmlObject->startElement('activo_virtual');
+
+                                $xmlObject->startElement('activo_virtual_operado');
+                                $xmlObject->text($transfer['virtual_asset']);
+                                $xmlObject->endElement(); // activo_virtual_operado
+
+                                if ($transfer['virtual_asset'] == '999999') {
+                                    $xmlObject->startElement('descripcion_activo_virtual');
+                                    $xmlObject->text($transfer['virtual_asset_description']);
+                                    $xmlObject->endElement(); // descripcion_activo_virtual
+                                }
+
+                                $xmlObject->startElement('tipo_cambio_mn');
+                                $xmlObject->text(number_format($transfer['exchange'], 2, '.', ''));
+                                $xmlObject->endElement(); // tipo_cambio_mn
+
+                                $xmlObject->startElement('cantidad_activo_virtual');
+                                $xmlObject->text(number_format($transfer['quantity_virtual_asset'], 2, '.', ''));
+                                $xmlObject->endElement(); // cantidad_activo_virtual
+
+                                $xmlObject->endElement(); // activo_virtual
+
+                                $xmlObject->startElement('hash_operacion');
+                                $xmlObject->text($transfer['hash_operation']);
+                                $xmlObject->endElement(); // hash_operacion
+
+                                $xmlObject->endElement(); // envio
+
+                                $xmlObject->endElement(); // transferencias_enviadas
+                            }
+                        }
+
+                        //Transfer Receive
+                        if (count($clientOperations['transfer']['RECIBIDO']) > 0) {
+                            $xmlObject->startElement('transferencias_recibidas');
+                            foreach ($clientOperations['transfer']['RECIBIDO'] as $transferType => $transfer) {
+                                $xmlObject->startElement('recepcion');
+
+                                $xmlObject->startElement('fecha_hora_operacion');
+                                $xmlObject->text($transfer['date_time_operation']);
+                                $xmlObject->endElement(); // fecha_hora_operacion
+
+                                $xmlObject->startElement('monto_operacion_mn');
+                                $xmlObject->text(number_format($transfer['operation_amount_mn'], 2, '.', ''));
+                                $xmlObject->endElement(); // monto_operacion_mn
+
+                                $xmlObject->startElement('activo_virtual');
+
+                                $xmlObject->startElement('activo_virtual_operado');
+                                $xmlObject->text($transfer['virtual_asset']);
+                                $xmlObject->endElement(); // activo_virtual_operado
+
+                                if ($transfer['virtual_asset'] == '999999') {
+                                    $xmlObject->startElement('descripcion_activo_virtual');
+                                    $xmlObject->text($transfer['virtual_asset_description']);
+                                    $xmlObject->endElement(); // descripcion_activo_virtual
+                                }
+
+                                $xmlObject->startElement('tipo_cambio_mn');
+                                $xmlObject->text(number_format($transfer['exchange'], 2, '.', ''));
+                                $xmlObject->endElement(); // tipo_cambio_mn
+
+                                $xmlObject->startElement('cantidad_activo_virtual');
+                                $xmlObject->text(number_format($transfer['quantity_virtual_asset'], 2, '.', ''));
+                                $xmlObject->endElement(); // cantidad_activo_virtual
+
+                                $xmlObject->endElement(); // activo_virtual
+
+                                $xmlObject->startElement('hash_operacion');
+                                $xmlObject->text($transfer['hash_operation']);
+                                $xmlObject->endElement(); // hash_operacion
+
+                                $xmlObject->endElement(); // recepcion
+
+                                $xmlObject->endElement(); // transferencias_recibidas
+                            }
+                        }
+
+                        $xmlObject->endElement(); // operaciones_transferencia
+                    }
+
+                    if (count($clientOperations['funds']) > 0) {
+                        $xmlObject->startElement('operaciones_fondos');
+
+                        if (count($clientOperations['funds']['RETIRO']) > 0) {
+                            $xmlObject->startElement('fondos_retirados');
+                            foreach ($clientOperations['funds']['RETIRO'] as $fund) {
+
+                                $xmlObject->startElement('retiro');
+
+                                $xmlObject->startElement('fecha_hora_operacion');
+                                $xmlObject->text($fund['date_time_operation']);
+                                $xmlObject->endElement(); // fecha_hora_operacion
+
+                                $xmlObject->startElement('instrumento_monetario');
+                                $xmlObject->text($fund['instrument']);
+                                $xmlObject->endElement(); // instrumento_monetario
+
+                                $xmlObject->startElement('moneda_operacion');
+                                $xmlObject->text($fund['currency']);
+                                $xmlObject->endElement(); // moneda_operacion
+
+                                $xmlObject->startElement('monto_operacion');
+                                $xmlObject->text(number_format($fund['amount'], 2, '.', ''));
+                                $xmlObject->endElement(); // monto_operacion
+
+                                $xmlObject->startElement('datos_beneficiario');
+
+                                $xmlObject->startElement('tipo_persona');
+
+                                if (strlen($fund['name']) > 0) {
+                                    $xmlObject->startElement('persona_fisica');
+
+                                    $xmlObject->startElement('nombre');
+                                    $xmlObject->text($fund['name']);
+                                    $xmlObject->endElement(); // nombre
+
+                                    $xmlObject->startElement('apellido_paterno');
+                                    $xmlObject->text($fund['last_name']);
+                                    $xmlObject->endElement(); // apellido_paterno
+
+                                    $xmlObject->startElement('apellido_materno');
+                                    $xmlObject->text($fund['second_last_name']);
+                                    $xmlObject->endElement(); // apellido_materno
+
+                                    $xmlObject->endElement(); // persona_fisica
+                                } else {
+                                    $xmlObject->startElement('persona_moral');
+
+                                    $xmlObject->startElement('denominacion_razon');
+                                    $xmlObject->text($fund['company']);
+                                    $xmlObject->endElement(); // denominacion_razon
+
+                                    $xmlObject->endElement(); // persona_moral
+                                }
+
+                                $xmlObject->endElement(); // tipo_persona
+
+                                $xmlObject->startElement('nacionalidad_cuenta');
+
+                                if (strlen($fund['clabe']) > 0) {
+                                    $xmlObject->startElement('nacional');
+
+                                    $xmlObject->startElement('clabe_destino');
+                                    $xmlObject->text($fund['clabe']);
+                                    $xmlObject->endElement(); // clabe_destino
+
+                                    $xmlObject->startElement('clave_institucion_financiera');
+                                    $xmlObject->text($fund['financial_institution']);
+                                    $xmlObject->endElement(); // clave_institucion_financiera
+
+                                    $xmlObject->endElement(); // nacional
+                                } else {
+                                    $xmlObject->startElement('extranjera');
+
+                                    $xmlObject->startElement('numero_cuenta');
+                                    $xmlObject->text($fund['account']);
+                                    $xmlObject->endElement(); // numero_cuenta
+
+                                    $xmlObject->startElement('nombre_banco');
+                                    $xmlObject->text($fund['bank_name']);
+                                    $xmlObject->endElement(); // nombre_banco
+
+                                    $xmlObject->endElement(); // extranjera
+                                }
+
+
+                                $xmlObject->endElement(); // nacionalidad_cuenta
+
+
+                                $xmlObject->endElement(); // datos_beneficiario
+
+                                $xmlObject->endElement(); // retiro
+
+                            }
+                            $xmlObject->endElement(); // fondos_retirados
+                        }
+
+                        if (count($clientOperations['funds']['DEPOSITO']) > 0) {
+                            $xmlObject->startElement('fondos_depositados');
+                            foreach ($clientOperations['funds']['DEPOSITO'] as $fund) {
+
+                                $xmlObject->startElement('deposito');
+
+                                $xmlObject->startElement('fecha_hora_operacion');
+                                $xmlObject->text($fund['date_time_operation']);
+                                $xmlObject->endElement(); // fecha_hora_operacion
+
+                                $xmlObject->startElement('instrumento_monetario');
+                                $xmlObject->text($fund['instrument']);
+                                $xmlObject->endElement(); // instrumento_monetario
+
+                                $xmlObject->startElement('moneda_operacion');
+                                $xmlObject->text($fund['currency']);
+                                $xmlObject->endElement(); // moneda_operacion
+
+                                $xmlObject->startElement('monto_operacion');
+                                $xmlObject->text(number_format($fund['amount'], 2, '.', ''));
+                                $xmlObject->endElement(); // monto_operacion
+
+                                $xmlObject->startElement('datos_ordenante');
+
+                                $xmlObject->startElement('tipo_persona');
+
+                                if (strlen($fund['name']) > 0) {
+                                    $xmlObject->startElement('persona_fisica');
+
+                                    $xmlObject->startElement('nombre');
+                                    $xmlObject->text($fund['name']);
+                                    $xmlObject->endElement(); // nombre
+
+                                    $xmlObject->startElement('apellido_paterno');
+                                    $xmlObject->text($fund['last_name']);
+                                    $xmlObject->endElement(); // apellido_paterno
+
+                                    $xmlObject->startElement('apellido_materno');
+                                    $xmlObject->text($fund['second_last_name']);
+                                    $xmlObject->endElement(); // apellido_materno
+
+                                    $xmlObject->endElement(); // persona_fisica
+                                } else {
+                                    $xmlObject->startElement('persona_moral');
+
+                                    $xmlObject->startElement('denominacion_razon');
+                                    $xmlObject->text($fund['company']);
+                                    $xmlObject->endElement(); // denominacion_razon
+
+                                    $xmlObject->endElement(); // persona_moral
+                                }
+
+                                $xmlObject->endElement(); // tipo_persona
+
+                                $xmlObject->startElement('nacionalidad_cuenta');
+
+                                if (strlen($fund['clabe']) > 0) {
+                                    $xmlObject->startElement('nacional');
+
+                                    $xmlObject->startElement('clabe_destino');
+                                    $xmlObject->text($fund['clabe']);
+                                    $xmlObject->endElement(); // clabe_destino
+
+                                    $xmlObject->startElement('clave_institucion_financiera');
+                                    $xmlObject->text($fund['financial_institution']);
+                                    $xmlObject->endElement(); // clave_institucion_financiera
+
+                                    $xmlObject->endElement(); // nacional
+                                } else {
+                                    $xmlObject->startElement('extranjera');
+
+                                    $xmlObject->startElement('numero_cuenta');
+                                    $xmlObject->text($fund['account']);
+                                    $xmlObject->endElement(); // numero_cuenta
+
+                                    $xmlObject->startElement('nombre_banco');
+                                    $xmlObject->text($fund['bank_name']);
+                                    $xmlObject->endElement(); // nombre_banco
+
+                                    $xmlObject->endElement(); // extranjera
+                                }
+
+
+                                $xmlObject->endElement(); // nacionalidad_cuenta
+
+
+                                $xmlObject->endElement(); // datos_beneficiario
+
+                                $xmlObject->endElement(); // retiro
+
+                            }
+                            $xmlObject->endElement(); // fondos_depositados
+                        }
+
+                        $xmlObject->endElement(); // operaciones_fondos
                     }
                 }
 
