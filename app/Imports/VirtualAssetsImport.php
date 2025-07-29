@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
@@ -242,17 +243,17 @@ class VirtualAssetsImport implements ToCollection, WithMultipleSheets
             }
 
             //Operation data section
-            //Operation data
+            //Buy and Sell
             $operationBuySell = [
-                'buy_sell' => trim(strtoupper($row['63'])), //BL
-                'date_time_operation' => trim(strtoupper($row['64'])),
-                'operation_currency' => trim(strtoupper($row['65'])),
-                'operation_amount' => trim(strtoupper($row['66'])),
-                'virtual_asset' => trim(strtoupper($row['67'])),
-                'virtual_asset_description' => trim(strtoupper($row['68'])),
-                'exchange' => trim(strtoupper($row['69'])),
-                'quantity_virtual_asset' => trim(strtoupper($row['70'])),
-                'has_operator' => trim(strtoupper($row['71'])),
+                'buy_sell' => trim(strtoupper($row[63])), //BL
+                'date_time_operation' => trim(strtoupper($row[64])),
+                'operation_currency' => trim(strtoupper($row[65])),
+                'operation_amount' => trim(strtoupper($row[66])),
+                'virtual_asset' => trim(strtoupper($row[67])),
+                'virtual_asset_description' => trim(strtoupper($row[68])),
+                'exchange' => trim(strtoupper($row[69])),
+                'quantity_virtual_asset' => trim(strtoupper($row[70])),
+                'hash_operation' => trim(strtoupper($row[71])), //BT
             ];
 
             if (strlen($operationBuySell['operation_currency']) > 0) {
@@ -273,6 +274,98 @@ class VirtualAssetsImport implements ToCollection, WithMultipleSheets
                 $noticeHash = md5(json_encode($dataRow['identificationDataPersonSubjectNotice']));
             }
             $dataRow['operationDetails'][$noticeHash]['buysell'][$operationBuySell['buy_sell']][] = $operationBuySell;
+
+            //Exchange
+            $exchange = [
+                'date_time_operation' => trim(strtoupper($row[72])), //BU
+                'send_receive' => trim(strtoupper($row[73])),
+                'operation_amount' => trim(strtoupper($row[74])),
+                'virtual_asset' => trim(strtoupper($row[75])),
+                'virtual_asset_description' => trim(strtoupper($row[76])),
+                'exchange' => trim(strtoupper($row[77])),
+                'quantity_virtual_asset' => trim(strtoupper($row[78])),
+                'hash_operation' => trim(strtoupper($row[79])), //CB
+            ];
+
+            if (strlen($exchange['virtual_asset']) > 0) {
+                $tempVirtualAsset = explode(',', $exchange['virtual_asset']);
+                $exchange['virtual_asset'] = $tempVirtualAsset[0];
+            }
+
+
+            if (strlen($dataRow['identificationDataPersonSubjectNotice']['physicalPerson']['name']) > 0 ||
+                strlen($dataRow['identificationDataPersonSubjectNotice']['legalPerson']['company_name']) > 0 ||
+                strlen($dataRow['identificationDataPersonSubjectNotice']['trust']['denomination']) > 0
+            ) {
+                $noticeHash = md5(json_encode($dataRow['identificationDataPersonSubjectNotice']));
+            }
+            $dataRow['operationDetails'][$noticeHash]['exchange'][$exchange['date_time_operation']][] = $exchange;
+
+            //Transfers
+            $transfer = [
+                'date_time_operation' => trim(strtoupper($row[80])), //CC
+                'send_recive' => trim(strtoupper($row[81])),
+                'operation_amount_mn' => trim(strtoupper($row[82])),
+                'virtual_asset' => trim(strtoupper($row[83])),
+                'virtual_asset_description' => trim(strtoupper($row[84])),
+                'exchange' => trim(strtoupper($row[85])),
+                'quantity_virtual_asset' => trim(strtoupper($row[86])),
+                'hash_operation' => trim(strtoupper($row[87])), //CJ
+            ];
+
+            if (strlen($transfer['virtual_asset']) > 0) {
+                $tempVirtualAsset = explode(',', $transfer['virtual_asset']);
+                $transfer['virtual_asset'] = $tempVirtualAsset[0];
+            }
+
+            if (strlen($dataRow['identificationDataPersonSubjectNotice']['physicalPerson']['name']) > 0 ||
+                strlen($dataRow['identificationDataPersonSubjectNotice']['legalPerson']['company_name']) > 0 ||
+                strlen($dataRow['identificationDataPersonSubjectNotice']['trust']['denomination']) > 0
+            ) {
+                $noticeHash = md5(json_encode($dataRow['identificationDataPersonSubjectNotice']));
+            }
+            $dataRow['operationDetails'][$noticeHash]['transfer'][$transfer['send_recive']][] = $transfer;
+
+            //Funds
+            $funds = [
+                'date_time_operation' => trim(strtoupper($row[88])), //CK
+                'withdrawal_deposit' => trim(strtoupper($row[89])),
+                'instrument' => trim(strtoupper($row[90])),
+                'currency' => trim(strtoupper($row[91])),
+                'amount' => trim(strtoupper($row[92])),
+                'name' => trim(strtoupper($row[93])),
+                'last_name' => trim(strtoupper($row[94])),
+                'second_last_name' => trim(strtoupper($row[95])),
+                'company' => trim(strtoupper($row[96])),
+                'clabe' => trim(strtoupper($row[97])),
+                'financial_institution' => trim(strtoupper($row[98])),
+                'account' => trim(strtoupper($row[99])),
+                'bank_name' => trim(strtoupper($row[100])),
+            ];
+
+            if (strlen($funds['instrument']) > 0) {
+                $tempInstrument = explode(',', $funds['instrument']);
+                $funds['instrument'] = $tempInstrument[0];
+            }
+
+            if (strlen($funds['currency']) > 0) {
+                $tempCurrency = explode(',', $funds['currency']);
+                $funds['currency'] = $tempCurrency[0];
+            }
+
+            if (strlen($funds['financial_institution']) > 0) {
+                $tempInstitution = explode(',', $funds['financial_institution']);
+                $funds['financial_institution'] = $tempInstitution[0];
+            }
+
+            if (strlen($dataRow['identificationDataPersonSubjectNotice']['physicalPerson']['name']) > 0 ||
+                strlen($dataRow['identificationDataPersonSubjectNotice']['legalPerson']['company_name']) > 0 ||
+                strlen($dataRow['identificationDataPersonSubjectNotice']['trust']['denomination']) > 0
+            ) {
+                $noticeHash = md5(json_encode($dataRow['identificationDataPersonSubjectNotice']));
+            }
+            $dataRow['operationDetails'][$noticeHash]['funds'][$funds['withdrawal_deposit']][] = $funds;
+
             $this->data['items'][$noticeHash] = $dataRow;
         }
     }
