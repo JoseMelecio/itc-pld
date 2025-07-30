@@ -30,14 +30,16 @@ class EBRClientImport implements ToCollection,ShouldQueue, WithChunkReading, Wit
             ->pluck('var_name')
             ->toArray();
 
+        $bulkInsert = [];
         foreach ($collection as $row) {
             $dataToInsert = [];
             foreach ($column_var_name as $key => $var_name) {
                 $dataToInsert[$var_name] = $row[$key];
             }
             $dataToInsert['ebr_id'] = $this->ebrId;
-            EBRClient::create($dataToInsert);
+            $bulkInsert[] = $dataToInsert;
         }
+        EBRClient::insert($bulkInsert);
     }
 
     /**

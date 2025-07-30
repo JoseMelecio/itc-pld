@@ -6,10 +6,11 @@ use App\Imports\EBROperationImport;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Bus\Batchable;
 
 class ImportOperationsFileJob implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, Batchable;
 
     /**
      * Create a new job instance.
