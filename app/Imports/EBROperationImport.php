@@ -3,13 +3,10 @@
 namespace App\Imports;
 
 use App\Jobs\FinalizeEBRProcessingJob;
-use App\Models\EBRClient;
 use App\Models\EBROperation;
 use App\Models\EBRTemplateComposition;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -34,6 +31,7 @@ class EBROperationImport implements ToCollection,ShouldQueue,WithChunkReading, W
             ->pluck('var_name')
             ->toArray();
 
+        $bulkInsert = [];
 
         foreach ($collection as $row) {
             $dataToInsert = [];
@@ -41,15 +39,11 @@ class EBROperationImport implements ToCollection,ShouldQueue,WithChunkReading, W
                 $dataToInsert[$var_name] = $row[$key];
             }
 
-            $ebrCustomer = EBRClient::where('client_user_id', $dataToInsert['client_user_id_performed_operation'])
-                ->where('ebr_id', $this->ebrId)
-                ->first();
-
             $dataToInsert['ebr_id'] = $this->ebrId;
-            $dataToInsert['ebr_client_id'] = $ebrCustomer->id;
-            EBROperation::create($dataToInsert);
+            $bulkInsert[] = $dataToInsert;
         }
 
+        EBROperation::insert($bulkInsert);
     }
 
     /**

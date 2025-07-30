@@ -7,13 +7,18 @@ use App\Exports\EBRMultiSheetExport;
 use App\Exports\EBRRiskInherentExport;
 use App\Exports\EBROperationExport;
 use App\Http\Requests\EBRStoreRequest;
+use App\Jobs\FinalizeEBRProcessingJob;
 use App\Jobs\ImportClientsFileJob;
 use App\Jobs\ImportOperationsFileJob;
 use App\Models\EBR;
 use App\Models\EBRRiskElementRelated;
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Inertia\Inertia;
 use PhpOffice\PhpSpreadsheet\Exception;
+use Throwable;
 
 class EBRController extends Controller
 {
@@ -55,9 +60,18 @@ class EBRController extends Controller
         $clientsPath = $fileClients->storeAs('ebr_files', $clientsFileName, 'local');
         $operationsPath = $fileOperations->storeAs('ebr_files', $operationsFileName, 'local');
 
-        ImportClientsFileJob::withChain([
+        Bus::batch([
+            new ImportClientsFileJob($newEbr->id, $clientsPath),
             new ImportOperationsFileJob($newEbr->id, $operationsPath),
-        ])->dispatch($newEbr->id, $clientsPath);
+        ])
+            ->then(function (Batch $batch) use ($newEbr) {
+                // Aquí todo terminó con éxito.
+                FinalizeEBRProcessingJob::dispatch($newEbr->id);
+            })
+            ->catch(function (Batch $batch, Throwable $e) {
+                Log::error('Error en la importación: '.$e->getMessage());
+            })
+            ->dispatch();
 
         //ImportClientsFileJob::dispatch($newEbr->id, $clientsPath, $operationsPath);
 
