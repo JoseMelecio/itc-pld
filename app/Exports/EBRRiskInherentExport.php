@@ -359,7 +359,7 @@ class EBRRiskInherentExport implements FromCollection, WithEvents, WithStyles, W
         ]);
 
         $bgBlue = $this->currentRow+1;
-        foreach ($riskElement->related as $related) {
+        foreach ($riskElement->riskElementRelated as $related) {
             $this->currentRow++;
             $sheet->setCellValue("A{$this->currentRow}", Str::upper($related->element));
             $sheet->setCellValue("B{$this->currentRow}", '$' . number_format($related->amount_mxn, 2, '.', ','));

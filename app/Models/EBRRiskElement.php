@@ -48,8 +48,14 @@ class EBRRiskElement extends Model
         ->get();
     }
 
-    public function related(): HasMany
+    public function riskElementRelated(): HasMany
     {
         return $this->hasMany(EBRRiskElementRelated::class, 'ebr_risk_element_id');
+    }
+
+    public function riskIndicatorRelated(): HasMany
+    {
+        return $this->hasMany(EBRRiskElementIndicator::class, 'ebr_risk_element_id');
+
     }
 }

@@ -17,7 +17,9 @@ class EBRMultiSheetExport implements WithMultipleSheets
         return [
             new EBRRiskZoneExport(),
             new EBRRiskInherentExport($this->ebr),
+            new EBRRiskElementIndicatorExport($this->ebr),
             new EBRMatrixQualitativeRiskExport(),
+            new EBRGraphics($this->ebr),
         ];
     }
 }

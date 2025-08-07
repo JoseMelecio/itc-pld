@@ -52,6 +52,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/ebr-operation-template', [\App\Http\Controllers\EBRController::class, 'downloadOperationTemplate'])->name('ebr.downloadOperationTemplate');
     Route::get('/ebr-demo', [\App\Http\Controllers\EBRController::class, 'downloadDemoEBR'])->name('ebr.downloadDemo');
     Route::get('/calcular', [\App\Http\Controllers\EBRController::class, 'calcs']);
+    Route::get('/graficos', [\App\Http\Controllers\EBRController::class, 'graficos']);
+    Route::post('/graficos/pdf', [\App\Http\Controllers\EBRController::class, 'exportPDF'])->name('grafico.pdf');
+
 });
 
 //// Landing (Guest)
