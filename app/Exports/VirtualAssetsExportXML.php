@@ -57,7 +57,7 @@ class VirtualAssetsExportXML
         $xmlObject->endElement(); // dominio_plataforma
 
         if ($this->headers['exempt'] == 'yes') {
-            $xmlObject->startElement('excento');
+            $xmlObject->startElement('exento');
                 $xmlObject->text('1');
             $xmlObject->endElement(); // exempt
         }
