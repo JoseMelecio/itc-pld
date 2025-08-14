@@ -6,11 +6,13 @@ use App\Exports\EBRClientExport;
 use App\Exports\EBRMultiSheetExport;
 use App\Exports\EBRRiskInherentExport;
 use App\Exports\EBROperationExport;
+use App\Http\Requests\EBRConfigurationStoreRequest;
 use App\Http\Requests\EBRStoreRequest;
 use App\Jobs\FinalizeEBRProcessingJob;
 use App\Jobs\ImportClientsFileJob;
 use App\Jobs\ImportOperationsFileJob;
 use App\Models\EBR;
+use App\Models\EBRConfiguration;
 use App\Models\EBRRiskElementIndicatorRelated;
 use App\Models\EBRRiskElementRelated;
 use Illuminate\Bus\Batch;
@@ -109,6 +111,41 @@ class EBRController extends Controller
         $filePath = public_path('templates/EBRAgentesRelacionadosDemo.xlsx');
 
         return response()->download($filePath);
+    }
+
+    /**
+     * Display the configuration page for the EBR module.
+     *
+     * @return \Inertia\Response
+     */
+    public function configuration()
+    {
+        $ebrConfiguration = EBRConfiguration::where('tenant_id', auth()->user()->tenant_id)
+            ->where('user_id', auth()->user()->id)
+            ->first();
+
+        return Inertia::render('ebr/Configuration', [
+            'configs' => [
+                'template_clients_config' => $ebrConfiguration ? implode(",\n", $ebrConfiguration->template_clients_config) : '',
+                'template_operations_config' => $ebrConfiguration ? implode(",\n", $ebrConfiguration->template_operations_config) : '',
+            ]
+        ]);
+    }
+
+    public function configurationStore(EBRConfigurationStoreRequest $request)
+    {
+        $data = $request->validated();
+        $ebrConfiguration = EBRConfiguration::where('tenant_id', $data['tenant_id'])
+            ->where('user_id', $data['user_id'])
+            ->first();
+
+        if ($ebrConfiguration) {
+            $ebrConfiguration->update($data);
+        } else {
+            EBRConfiguration::create($data);
+        }
+
+        return redirect()->route('ebr.configurations');
     }
 
     /**

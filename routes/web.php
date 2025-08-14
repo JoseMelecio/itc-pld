@@ -55,6 +55,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/graficos', [\App\Http\Controllers\EBRController::class, 'graficos']);
     Route::post('/graficos/pdf', [\App\Http\Controllers\EBRController::class, 'exportPDF'])->name('grafico.pdf');
 
+    Route::get('/ebr-configuration', [\App\Http\Controllers\EBRController::class, 'configuration'])->name('ebr.configurations');
+    Route::post('/ebr-configuration', [\App\Http\Controllers\EBRController::class, 'configurationStore'])->name('ebr.ConfigurationStore');
+
 });
 
 //// Landing (Guest)

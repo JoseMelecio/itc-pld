@@ -22,8 +22,16 @@ class EBRRiskElement extends Model
         'sub_header',
         'entity_grouper',
         'variable_grouper',
+        'report_config',
         'active'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'report_config' => 'array'
+        ];
+    }
 
     public function calculate(int $ebr_id): Boolean|Collection
     {
