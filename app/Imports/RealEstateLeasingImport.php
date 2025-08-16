@@ -234,7 +234,7 @@ class RealEstateLeasingImport implements ToCollection, WithMultipleSheets
                 'reference_value' => trim(strtoupper($row[59])),
                 'settlement' => trim(strtoupper($row[60])),
                 'street' => trim(strtoupper($row[61])),
-                'external_number' => trim(strtoupper($row[52])),
+                'external_number' => trim(strtoupper($row[62])),
                 'internal_number' => trim(strtoupper($row[63])),
                 'postal_code' => trim(strtoupper($row[64])),
                 'real_folio' => trim(strtoupper($row[65])), //BN
