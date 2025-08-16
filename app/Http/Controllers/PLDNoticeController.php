@@ -60,7 +60,6 @@ class PLDNoticeController extends Controller
         $logContent['file_import_name'] = $request->file('file');
         Excel::import($import, $request->file('file'));
         $data = $import->getData();
-        Log::info(json_encode($data));
 
         $makeXml = new $exportClass(
             data: $data,
