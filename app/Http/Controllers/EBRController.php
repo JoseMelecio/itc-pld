@@ -8,6 +8,8 @@ use App\Exports\EBRRiskInherentExport;
 use App\Exports\EBROperationExport;
 use App\Http\Requests\EBRConfigurationStoreRequest;
 use App\Http\Requests\EBRStoreRequest;
+use App\Imports\EBRClientImport;
+use App\Imports\EBROperationImport;
 use App\Jobs\FinalizeEBRProcessingJob;
 use App\Jobs\ImportClientsFileJob;
 use App\Jobs\ImportOperationsFileJob;
@@ -36,6 +38,7 @@ class EBRController extends Controller
      */
     public function index(): \Inertia\Response
     {
+        Log::info("Index");
         $ebrs = EBR::all();
         $ebrTypeUser = auth()->user()->ebrTypes;
 
@@ -50,6 +53,7 @@ class EBRController extends Controller
      */
     public function store(EBRStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
+        Log::info("Store");
         $fileClients = $request->file('file_clients');
         $fileOperations = $request->file('file_operations');
 
@@ -59,28 +63,37 @@ class EBRController extends Controller
             'file_name_clients' => $fileClients->getClientOriginalName(),
             'file_name_operations' => $fileOperations->getClientOriginalName(),
             'status' => 'processing',
-            'ebr_type_id' => $request->ebr_type_id,
         ]);
+        Log::info($newEbr);
 
         $clientsFileName = $newEbr->id . '_clients.' . $fileClients->getClientOriginalExtension();
         $operationsFileName = $newEbr->id . '_operations.' . $fileOperations->getClientOriginalExtension();
 
-
         $clientsPath = $fileClients->storeAs('ebr_files', $clientsFileName, 'local');
         $operationsPath = $fileOperations->storeAs('ebr_files', $operationsFileName, 'local');
 
-        Bus::batch([
-            new ImportClientsFileJob($newEbr->id, $clientsPath),
-            new ImportOperationsFileJob($newEbr->id, $operationsPath),
-        ])
-            ->then(function (Batch $batch) use ($newEbr) {
-                // Aquí todo terminó con éxito.
-                FinalizeEBRProcessingJob::dispatch($newEbr->id);
-            })
-            ->catch(function (Batch $batch, Throwable $e) {
-                Log::error('Error en la importación: '.$e->getMessage());
-            })
-            ->dispatch();
+        Excel::queueImport(new EBRClientImport(
+            $newEbr->id,
+            auth()->user()->id,
+            auth()->user()->tenant_id), $clientsPath);
+
+        Excel::queueImport(new EBROperationImport(
+            $newEbr->id,
+            auth()->user()->id,
+            auth()->user()->tenant_id), $operationsPath);
+
+//        Bus::batch([
+//            new ImportClientsFileJob($newEbr->id, $clientsPath),
+//            new ImportOperationsFileJob($newEbr->id, $operationsPath),
+//        ])
+//            ->then(function (Batch $batch) use ($newEbr) {
+//                // Aquí todo terminó con éxito.
+//                FinalizeEBRProcessingJob::dispatch($newEbr->id);
+//            })
+//            ->catch(function (Batch $batch, Throwable $e) {
+//                Log::error('Error en la importación: '.$e->getMessage());
+//            })
+//            ->dispatch();
 
         //ImportClientsFileJob::dispatch($newEbr->id, $clientsPath, $operationsPath);
 

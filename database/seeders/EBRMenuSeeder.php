@@ -59,6 +59,21 @@ class EBRMenuSeeder extends Seeder
                     'permission_id' => $parentPermission->id,
                 ]);
             }
+
+            if (! Permission::where('name', 'ebr_inherent_risk_catalog')->where('tenant_id', $tenant->id)->exists()) {
+                $parentPermission = Permission::where('name', 'EBR')->where('tenant_id', $tenant->id)->first();
+                Permission::create([
+                    'tenant_id' => $tenant->id,
+                    'name' => 'ebr_inherent_risk_catalog',
+                    'guard_name' => 'web',
+                    'to' => '/ebr_inherent_risk_catalog',
+                    'icon' => 'fa fa-circle',
+                    'heading' => false,
+                    'menu_label' => 'Cat. Riesgos Inherentes',
+                    'order_to_show' => null,
+                    'permission_id' => $parentPermission->id,
+                ]);
+            }
         }
 
     }

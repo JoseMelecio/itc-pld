@@ -25,7 +25,6 @@ class EBRStoreRequest extends FormRequest
         return [
             'file_clients' => 'required|file|max:10240',
             'file_operations' => 'required|file|max:10240',
-            'ebr_type_id' => 'required|exists:ebr_types,id',
         ];
     }
 
@@ -36,8 +35,6 @@ class EBRStoreRequest extends FormRequest
             'file_clients.max' => 'El archivo es demasiado grande',
             'file_operations.required' => 'El archivo es requerido',
             'file_operations.max' => 'El archivo es demasiado grande',
-            'ebr_type_id.required' => 'El tipo de EBR es requerido',
-            'ebr_type_id.exists' => 'El tipo de EBR debe existir en la base de datos.',
         ];
     }
 }
