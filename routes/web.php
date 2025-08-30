@@ -58,6 +58,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/ebr-configuration', [\App\Http\Controllers\EBRController::class, 'configuration'])->name('ebr.configurations');
     Route::post('/ebr-configuration', [\App\Http\Controllers\EBRController::class, 'configurationStore'])->name('ebr.ConfigurationStore');
 
+    Route::get('/ebr-risk-zones-catalog', [\App\Http\Controllers\EBRRiskZoneController::class, 'index'])->name('ebr.riskZones.index');;
+    Route::post('/ebr-risk-zones-catalog', [\App\Http\Controllers\EBRRiskZoneController::class, 'store'])->name('ebr.riskZones.store');
+    Route::patch('/ebr-risk-zones-catalog/{id}', [\App\Http\Controllers\EBRRiskZoneController::class, 'update'])->name('ebr.riskZones.update');
+    Route::delete('/ebr-risk-zones-catalog/{id}', [\App\Http\Controllers\EBRRiskZoneController::class, 'destroy'])->name('ebr.riskZones.destroy');
 });
 
 //// Landing (Guest)

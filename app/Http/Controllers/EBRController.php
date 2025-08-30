@@ -38,7 +38,6 @@ class EBRController extends Controller
      */
     public function index(): \Inertia\Response
     {
-        Log::info("Index");
         $ebrs = EBR::all();
         $ebrTypeUser = auth()->user()->ebrTypes;
 
