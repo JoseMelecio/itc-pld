@@ -52,6 +52,23 @@ Route::middleware('auth')->group(function () {
     Route::get('/ebr-operation-template', [\App\Http\Controllers\EBRController::class, 'downloadOperationTemplate'])->name('ebr.downloadOperationTemplate');
     Route::get('/ebr-demo', [\App\Http\Controllers\EBRController::class, 'downloadDemoEBR'])->name('ebr.downloadDemo');
     Route::get('/calcular', [\App\Http\Controllers\EBRController::class, 'calcs']);
+    Route::get('/graficos', [\App\Http\Controllers\EBRController::class, 'graficos']);
+    Route::post('/graficos/pdf', [\App\Http\Controllers\EBRController::class, 'exportPDF'])->name('grafico.pdf');
+
+    Route::get('/ebr-configuration', [\App\Http\Controllers\EBRController::class, 'configuration'])->name('ebr.configurations');
+    Route::post('/ebr-configuration', [\App\Http\Controllers\EBRController::class, 'configurationStore'])->name('ebr.ConfigurationStore');
+
+    Route::get('/ebr-risk-zones-catalog', [\App\Http\Controllers\EBRRiskZoneController::class, 'index'])->name('ebr.riskZones.index');;
+    Route::post('/ebr-risk-zones-catalog', [\App\Http\Controllers\EBRRiskZoneController::class, 'store'])->name('ebr.riskZones.store');
+    Route::patch('/ebr-risk-zones-catalog/{id}', [\App\Http\Controllers\EBRRiskZoneController::class, 'update'])->name('ebr.riskZones.update');
+    Route::delete('/ebr-risk-zones-catalog/{id}', [\App\Http\Controllers\EBRRiskZoneController::class, 'destroy'])->name('ebr.riskZones.destroy');
+
+    Route::get('/ebr_inherent_risk_catalog', [\App\Http\Controllers\EBRRiskElementController::class, 'index'])->name('ebr.riskElements.index');
+    Route::get('/ebr_inherent_risk_catalog_create', [\App\Http\Controllers\EBRRiskElementController::class, 'create'])->name('ebr.riskElements.create');
+    Route::post('/ebr_inherent_risk_catalog', [\App\Http\Controllers\EBRRiskElementController::class, 'store'])->name('ebr.riskElements.store');
+    Route::get('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'show'])->name('ebr.riskElements.show');
+    Route::patch('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'update'])->name('ebr.riskElements.update');
+    Route::delete('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'destroy'])->name('ebr.riskElements.destroy');;
 });
 
 //// Landing (Guest)

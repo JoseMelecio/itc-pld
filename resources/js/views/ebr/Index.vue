@@ -16,7 +16,6 @@ const props = defineProps({
 const form = useForm({
   file_clients: '',
   file_operations: '',
-  ebr_type_id: '',
 });
 
 function submit() {
@@ -205,13 +204,6 @@ onMounted(() => {
                   <div id="file_operations-error" class="text-danger">{{ errors.file_operations}}</div>
                 </div>
 
-                <div class="mb-4">
-                  <label class="form-label" for="example-select">Tipo EBR</label>
-                  <select class="form-select" name="ebr_type" id="ebr_type" v-model="form.ebr_type_id">
-                    <option v-for="ebrType in ebrTypeUser" :key="ebrType.id" :value="ebrType.id">{{ ebrType.type.toUpperCase() }}</option>
-                  </select>
-                  <div id="evt_type-error" class="text-danger">{{ errors.ebr_type }}</div>
-                </div>
               </div>
             </div>
 

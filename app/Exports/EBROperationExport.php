@@ -2,29 +2,21 @@
 
 namespace App\Exports;
 
-use App\Models\EBRTemplateComposition;
+use App\Models\EBRConfiguration;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithTitle;
-use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Exception;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class EBROperationExport implements FromArray, WithTitle, WithColumnWidths, WithStyles
+class EBROperationExport implements FromArray, WithTitle, WithStyles
 {
     public function array(): array
     {
-        $compositions = EBRTemplateComposition::where('spreadsheet', 'BDdeOperaciones')
-            ->orderBy('order')
-            ->get(['var_name', 'label']);
-
-        $varNames = $compositions->pluck('var_name')->toArray();
-        $labels = $compositions->pluck('label')->toArray();
-
-        return [
-            $varNames,
-            $labels,
-        ];
+        $config = EBRConfiguration::where('tenant_id', auth()->user()->tenant_id)
+            ->where('user_id', auth()->user()->id)
+            ->first();
+        return [$config->template_operations_config];
     }
 
     public function title(): string
@@ -32,25 +24,24 @@ class EBROperationExport implements FromArray, WithTitle, WithColumnWidths, With
         return 'BDdeOperaciones';
     }
 
-    public function columnWidths(): array
-    {
-        $columns = [];
-        foreach (range('A', 'P') as $column) {
-            $columns[$column] = 15;
-        }
-
-        return $columns;
-    }
-
     /**
      * @throws Exception
      */
     public function styles(Worksheet $sheet): void
     {
-        $sheet->getRowDimension(1)->setRowHeight(30)->setVisible(false);
-        $sheet->getRowDimension(2)->setRowHeight(200);
+        // Altura de la primera fila
+        $sheet->getRowDimension(1)->setRowHeight(30);
+        $sheet->getDefaultColumnDimension()->setWidth(15);
 
-        $sheet->getStyle('A1:P2')->applyFromArray([
+        // Detectar última columna y fila con datos
+        $lastColumn = $sheet->getHighestColumn(); // Ej: 'P'
+        $lastRow    = $sheet->getHighestRow();    // Ej: 200
+
+        // Construir rango dinámico (desde A1 hasta última celda usada)
+        $range = "A1:{$lastColumn}{$lastRow}";
+
+        // Aplicar estilos a todo el rango detectado
+        $sheet->getStyle($range)->applyFromArray([
             'alignment' => [
                 'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
                 'vertical'   => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
@@ -64,7 +55,7 @@ class EBROperationExport implements FromArray, WithTitle, WithColumnWidths, With
             ],
             'borders' => [
                 'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN, // Borde delgado y discreto
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
                     'color' => ['rgb' => 'A6A6A6'],
                 ],
             ],

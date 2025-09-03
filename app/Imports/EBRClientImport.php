@@ -3,61 +3,59 @@
 namespace App\Imports;
 
 use App\Models\EBRClient;
-use App\Models\EBRTemplateComposition;
+use App\Models\EBRConfiguration;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
-use Maatwebsite\Excel\Concerns\ToCollection;use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
-class EBRClientImport implements ToCollection,ShouldQueue, WithChunkReading, WithStartRow
+class EBRClientImport implements ToCollection, ShouldQueue, WithChunkReading, WithStartRow
 {
-    protected string $ebrId;
-    protected bool $firstChunk = true;
+    use Queueable;
 
-    public function __construct(string $ebrId)
+    protected string $ebrId;
+    protected string $tenantId;
+    protected string $userId;
+
+    public function __construct(string $ebrId, string $tenantId, string $userId)
     {
         $this->ebrId = $ebrId;
+        $this->tenantId = $tenantId;
+        $this->userId = $userId;
     }
-    /**
-    * @param Collection $collection
-    */
-    public function collection(Collection $collection)
+
+    public function collection(Collection $collection): void
     {
-        $column_var_name = EBRTemplateComposition::where('spreadsheet', 'BDdeClientes')
-            ->orderBY('order')
-            ->pluck('var_name')
-            ->toArray();
+        $ebrConfiguration = EBRConfiguration::where('tenant_id', $this->tenantId)
+            ->where('user_id', $this->userId)->first();
+
+        $column_var_name = $ebrConfiguration->template_clients_config;
 
         $bulkInsert = [];
+
         foreach ($collection as $row) {
             $dataToInsert = [];
             foreach ($column_var_name as $key => $var_name) {
-                $dataToInsert[$var_name] = $row[$key];
+                $dataToInsert[$var_name] = $row[$key] ?? null;
             }
             $dataToInsert['ebr_id'] = $this->ebrId;
             $bulkInsert[] = $dataToInsert;
         }
-        EBRClient::insert($bulkInsert);
+
+        if (!empty($bulkInsert)) {
+            EBRClient::insert($bulkInsert);
+        }
     }
 
-    /**
-     * Define el tamaño del "chunk" (filas a leer por vez).
-     *
-     * @return int
-     */
     public function chunkSize(): int
     {
         return 1000;
     }
 
-    /**
-     *
-     */
     public function startRow(): int
     {
-        return 3;
+        return 2;
     }
-
 }
