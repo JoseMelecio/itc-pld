@@ -15,15 +15,21 @@ class EBRRiskElement extends Model
 
     protected $fillable = [
         'id',
-        'ebr_type_id',
-        'order',
         'risk_element',
         'lateral_header',
         'sub_header',
-        'entity_grouper',
-        'variable_grouper',
+        'description',
+        'report_config',
         'active'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'report_config' => 'array',
+            'active' => 'boolean'
+        ];
+    }
 
     public function calculate(int $ebr_id): Boolean|Collection
     {
@@ -48,8 +54,14 @@ class EBRRiskElement extends Model
         ->get();
     }
 
-    public function related(): HasMany
+    public function riskElementRelated(): HasMany
     {
         return $this->hasMany(EBRRiskElementRelated::class, 'ebr_risk_element_id');
+    }
+
+    public function riskIndicatorRelated(): HasMany
+    {
+        return $this->hasMany(EBRRiskElementIndicator::class, 'ebr_risk_element_id');
+
     }
 }
