@@ -13,7 +13,7 @@ class EBRRiskZoneController extends Controller
     {
         $riskzones = EBRRiskZone::all();
 
-        return Inertia::render('ebr/catalogs/riskZoneIndex', [
+        return Inertia::render('ebr/catalogs/risk-zones/riskZoneIndex', [
             'riskZones' => $riskzones,
         ]);
     }

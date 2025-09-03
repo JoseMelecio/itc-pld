@@ -106,7 +106,7 @@ function loadForm(riskZone) {
     <div class="row items-push">
       <div class="col-sm-12 col-xl-12">
         <form @submit.prevent="submit()" enctype="multipart/form-data">
-          <BaseBlock title="Zonas de Riesgo" class="h-100 mb-0" content-class="fs-sm">
+          <BaseBlock title="Elementos de Riesgo" class="h-100 mb-0" content-class="fs-sm">
             <div class="row">
 
               <div class="col-2">

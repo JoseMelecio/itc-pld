@@ -62,6 +62,13 @@ Route::middleware('auth')->group(function () {
     Route::post('/ebr-risk-zones-catalog', [\App\Http\Controllers\EBRRiskZoneController::class, 'store'])->name('ebr.riskZones.store');
     Route::patch('/ebr-risk-zones-catalog/{id}', [\App\Http\Controllers\EBRRiskZoneController::class, 'update'])->name('ebr.riskZones.update');
     Route::delete('/ebr-risk-zones-catalog/{id}', [\App\Http\Controllers\EBRRiskZoneController::class, 'destroy'])->name('ebr.riskZones.destroy');
+
+    Route::get('/ebr_inherent_risk_catalog', [\App\Http\Controllers\EBRRiskElementController::class, 'index'])->name('ebr.riskElements.index');
+    Route::get('/ebr_inherent_risk_catalog_create', [\App\Http\Controllers\EBRRiskElementController::class, 'create'])->name('ebr.riskElements.create');
+    Route::post('/ebr_inherent_risk_catalog', [\App\Http\Controllers\EBRRiskElementController::class, 'store'])->name('ebr.riskElements.store');
+    Route::get('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'show'])->name('ebr.riskElements.show');
+    Route::patch('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'update'])->name('ebr.riskElements.update');
+    Route::delete('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'destroy'])->name('ebr.riskElements.destroy');;
 });
 
 //// Landing (Guest)

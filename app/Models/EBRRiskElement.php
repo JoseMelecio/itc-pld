@@ -15,13 +15,10 @@ class EBRRiskElement extends Model
 
     protected $fillable = [
         'id',
-        'ebr_type_id',
-        'order',
         'risk_element',
         'lateral_header',
         'sub_header',
-        'entity_grouper',
-        'variable_grouper',
+        'description',
         'report_config',
         'active'
     ];
@@ -29,7 +26,8 @@ class EBRRiskElement extends Model
     protected function casts(): array
     {
         return [
-            'report_config' => 'array'
+            'report_config' => 'array',
+            'active' => 'boolean'
         ];
     }
 
