@@ -499,7 +499,7 @@ class RealEstateAdministrationExportXML
                                     $xmlObject->endElement(); // tipo_inmueble
 
                                     $xmlObject->startElement('valor_referencia');
-                                    $xmlObject->text(number_format($asset['reference_value_mx'], 2, '.', ','));
+                                    $xmlObject->text(number_format($asset['reference_value_mx'], 2, '.', ''));
                                     $xmlObject->endElement(); // valor_referencia
 
                                     $xmlObject->startElement('colonia');
