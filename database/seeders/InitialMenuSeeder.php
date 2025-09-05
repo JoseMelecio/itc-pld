@@ -65,7 +65,7 @@ class InitialMenuSeeder extends Seeder
                     'name' => 'logs',
                     'guard_name' => 'web',
                     'to' => '/',
-                    'icon' => 'fa fa-file-code',
+                    'icon' => 'fa fa-rectangle-list',
                     'heading' => false,
                     'menu_label' => 'Bitacoras',
                     'order_to_show' => null,
