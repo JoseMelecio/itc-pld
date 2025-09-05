@@ -69,6 +69,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'show'])->name('ebr.riskElements.show');
     Route::patch('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'update'])->name('ebr.riskElements.update');
     Route::delete('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'destroy'])->name('ebr.riskElements.destroy');;
+
+    Route::get('/logs/pld_notice', [\App\Http\Controllers\SystemLogController::class, 'pldNotices'])->name('logs.pldNotices');
 });
 
 //// Landing (Guest)

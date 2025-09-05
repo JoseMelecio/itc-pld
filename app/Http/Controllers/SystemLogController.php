@@ -2,17 +2,38 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SystemLogDatesRequest;
+use App\Http\Resources\SystemLogPldNoticeResource;
 use App\Models\SystemLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Inertia\Inertia;
 
 class SystemLogController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function pldNotices(SystemLogDatesRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        if (empty($validated['start_date'])) {
+            $validated['start_date'] = Carbon::now()->subMonth()->toDateString();
+        }
+
+        if (empty($validated['end_date'])) {
+            $validated['end_date'] = Carbon::now()->toDateString();
+        }
+
+        $logs = SystemLog::whereBetween('created_at', [
+            $validated['start_date'] . ' 00:00:00',
+            $validated['end_date'] . ' 23:59:59',
+        ])->get();
+
+        return Inertia::render('logs/PldNoticeIndex', [
+            'logs' => SystemLogPldNoticeResource::collection($logs),
+        ]);
     }
 
     /**
