@@ -58,6 +58,36 @@ class InitialMenuSeeder extends Seeder
                 ]);
             }
 
+            if (! Permission::where('name', 'logs')->where('tenant_id', $tenant->id)->exists()) {
+                $parentPermission = Permission::where('name', 'administration')->where('tenant_id', $tenant->id)->first();
+                Permission::create([
+                    'tenant_id' => $tenant->id,
+                    'name' => 'logs',
+                    'guard_name' => 'web',
+                    'to' => '/',
+                    'icon' => 'fa fa-file-code',
+                    'heading' => false,
+                    'menu_label' => 'Bitacoras',
+                    'order_to_show' => null,
+                    'permission_id' => $parentPermission->id,
+                ]);
+            }
+
+            if (! Permission::where('name', 'pld_notice_logs')->where('tenant_id', $tenant->id)->exists()) {
+                $parentPermission = Permission::where('name', 'logs')->where('tenant_id', $tenant->id)->first();
+                Permission::create([
+                    'tenant_id' => $tenant->id,
+                    'name' => 'pld_notice_logs',
+                    'guard_name' => 'web',
+                    'to' => '/logs/pld_notice',
+                    'icon' => 'fa fa-circle',
+                    'heading' => false,
+                    'menu_label' => 'Notificaciones',
+                    'order_to_show' => null,
+                    'permission_id' => $parentPermission->id,
+                ]);
+            }
+
             if (! Permission::where('name', 'account')->where('tenant_id', $tenant->id)->exists()) {
                 Permission::create([
                     'tenant_id' => $tenant->id,
