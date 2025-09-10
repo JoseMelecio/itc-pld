@@ -2,6 +2,8 @@
 
 namespace App\Exports;
 
+use Illuminate\Support\Facades\Log;
+
 class RealEstateLeasingExportXML
 {
     private array $data;
@@ -63,9 +65,6 @@ class RealEstateLeasingExportXML
             $xmlObject->startElement('referencia_aviso');
             $xmlObject->text($this->headers['notice_reference']);
             $xmlObject->endElement(); // referencia_aviso
-            $xmlObject->startElement('prioridad');
-            $xmlObject->text(1);
-            $xmlObject->endElement(); //
 
             if (strlen($notice['modification']['folio']) > 0) {
                 $xmlObject->startElement('modificatorio');
@@ -77,17 +76,23 @@ class RealEstateLeasingExportXML
                 $xmlObject->text($notice['modification']['description']);
                 $xmlObject->endElement(); // descripcion_modificacion
 
-                $xmlObject->startElement('prioridad');
-                $xmlObject->text($notice['modification']['priority']);
-                $xmlObject->endElement(); // prioridad
-
                 $xmlObject->endElement(); // modificatorio
             }
 
+            $xmlObject->startElement('prioridad');
+            $xmlObject->text($notice['modification']['priority']);
+            $xmlObject->endElement(); // prioridad
+
             $xmlObject->startElement('alerta');
             $xmlObject->startElement('tipo_alerta');
-            $xmlObject->text('100');
+            $xmlObject->text($notice['alert']['alert_type']);
             $xmlObject->endElement(); // tipo_alerta
+
+            if ($notice['alert']['alert_type'] == 9999) {
+                $xmlObject->startElement('descripcion_alerta');
+                $xmlObject->text($notice['alert']['alert_description']);
+                $xmlObject->endElement();
+            }
             $xmlObject->endElement(); // alerta
 
             $xmlObject->startElement('persona_aviso');
@@ -341,6 +346,7 @@ class RealEstateLeasingExportXML
 
                 $xmlObject->startElement('dueno_beneficiario');
 
+                $xmlObject->startElement('tipo_persona');
                 // Persona Fisica
                 if (strlen($notice['identificationDataPersonBeneficiary']['physicalPerson']['name']) > 0) {
                     $xmlObject->startElement('persona_fisica');
@@ -419,6 +425,7 @@ class RealEstateLeasingExportXML
                     $xmlObject->endElement(); // trust
                 }
 
+                $xmlObject->endElement(); // tipo_persona
                 $xmlObject->endElement(); // dueno_beneficiario
             }
 
