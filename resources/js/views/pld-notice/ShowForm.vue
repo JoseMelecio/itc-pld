@@ -11,12 +11,14 @@ const props = defineProps({
   pldNotice: null,
   customFields: null,
   have_xsd: null,
+  multi_subject: null,
 })
 
 const form = useForm({
   pld_notice_id: props.pldNotice.id,
   month: '',
   collegiate_entity_tax_id: '',
+  custom_obligated_subject: '',
   notice_reference: '',
   exempt: 'no',
   file: '',
@@ -163,6 +165,16 @@ const downloadTemplate = () => {
                     <label class="form-label" for="collegiate_entity_tax_id">RFC Entidad colegiada</label>
                     <input type="text" class="form-control" :class="{ 'is-invalid': errors.collegiate_entity_tax_id }"  id="collegiate_entity_tax_id" name="collegiate_entity_tax_id" placeholder="XAXX010101000" v-model="form.collegiate_entity_tax_id">
                     <div id="collegiate_entity_tax_id-error" class="invalid-feedback animated fadeIn">{{ errors.collegiate_entity_tax_id}}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row" v-if="multi_subject">
+                <div class="col-12">
+                  <div class="mb-4">
+                    <label class="form-label" for="custom_obligated_subject">RFC Sujeto Obligado <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" :class="{ 'is-invalid': errors.custom_obligated_subject }"  id="custom_obligated_subject" name="custom_obligated_subject" placeholder="XAXX010101000" v-model="form.custom_obligated_subject">
+                    <div id="custom_obligated_subject-error" class="invalid-feedback animated fadeIn">{{ errors.custom_obligated_subject}}</div>
                   </div>
                 </div>
               </div>

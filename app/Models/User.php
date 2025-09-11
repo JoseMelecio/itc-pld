@@ -80,6 +80,7 @@ class User extends Authenticatable // implements MustVerifyEmail
         'password',
         'status',
         'user_type',
+        'multi_subject'
     ];
 
     /**
@@ -102,6 +103,7 @@ class User extends Authenticatable // implements MustVerifyEmail
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'multi_subject' => 'boolean',
         ];
     }
 

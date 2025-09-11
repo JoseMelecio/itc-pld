@@ -52,6 +52,7 @@ class UserUpdateRequest extends FormRequest
             'password' => 'nullable|string|min:8|confirmed',
             'password_confirmation' => 'nullable|string|min:8',
             'status' => 'required|string|in:active,disabled,suspended',
+            'multi_subject' => 'nullable|boolean',
             'permissions' => 'required|array|min:1',
         ];
     }

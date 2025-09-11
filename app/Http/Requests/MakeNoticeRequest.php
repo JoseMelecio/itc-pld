@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\PLDNotice;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class MakeNoticeRequest extends FormRequest
 {
@@ -45,7 +46,7 @@ class MakeNoticeRequest extends FormRequest
 
     public function rules(): array
     {
-        return array_merge([
+        $rules = [
             'pld_notice_id' => 'required|integer',
             'month' => [
                 'required',
@@ -53,10 +54,17 @@ class MakeNoticeRequest extends FormRequest
                 'regex:/^\d{4}(0[1-9]|1[0-2])$/',
             ],
             'collegiate_entity_tax_id' => 'nullable|string',
+            'custom_obligated_subject' => 'nullable|string',
             'notice_reference' => 'nullable|string',
             'exempt' => 'required|in:yes,no',
             'file' => 'required|file|mimes:xlsx,xls|max:2048',
-        ], $this->dynamicRules);
+        ];
+
+        if (Auth::user()->multi_subject) {
+            $rules['custom_obligated_subject'] = 'required|string';
+        }
+
+        return array_merge($rules, $this->dynamicRules);
     }
 
     public function messages(): array
@@ -65,6 +73,7 @@ class MakeNoticeRequest extends FormRequest
             'month.required' => 'El campo mes reportado es obligatorio.',
             'month.string' => 'El campo mes reportado debe ser una cadena de texto.',
             'month.regex' => 'El campo mes reportado debe cumplir con el formato AAAAMM.',
+            'custom_obligated_subject' => 'El campo sujeto obligado es obligatorio.',
             'exempt.required' => 'El campo exento es obligatorio.',
             'exempt.in' => 'El campo exento debe ser "si" o "no".',
             'file.required' => 'El campo archivo de excel es obligatorio.',
