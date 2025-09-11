@@ -6,7 +6,7 @@ use App\Http\Requests\MakeNoticeRequest;
 use App\Models\PLDNotice;
 use App\Services\SystemLogService;
 use DOMDocument;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,7 +17,7 @@ class PLDNoticeController extends Controller
 {
     public function showForm(string $notice): \Inertia\Response
     {
-        $tenantId = \Auth::user()->tenant_id;
+        $tenantId = Auth::user()->tenant_id;
         $pldNotice = PLDNotice::where('route_param', $notice)->where('tenant_id', $tenantId)->firstOrFail();
         $customFields = $pldNotice->customFields;
 
@@ -28,6 +28,7 @@ class PLDNoticeController extends Controller
             'pldNotice' => $pldNotice,
             'customFields' => $customFields,
             'have_xsd' => file_exists($xsd),
+            'multi_subject' => Auth::user()->multi_subject,
         ]);
     }
 
@@ -46,6 +47,11 @@ class PLDNoticeController extends Controller
         $dataRequest = $request->validated();
         $dataRequest['tax_id'] = \Auth::user()->tax_id;
         $pldNotice = PLDNotice::where('id', $dataRequest['pld_notice_id'])->where('tenant_id', $tenantId)->firstOrFail();
+
+        //overwriting tax_id with custom_obligated_subjet
+        if (Auth::user()->multi_subject) {
+            $dataRequest['tax_id'] = $dataRequest['custom_obligated_subject'];
+        }
         $logContent['tenant_id'] = $tenantId;
         $logContent['type'] = 'create';
         $logContent['model_type'] = get_class($pldNotice);
@@ -70,6 +76,7 @@ class PLDNoticeController extends Controller
         $xsdName = Str::camel($pldNotice->name);
         $xsd = public_path('xsd/'.$xsdName.'.xsd');;
 
+        //file_exists($xsd)
         if (file_exists($xsd)) {
             $dom = new DOMDocument;
             $dom->loadXML($xmlContent);
