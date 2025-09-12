@@ -176,8 +176,6 @@ class BankAccountManagementExportXML
                 $xmlObject->text($notice['identificacionPersonaObjetoAviso']['personaMoral']['giroMercantil']);
                 $xmlObject->endElement(); // Elemento giro_mercantil
 
-                $xmlObject->endElement(); // Elemento persona_moral
-
                 $xmlObject->startElement('representante_apoderado');
                 $xmlObject->startElement('nombre');
                 $xmlObject->text($notice['identificacionPersonaObjetoAviso']['datosRepresentantes']['nombre']);
@@ -208,6 +206,8 @@ class BankAccountManagementExportXML
                 }
 
                 $xmlObject->endElement(); // Elemento representante_apoderado
+
+                $xmlObject->endElement(); // Elemento persona_moral
             }
             // Fideicomiso
             else {
@@ -353,7 +353,7 @@ class BankAccountManagementExportXML
             // Datos del dueño o beneficiario
             // Validamos si hay datos del dueño o beneficiario
             if (strlen($notice['beneficiarioControlador']['personaFisica']['nombre']) > 0 ||
-                strlen($notice['beneficiarioControlador']['personaMoral']['nombre']) > 0 ||
+                strlen($notice['beneficiarioControlador']['personaMoral']['razonSocial']) > 0 ||
                 strlen($notice['beneficiarioControlador']['fideicomiso']['denominacion']) > 0) {
 
                 $xmlObject->startElement('dueno_beneficiario');

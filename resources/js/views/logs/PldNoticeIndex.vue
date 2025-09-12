@@ -126,6 +126,7 @@ function formatNumber(num) {
                         :class="{
                           'bg-success-light text-success': log.status === 'success',
                           'bg-danger-light text-danger': log.status === 'error',
+                          'bg-warning-light text-warning': log.status === 'pending',
                         }">
                     {{ log.status }}
                     </span>
