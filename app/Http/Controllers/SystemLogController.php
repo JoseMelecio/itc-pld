@@ -29,7 +29,7 @@ class SystemLogController extends Controller
         $logs = SystemLog::whereBetween('created_at', [
             $validated['start_date'] . ' 00:00:00',
             $validated['end_date'] . ' 23:59:59',
-        ])->get();
+        ])->orderBy('created_at', 'DESC')->get();
 
         return Inertia::render('logs/PldNoticeIndex', [
             'logs' => SystemLogPldNoticeResource::collection($logs),
