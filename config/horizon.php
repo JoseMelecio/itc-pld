@@ -84,7 +84,7 @@ return [
     */
 
     'waits' => [
-        'redis:default' => 60,
+        'redis:default' => 3,
     ],
 
     /*
@@ -199,8 +199,13 @@ return [
     'environments' => [
         'production' => [
             'supervisor-1' => [
-                'balanceMaxShift' => 1,
-                'balanceCooldown' => 3,
+                'connection' => 'redis',
+                'queue' => ['default'],
+                'balance' => 'auto',
+                'processes' => 8,
+                'tries' => 3,
+                'timeout' => 60,
+                'nice' => 0,
             ],
         ],
 
