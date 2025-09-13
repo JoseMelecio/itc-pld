@@ -486,9 +486,9 @@ class RealEstateAdministrationExportXML
                     $xmlObject->startElement('tipo_actividad');
                         $xmlObject->startElement('administracion_recursos');
 
-                        foreach ($notice['operationDetails']['asset'] as $assets)
+                        foreach ($notice['operationDetails']['asset'] as $asset)
                         {
-                            foreach ($assets as $asset) {
+                            //foreach ($assets as $asset) {
 
                                 $xmlObject->startElement('tipo_activo');
 
@@ -531,7 +531,7 @@ class RealEstateAdministrationExportXML
                                 $xmlObject->endElement(); // activo_inmobiliario
 
                                 $xmlObject->endElement(); // tipo_activo
-                            }
+                            //}
                         }
 
                         $xmlObject->startElement('numero_operaciones');
@@ -541,8 +541,8 @@ class RealEstateAdministrationExportXML
                         $xmlObject->endElement(); // adminitracion_recursos
                     $xmlObject->endElement(); // tipo_actividad
 
-                    foreach ($notice['operationDetails']['financialOperation'] as $operations) {
-                        foreach ($operations as $operation) {
+                    foreach ($notice['operationDetails']['financialOperation'] as $operation) {
+                        //foreach ($operations as $operation) {
                             $xmlObject->startElement('datos_operacion_financiera');
 
                             $xmlObject->startElement('instrumento_monetario');
@@ -558,7 +558,7 @@ class RealEstateAdministrationExportXML
                             $xmlObject->endElement(); // monto_operacion
 
                             $xmlObject->endElement(); // datos_operacion_financiera
-                        }
+                        //}
                     }
 
                 $xmlObject->endElement(); // datos_operacion
