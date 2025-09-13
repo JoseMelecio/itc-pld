@@ -243,12 +243,12 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
                 $financialOperation['currency'] = $tempCurrency[0];
             }
 
-            if (strlen( $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['physicalPerson']['name']) > 0 ||
-                strlen( $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['legalPerson']['company_name']) > 0 ||
-                strlen( $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['trust']['denomination']) > 0
-            ) {
-                $noticeHash = md5(json_encode( $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']));
-            }
+//            if (strlen( $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['physicalPerson']['name']) > 0 ||
+//                strlen( $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['legalPerson']['company_name']) > 0 ||
+//                strlen( $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['trust']['denomination']) > 0
+//            ) {
+//                $noticeHash = md5(json_encode( $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']));
+//            }
 
             if (strlen($financialOperation['instrument']) > 0) {
                  $this->data['items'][$noticeHash]['operationDetails']['financialOperation'][] = $financialOperation;
