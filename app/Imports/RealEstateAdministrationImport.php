@@ -14,13 +14,14 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
     public function collection(Collection $collection): void
     {
         $noticeHash = '';
+        $lastHash = '';
         foreach ($collection->skip(3) as $row) {
             $newRecord = false;
             //Validamos si es nuevo registro o continuacion del anterior
             if (strlen($row[3]) > 0 || //D - Nombre persona fisica
                 strlen($row[11]) > 0 || //L - Nombre persona moral
                 strlen($row[16]) > 0) { //Q - Fideicomiso
-                $noticeHash = uniqid();
+                $noticeHash = md5($row[3].$row[11].$row[16]);
                 $newRecord = true;
             }
 
@@ -37,7 +38,7 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
             }
 
             if ($newRecord) {
-                $dataRow['modification'] = $modification;
+                 $this->data['items'][$noticeHash]['modification'] = $modification;
             }
 
             //Identification data of the person subject of the notice
@@ -63,7 +64,7 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
             }
 
             if ($newRecord) {
-                $dataRow['identificationDataPersonSubjectNotice']['physicalPerson'] = $physicalPerson;
+                 $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['physicalPerson'] = $physicalPerson;
             }
 
             //Legal person
@@ -86,7 +87,7 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
             }
 
             if ($newRecord) {
-                $dataRow['identificationDataPersonSubjectNotice']['legalPerson'] = $legalPerson;
+                 $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['legalPerson'] = $legalPerson;
             }
 
             //trust
@@ -97,7 +98,7 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
             ];
 
             if ($newRecord) {
-                $dataRow['identificationDataPersonSubjectNotice']['trust'] = $trust;
+                 $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['trust'] = $trust;
             }
 
             //representative data
@@ -111,7 +112,7 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
             ];
 
             if ($newRecord) {
-                $dataRow['identificationDataPersonSubjectNotice']['representativeData'] = $representative;
+                 $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['representativeData'] = $representative;
             }
 
             $nationalAddress = [
@@ -125,7 +126,7 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
             ];
 
             if ($newRecord) {
-                $dataRow['identificationDataPersonSubjectNotice']['nationalAddress'] = $nationalAddress;
+                 $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['nationalAddress'] = $nationalAddress;
             }
 
             $foreignAddress = [
@@ -145,7 +146,7 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
             }
 
             if ($newRecord) {
-                $dataRow['identificationDataPersonSubjectNotice']['foreignAddress'] = $foreignAddress;
+                 $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['foreignAddress'] = $foreignAddress;
             }
 
             //Contact
@@ -161,7 +162,7 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
             }
 
             if ($newRecord) {
-                $dataRow['identificationDataPersonSubjectNotice']['contact'] = $contact;
+                 $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['contact'] = $contact;
             }
 
             //Identification data of the beneficiary or owner
@@ -182,7 +183,7 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
             }
 
             if ($newRecord) {
-                $dataRow['identificationDataPersonBeneficiary']['physicalPerson'] = $physicalPerson;
+                 $this->data['items'][$noticeHash]['identificationDataPersonBeneficiary']['physicalPerson'] = $physicalPerson;
             }
 
             //legal person
@@ -199,7 +200,7 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
             }
 
             if ($newRecord) {
-                $dataRow['identificationDataPersonBeneficiary']['legalPerson'] = $legalPerson;
+                 $this->data['items'][$noticeHash]['identificationDataPersonBeneficiary']['legalPerson'] = $legalPerson;
             }
 
             //trust
@@ -210,19 +211,19 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
             ];
 
             if ($newRecord) {
-                $dataRow['identificationDataPersonBeneficiary']['trust'] = $trust;
+                 $this->data['items'][$noticeHash]['identificationDataPersonBeneficiary']['trust'] = $trust;
             }
 
             //Fecha de Operacion
             $dateOperation = trim(strtoupper($row[57])); //BF
             if (strlen($dateOperation) > 0) {
-                $dataRow['operationDetails']['dateOperation'] = $dateOperation;
+                 $this->data['items'][$noticeHash]['operationDetails']['dateOperation'] = $dateOperation;
             }
 
             //Numero de Operaciones
             $operationCount = trim(strtoupper($row[58])); //BG
             if (strlen($operationCount) > 0) {
-                $dataRow['operationDetails']['operationCount'] = $operationCount;
+                 $this->data['items'][$noticeHash]['operationDetails']['operationCount'] = $operationCount;
             }
 
             //Financial Operation
@@ -242,15 +243,15 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
                 $financialOperation['currency'] = $tempCurrency[0];
             }
 
-            if (strlen($dataRow['identificationDataPersonSubjectNotice']['physicalPerson']['name']) > 0 ||
-                strlen($dataRow['identificationDataPersonSubjectNotice']['legalPerson']['company_name']) > 0 ||
-                strlen($dataRow['identificationDataPersonSubjectNotice']['trust']['denomination']) > 0
+            if (strlen( $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['physicalPerson']['name']) > 0 ||
+                strlen( $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['legalPerson']['company_name']) > 0 ||
+                strlen( $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']['trust']['denomination']) > 0
             ) {
-                $noticeHash = md5(json_encode($dataRow['identificationDataPersonSubjectNotice']));
+                $noticeHash = md5(json_encode( $this->data['items'][$noticeHash]['identificationDataPersonSubjectNotice']));
             }
 
             if (strlen($financialOperation['instrument']) > 0) {
-                $dataRow['operationDetails']['financialOperation'][$noticeHash][] = $financialOperation;
+                 $this->data['items'][$noticeHash]['operationDetails']['financialOperation'][] = $financialOperation;
             }
 
             //Administrate real state
@@ -277,11 +278,14 @@ class RealEstateAdministrationImport implements ToCollection, WithMultipleSheets
                 $asset['state'] = $tempState[0];
             }
 
-            if (strlen($asset['asset_type']) > 0) {
-                $dataRow['operationDetails']['asset'][$noticeHash][] = $asset;
+            if ($newRecord) {
+                if (strlen($asset['asset_type']) > 0) {
+                     $this->data['items'][$noticeHash]['operationDetails']['asset'][] = $asset;
+                }
             }
 
-            $this->data['items'][$noticeHash] = $dataRow;
+            //$this->data['items'][$noticeHash] = $dataRow;
+            $lastHash = $noticeHash;
         }
     }
 

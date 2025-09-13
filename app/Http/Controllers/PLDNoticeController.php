@@ -122,6 +122,7 @@ class PLDNoticeController extends Controller
 
             return Response::download(Storage::path($fileName), $fileName)->deleteFileAfterSend(true);
         } catch (Throwable $e) {
+            Log::error($e);
             $errorString = sprintf(
                 "%s: %s in %s:%d",
                 get_class($e),
