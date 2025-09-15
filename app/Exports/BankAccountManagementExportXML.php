@@ -443,7 +443,7 @@ class BankAccountManagementExportXML
             $xmlObject->startElement('datos_operacion');
 
             $xmlObject->startElement('fecha_operacion');
-            $xmlObject->text($notice['operacionFinanciera']['operacionFinanciera']['fechaOperacion']);
+            $xmlObject->text($notice['operacionFinanciera']['fechaOperacion']);
             $xmlObject->endElement(); // fecha_operacion
 
             $xmlObject->startElement('tipo_actividad');
@@ -452,67 +452,73 @@ class BankAccountManagementExportXML
             $xmlObject->startElement('activo_banco');
 
             $xmlObject->startElement('estatus_manejo');
-            $xmlObject->text($notice['operacionFinanciera']['datosOperacion']['estatusManejo']);
+            $xmlObject->text($notice['cuentaBancaria']['estatusManejo']);
             $xmlObject->endElement(); // estatus_manejo
 
             $xmlObject->startElement('clave_tipo_institucion');
-            $xmlObject->text($notice['operacionFinanciera']['datosOperacion']['tipoInstitucion']);
+            $xmlObject->text($notice['cuentaBancaria']['tipoInstitucion']);
             $xmlObject->endElement(); // clave_tipo_institucion
 
             $xmlObject->startElement('nombre_institucion');
-            $xmlObject->text($notice['operacionFinanciera']['datosOperacion']['nombreInstitucion']);
+            $xmlObject->text($notice['cuentaBancaria']['nombreInstitucion']);
             $xmlObject->endElement(); // nombre_institucion
 
             $xmlObject->startElement('numero_cuenta');
-            $xmlObject->text($notice['operacionFinanciera']['datosOperacion']['numeroCuenta']);
+            $xmlObject->text($notice['cuentaBancaria']['numeroCuenta']);
             $xmlObject->endElement(); // numero_cuenta
 
             $xmlObject->endElement(); // activo_banco
             $xmlObject->endElement(); // tipo_activo
 
             $xmlObject->startElement('numero_operaciones');
-            $xmlObject->text($notice['operacionFinanciera']['datosOperacion']['numeroOperaciones']);
+            $xmlObject->text($notice['cuentaBancaria']['numeroOperaciones']);
             $xmlObject->endElement(); // numero_operaciones
 
             $xmlObject->endElement(); // administracion_recursos
             $xmlObject->endElement(); // tipo_actividad
 
-            $xmlObject->startElement('datos_operacion_financiera');
-            $xmlObject->startElement('fecha_pago');
-            $xmlObject->text($notice['operacionFinanciera']['operacionFinanciera']['fechaOperacion']);
-            $xmlObject->endElement(); // fecha_pago
+            foreach ($notice['operacionFinanciera']['operaciones'] as $operacion) {
+                $xmlObject->startElement('datos_operacion_financiera');
+                //VC37131R3: El campo no debe incluirse en el reporte cuando la operación reportada corresponda a
+                // "Administración y manejo de recursos, valores, cuentas bancarias, ahorro o valores o
+                // cualquier otro activo". En cualquier otro caso es obligatorio.
+                //$xmlObject->startElement('fecha_pago');
+                //$xmlObject->text($notice['operacionFinanciera']['fechaOperacion']);
+                //$xmlObject->endElement(); // fecha_pago
 
-            $xmlObject->startElement('instrumento_monetario');
-            $xmlObject->text($notice['operacionFinanciera']['operacionFinanciera']['instrumentoMonetario']);
-            $xmlObject->endElement(); // instrumento_monetario
+                $xmlObject->startElement('instrumento_monetario');
+                $xmlObject->text($operacion['instrumentoMonetario']);
+                $xmlObject->endElement(); // instrumento_monetario
 
-            if (strlen($notice['operacionFinanciera']['operacionFinanciera']['tipoActivoVirtual'] > 1)) {
-                $xmlObject->startElement('activo_virtual');
-                $xmlObject->startElement('tipo_activo_virtual');
-                $xmlObject->text($notice['operacionFinanciera']['operacionFinanciera']['tipoActivoVirtual']);
-                $xmlObject->endElement(); // tipo_activo_virtual
+                if (strlen($operacion['tipoActivoVirtual'] > 1)) {
+                    $xmlObject->startElement('activo_virtual');
+                    $xmlObject->startElement('tipo_activo_virtual');
+                    $xmlObject->text($operacion['tipoActivoVirtual']);
+                    $xmlObject->endElement(); // tipo_activo_virtual
 
-                if ($notice['operacionFinanciera']['operacionFinanciera']['tipoActivoVirtual'] == '999999') {
-                    $xmlObject->startElement('descripcion_activo_virtual');
-                    $xmlObject->text($notice['operacionFinanciera']['operacionFinanciera']['descripcionActivoVirtual']);
-                    $xmlObject->endElement(); // descripcion_activo_virtual
+                    if ($operacion['tipoActivoVirtual'] == '999999') {
+                        $xmlObject->startElement('descripcion_activo_virtual');
+                        $xmlObject->text($operacion['descripcionActivoVirtual']);
+                        $xmlObject->endElement(); // descripcion_activo_virtual
+                    }
+
+                    $xmlObject->startElement('cantidad_activo_virtual');
+                    $xmlObject->text($operacion['cantidadActivoVirtual']);
+                    $xmlObject->endElement(); // cantidad_activo_virtual
+                    $xmlObject->endElement(); // activo_virtual
                 }
 
-                $xmlObject->startElement('cantidad_activo_virtual');
-                $xmlObject->text($notice['operacionFinanciera']['operacionFinanciera']['cantidadActivoVirtual']);
-                $xmlObject->endElement(); // cantidad_activo_virtual
-                $xmlObject->endElement(); // activo_virtual
+                $xmlObject->startElement('moneda');
+                $xmlObject->text($operacion['moenda']);
+                $xmlObject->endElement(); // moneda
+
+                $xmlObject->startElement('monto_operacion');
+                $xmlObject->text($operacion['montoOperacion']);
+                $xmlObject->endElement(); // monto_operacion
+
+                $xmlObject->endElement(); // datos_operacion_financiera
+
             }
-
-            $xmlObject->startElement('moneda');
-            $xmlObject->text($notice['operacionFinanciera']['operacionFinanciera']['moenda']);
-            $xmlObject->endElement(); // moneda
-
-            $xmlObject->startElement('monto_operacion');
-            $xmlObject->text($notice['operacionFinanciera']['operacionFinanciera']['montoOperacion']);
-            $xmlObject->endElement(); // monto_operacion
-
-            $xmlObject->endElement(); // datos_operacion_financiera
 
             $xmlObject->endElement(); // datos_operacion
             $xmlObject->endElement(); // Elemento detalle_operaciones
