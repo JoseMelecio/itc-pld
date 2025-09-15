@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\MakeNoticeRequest;
 use App\Models\PLDNotice;
 use App\Models\SystemLog;
-use App\Services\SystemLogService;
 use DOMDocument;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;

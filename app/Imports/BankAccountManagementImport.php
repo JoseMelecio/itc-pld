@@ -12,7 +12,16 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
 
     public function collection(Collection $collection): void
     {
+        $noticeHash = '';
         foreach ($collection->skip(3) as $row) {
+            $newRecord = false;
+            //Validamos si es nuevo registro o continuacion del anterior
+            if (strlen($row[5]) > 0 || //D - Nombre persona fisica
+                strlen($row[13]) > 0 || //L - Nombre persona moral
+                strlen($row[18]) > 0) { //Q - Fideicomiso
+                $noticeHash = md5($row[5].$row[13].$row[18]);
+                $newRecord = true;
+            }
 
             // Modificatorio
             $m_modificatorio = [
@@ -26,7 +35,9 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
                 $m_modificatorio['prioridadAviso'] = trim($tempPrioridad[0]);
             }
 
-            $m_datos['modificatorio'] = $m_modificatorio;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['modificatorio'] = $m_modificatorio;
+            }
 
             // Alerta
             $m_alerta = [
@@ -37,7 +48,10 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
             $tipoAlerta = explode(',', $m_alerta['tipoAlerta']);
             $m_alerta['tipoAlerta'] = $tipoAlerta[0];
 
-            $m_datos['alerta'] = $m_alerta;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['alerta'] = $m_alerta;
+            }
+
 
             //IDENTIFICACION DE LA PERSONA OFICIO
             //Persona fisica
@@ -62,7 +76,9 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
                 $m_personaFisica['nacionalidad'] = $tempNacionalidad[0];
             }
 
-            $m_datos['identificacionPersonaObjetoAviso']['personaFisica'] = $m_personaFisica;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['personaFisica'] = $m_personaFisica;
+            }
 
             //Persona moral
             $m_personaMoral = [
@@ -83,7 +99,9 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
                 $m_personaMoral['nacionalidad'] = $tempNacionalidad[0];
             }
 
-            $m_datos['identificacionPersonaObjetoAviso']['personaMoral'] = $m_personaMoral;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['personaMoral'] = $m_personaMoral;
+            }
 
             //Fideicomiso
             $m_fideicomiso = [
@@ -92,7 +110,7 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
                 'identificador' => trim(strtoupper($row[20])),
             ];
 
-            $m_datos['identificacionPersonaObjetoAviso']['fideicomiso'] = $m_fideicomiso;
+            $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['fideicomiso'] = $m_fideicomiso;
 
             //Datos representante
             $m_representante = [
@@ -104,7 +122,9 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
                 'curp' => trim(strtoupper($row[26])),
             ];
 
-            $m_datos['identificacionPersonaObjetoAviso']['datosRepresentantes'] = $m_representante;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['datosRepresentantes'] = $m_representante;
+            }
 
             //Domicilio Nacional de la persona objeto del aviso
             $m_domicilioNacionalPersonaAviso = [
@@ -115,7 +135,9 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
                 'cp' => trim(strtoupper($row[31])),
             ];
 
-            $m_datos['identificacionPersonaObjetoAviso']['domicilioNacionalPersonaAviso'] = $m_domicilioNacionalPersonaAviso;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['domicilioNacionalPersonaAviso'] = $m_domicilioNacionalPersonaAviso;
+            }
 
             //Domicilio Internacional de la persona objeto del aviso
             $m_domicilioInternacionalPersonaAviso = [
@@ -133,7 +155,10 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
                 $tempPais = explode(',', $m_domicilioInternacionalPersonaAviso['pais']);
                 $m_domicilioInternacionalPersonaAviso['pais'] = $tempPais[0];
             }
-            $m_datos['identificacionPersonaObjetoAviso']['domicilioInternacionalPersonaAviso'] = $m_domicilioInternacionalPersonaAviso;
+
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['domicilioInternacionalPersonaAviso'] = $m_domicilioInternacionalPersonaAviso;
+            }
 
             //Datos del contacto
             $m_datosContactoAviso = [
@@ -146,7 +171,10 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
                 $tempPais = explode(',', $m_datosContactoAviso['pais']);
                 $m_datosContactoAviso['pais'] = $tempPais[0];
             }
-            $m_datos['identificacionPersonaObjetoAviso']['datosContactoAviso'] = $m_datosContactoAviso;
+
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['datosContactoAviso'] = $m_datosContactoAviso;
+            }
 
             //Beneficiario
             //Persona Fisica
@@ -165,7 +193,9 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
                 $m_personaFisica['paisNacionalidad'] = $temppaisNacionalidad[0];
             }
 
-            $m_datos['beneficiarioControlador']['personaFisica'] = $m_personaFisica;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['beneficiarioControlador']['personaFisica'] = $m_personaFisica;
+            }
 
             //Persona moral
             $m_personaMoral = [
@@ -180,7 +210,9 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
                 $m_personaMoral['nacionalidad'] = $tempnacionalidad[0];
             }
 
-            $m_datos['beneficiarioControlador']['personaMoral'] = $m_personaMoral;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['beneficiarioControlador']['personaMoral'] = $m_personaMoral;
+            }
 
             //Fideicomiso
             $m_fideicomiso = [
@@ -189,7 +221,9 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
                 'identificador' => trim(strtoupper($row[56])),
             ];
 
-            $m_datos['beneficiarioControlador']['fideicomiso'] = $m_fideicomiso;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['beneficiarioControlador']['fideicomiso'] = $m_fideicomiso;
+            }
 
             //Cuenta bancaria
             $m_cuentaBancaria = [
@@ -210,7 +244,10 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
                 $m_cuentaBancaria['tipoInstitucion'] = $m_tipoInstitucion[0];
             }
 
-            $m_datos['operacionFinanciera']['datosOperacion'] = $m_cuentaBancaria;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['cuentaBancaria'] = $m_cuentaBancaria;
+            }
+
 
             //Datos de la operacion
             $m_operacionFinanciera = [
@@ -238,9 +275,14 @@ class BankAccountManagementImport implements ToCollection, WithMultipleSheets
                 $m_operacionFinanciera['moenda'] = $m_tempInmueble[0];
             }
 
-            $m_datos['operacionFinanciera']['operacionFinanciera'] = $m_operacionFinanciera;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['operacionFinanciera']['fechaOperacion'] = $m_operacionFinanciera['fechaOperacion'];
+            }
 
-            $this->data['items'][] = $m_datos;
+            //if ($newRecord) {
+                $this->data['items'][$noticeHash]['operacionFinanciera']['operaciones'][] = $m_operacionFinanciera;
+            //}
+            //$this->data['items'][] = $m_datos;
         }
     }
 
