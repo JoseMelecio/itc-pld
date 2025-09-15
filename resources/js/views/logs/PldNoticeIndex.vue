@@ -17,6 +17,23 @@ const form = useForm({
   end_date: '',
 });
 
+const showLog = ref({
+  date: '',
+  user: '',
+  notice: '',
+  type: '',
+  status: '',
+  content: '',
+})
+
+function loadLogInModal(log) {
+  showLog.value.date = log.created_at
+  showLog.value.user = log.user_name
+  showLog.value.notice = log.pld_notice
+  showLog.value.type = log.type
+  showLog.value.status = log.status
+  showLog.value.content = log.content
+}
 function filter() {
   form.get('/logs/pld_notice', {})
 }
@@ -103,6 +120,7 @@ function formatNumber(num) {
                     <th class="d-none d-sm-table-cell">Notificacion</th>
                     <th class="d-none d-sm-table-cell">Tipo</th>
                     <th class="d-none d-sm-table-cell">Status</th>
+                    <th class="d-none d-sm-table-cell"></th>
                   </tr>
                   </thead>
                   <tbody>
@@ -131,6 +149,11 @@ function formatNumber(num) {
                     {{ log.status }}
                     </span>
                     </td>
+                    <td>
+                      <button type="button" class="btn btn-sm btn-alt-secondary" @click="loadLogInModal(log)" data-bs-toggle="modal" data-bs-target="#modal-block-extra-large">
+                        <i class="fa fa-magnifying-glass"></i>
+                      </button>
+                    </td>
                   </tr>
                   </tbody>
                 </table>
@@ -144,5 +167,83 @@ function formatNumber(num) {
       </div>
     </div>
   </div>
+
+  <!-- Extra Large Block Modal -->
+  <div class="modal" id="modal-block-extra-large" tabindex="-1" role="dialog" aria-labelledby="modal-block-extra-large" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="block block-rounded block-transparent mb-0">
+          <div class="block-header block-header-default">
+            <h3 class="block-title">Bitacora</h3>
+            <div class="block-options">
+              <button type="button" class="btn-block-option" data-bs-dismiss="modal" aria-label="Close">
+                <i class="fa fa-fw fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="block-content fs-sm">
+            <div class="row">
+              <div class="col-6">
+                <table class="table table-sm table-vcenter">
+                  <tbody>
+                  <tr>
+                    <td class="fw-semibold fs-sm">
+                      Fecha
+                    </td>
+                    <td class="fw-semibold fs-sm">
+                      {{ showLog.date}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold fs-sm">
+                      Usuario
+                    </td>
+                    <td class="fw-semibold fs-sm">
+                      {{ showLog.user}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold fs-sm">
+                      Notificacion
+                    </td>
+                    <td class="fw-semibold fs-sm">
+                      {{ showLog.notice}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold fs-sm">
+                      Tipo
+                    </td>
+                    <td class="fw-semibold fs-sm">
+                      {{ showLog.type}}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="fw-semibold fs-sm">
+                      Status
+                    </td>
+                    <td class="fw-semibold fs-sm">
+                      {{ showLog.status}}
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="col-6">
+                <p class="fw-semibold fs-sm">Detalle</p>
+                <textarea class="form-control form-control-sm" id="log_details" name="log_details" rows="7">{{ showLog.content}}</textarea>
+              </div>
+            </div>
+            <br>
+          </div>
+          <div class="block-content block-content-full text-end bg-body">
+            <button type="button" class="btn btn-sm btn-alt-secondary me-1" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END Extra Large Block Modal -->
 </template>
 
