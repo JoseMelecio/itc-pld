@@ -8,7 +8,7 @@ import { router } from '@inertiajs/vue3'
 const page = usePage();
 
 const props = defineProps({
-  riskElements: Object,
+  riskIndicators: Object,
   errors: Object,
 })
 
@@ -29,7 +29,7 @@ function formatNumber(num) {
   <Head title="Dashboard" />
 
   <BasePageHeading
-    title="Elementos de Riesgo"
+    title="Indicadores de Riesgo"
     :subtitle="`Catalogo`"
   >
     <template #extra>
@@ -39,7 +39,7 @@ function formatNumber(num) {
             <a class="link-fx" href="/dashboard">Dashboard</a>
           </li>
           <li class="breadcrumb-item" aria-current="page">
-            Catalogo Elementos de Riesgo
+            Catalogo Indicadores de Riesgo
           </li>
         </ol>
       </nav>
@@ -58,9 +58,9 @@ function formatNumber(num) {
     <div class="row items-push">
       <div class="col-sm-12 col-xl-12">
         <form @submit.prevent="submit()" enctype="multipart/form-data">
-          <BaseBlock title="Elementos de Riesgo" class="h-100 mb-0" content-class="fs-sm">
+          <BaseBlock title="Indicadores de Riesgo" class="h-100 mb-0" content-class="fs-sm">
             <div class="mb-4">
-              <a href="/ebr_inherent_risk_catalog_create" class="btn btn-success me-2">Nuevo</a>
+              <a href="/ebr_indicators_risk_catalog_create" class="btn btn-success me-2">Nuevo</a>
             </div>
 
             <hr>
@@ -72,38 +72,31 @@ function formatNumber(num) {
                   <thead>
                   <tr>
                     <th class="text-center" style="width: 50px;">#</th>
-                    <th>Elementos de Riesgo</th>
-                    <th class="d-none d-sm-table-cell">Sub Encabezado</th>
-                    <th class="d-none d-sm-table-cell">Encabezado Lateral</th>
+                    <th>Caracteristica</th>
+                    <th class="d-none d-sm-table-cell" style="width: 100px;" >Clave</th>
+                    <th class="d-none d-sm-table-cell">Nombre</th>
                     <th class="d-none d-sm-table-cell">Descripcion</th>
-                    <th class="d-none d-sm-table-cell">Activo</th>
+                    <th class="d-none d-sm-table-cell">Tipo</th>
                     <th class="d-none d-sm-table-cell"></th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr v-for="(riskElement, index) in riskElements" :key="index">
+                  <tr v-for="(riskIndicator, index) in riskIndicators" :key="index">
                     <th class="text-center" scope="row">{{ index + 1 }}</th>
                     <td class="fw-semibold fs-sm">
-                      {{ toTitleCase(riskElement.risk_element) }}
+                      {{ riskIndicator.characteristic }}
                     </td>
                     <td class="fw-semibold fs-sm">
-                      {{ toTitleCase(riskElement.sub_header) }}
+                      {{ riskIndicator.key }}
                     </td>
                     <td class="fw-semibold fs-sm">
-                      {{ riskElement.lateral_header }}
+                      {{ riskIndicator.name }}
                     </td>
                     <td class="fw-semibold fs-sm">
-                      {{ riskElement.description }}
+                      {{ riskIndicator.description }}
                     </td>
-                    <td class="d-none d-sm-table-cell">
-                  <span
-                    class="fs-xs fw-semibold d-inline-block py-1 px-3 rounded-pill"
-                    :class="{
-                      'bg-success-light text-success': riskElement.active === true,
-                      'bg-danger-light text-danger': riskElement.active === false
-                    }">
-                    {{ riskElement.active === true ? 'Activo' : 'Inhabilitado'}}
-                    </span>
+                    <td class="fw-semibold fs-sm">
+                      {{ riskIndicator.risk_indicator }}
                     </td>
                     <td class="text-center">
                       <div class="btn-group">
@@ -113,7 +106,7 @@ function formatNumber(num) {
                           data-bs-toggle="tooltip"
                           aria-label="Editar"
                           data-bs-original-title="Editar"
-                          @click="router.visit(`/ebr_inherent_risk_catalog/${riskElement.id}`)"
+                          @click="router.visit(`/ebr_indicators_risk_catalog/${riskIndicator.id}`)"
                         >
                           <i class="fa fa-fw fa-pencil-alt"></i>
                         </button>

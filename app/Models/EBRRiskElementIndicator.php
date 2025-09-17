@@ -9,12 +9,19 @@ class EBRRiskElementIndicator extends Model
     protected $table = 'ebr_risk_element_indicators';
 
     protected $fillable = [
-        'ebr_risk_element_id',
         'characteristic',
         'key',
         'name',
         'description',
+        'report_config',
         'risk_indicator',
         'order'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'report_config' => 'array'
+        ];
+    }
 }
