@@ -68,7 +68,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/ebr_inherent_risk_catalog', [\App\Http\Controllers\EBRRiskElementController::class, 'store'])->name('ebr.riskElements.store');
     Route::get('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'show'])->name('ebr.riskElements.show');
     Route::patch('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'update'])->name('ebr.riskElements.update');
-    Route::delete('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'destroy'])->name('ebr.riskElements.destroy');;
+    Route::delete('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'destroy'])->name('ebr.riskElements.destroy');
+
+    Route::get('/ebr_indicators_risk_catalog', [\App\Http\Controllers\EBRRiskElementIndicatorController::class, 'index'])->name('ebr.riskElementIndicators.index');
+    Route::get('/ebr_indicators_risk_catalog_create', [\App\Http\Controllers\EBRRiskElementIndicatorController::class, 'create'])->name('ebr.riskElementIndicators.create');
+    Route::post('/ebr_indicators_risk_catalog', [\App\Http\Controllers\EBRRiskElementIndicatorController::class, 'store'])->name('ebr.riskElementIndicators.store');
+    Route::get('/ebr_indicators_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementIndicatorController::class, 'show'])->name('ebr.riskElementIndicators.show');
+    Route::patch('/ebr_indicators_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementIndicatorController::class, 'update'])->name('ebr.riskElementIndicators.update');
+    Route::delete('/ebr_indicators_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementIndicatorController::class, 'destroy'])->name('ebr.riskElementIndicators.destroy');
 
     Route::get('/logs/pld_notice', [\App\Http\Controllers\SystemLogController::class, 'pldNotices'])->name('logs.pldNotices');
 });
