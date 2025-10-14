@@ -58,9 +58,17 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
     {
         $sanitizedRow = [];
         foreach ($row as $key => $value) {
+            if (Str::contains($value, " - ")) {
+                $temp = explode(" - ", $value);
+                $value = trim($temp[0]);
+            }
+
             $sanitizedRow[$key] = Str::upper(trim($value));
             $this->hash();
             $this->objectPerson();
+            $this->address();
+            $this->contact();
+            $this->beneficiaryPerson();
         }
 
         return $sanitizedRow;
@@ -130,12 +138,6 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
                 'nationality' => $this->sRow[9],
                 'economic_activity' => $this->sRow[10],
             ]);
-
-            $tempCountry = explode(',', $data['nationality']);
-            $data['nationality'] = $tempCountry[1];
-
-            $tempActivity = explode('||', $data['economic_activity']);
-            $data['economic_activity'] = $tempActivity[1];
         }
 
         if ($personType === 'legal') {
@@ -146,12 +148,6 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
                 'nationality' => $this->sRow[14],
                 'economic_activity' => $this->sRow[15],
             ]);
-
-            $tempCountry = explode(',', $data['nationality']);
-            $data['nationality'] = $tempCountry[1];
-
-            $tempActivity = explode('||', $data['economic_activity']);
-            $data['economic_activity'] = $tempActivity[1];
         }
 
         if ($personType === 'trust') {
@@ -163,21 +159,117 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
         }
 
         $this->currentNotice->objectPerson()->create($data);
+
+        if($personType === 'legal' || $personType === 'trust' ) {
+            $representativeData = [
+                'pld_notice_notice_id' => $this->currentNotice->id,
+                'person_notice_type' => 'representative',
+                'person_type' => 'individual',
+                'name_or_company' => $this->sRow[19],
+                'paternal_last_name' => $this->sRow[20],
+                'maternal_last_name' => $this->sRow[21],
+                'birth_or_constitution_date' => $this->sRow[22],
+                'tax_id' => $this->sRow[23],
+                'personal_id' => $this->sRow[24],
+            ];
+            $this->currentNotice->objectPerson()->create($representativeData);
+        }
+
     }
 
     public function address(): void
     {
-
+        $data = [];
+        if (strlen($this->sRow[25]) > 0) {
+            $data = [
+                'pld_notice_notice_id' => $this->currentNotice->id,
+                'type' => 'national',
+                'postal_code' => $this->sRow[25],
+                'state' => $this->sRow[25],
+                'city' => $this->sRow[27],
+                'settlement' => $this->sRow[28],
+                'street' => $this->sRow[29],
+                'external_number' => $this->sRow[30],
+                'internal_number' => $this->sRow[31],
+            ];
+        } else {
+            $data = [
+                'pld_notice_notice_id' => $this->currentNotice->id,
+                'type' => 'foreign',
+                'country' => $this->sRow[32],
+                'state' => $this->sRow[33],
+                'city' => $this->sRow[34],
+                'settlement' => $this->sRow[35],
+                'street' => $this->sRow[36],
+                'external_number' => $this->sRow[37],
+                'internal_number' => $this->sRow[37],
+                'postal_code' => $this->sRow[39],
+            ];
+        }
+        $this->currentNotice->address()->create($data);
     }
 
     public function contact(): void
     {
-
+        $this->currentNotice->contact()->create([
+            'pld_notice_notice_id' => $this->currentNotice->id,
+            'country' => $this->sRow[40],
+            'phone_number' => $this->sRow[41],
+            'email' => $this->sRow[42],
+        ]);
     }
 
     public function beneficiaryPerson(): void
     {
+        $personType = '';
+        if (strlen($this->sRow[43]) > 0) {
+            $personType = 'individual';
+        }
 
+        if (strlen($this->sRow[50]) > 0) {
+            $personType = 'legal';
+        }
+
+        if (strlen($this->sRow[54]) > 0) {
+            $personType = 'trust';
+        }
+
+        $data = [
+            'pld_notice_notice_id' => $this->currentNotice->id,
+            'person_notice_type' => 'beneficiary',
+            'person_type' => $personType,
+        ];
+
+        if ($personType === 'individual') {
+            $data = array_merge($data, [
+                'name_or_company' => $this->sRow[43],
+                'paternal_last_name' => $this->sRow[44],
+                'maternal_last_name' => $this->sRow[45],
+                'birth_or_constitution_date' => $this->sRow[46],
+                'tax_id' => $this->sRow[47],
+                'personal_id' => $this->sRow[48],
+                'nationality' => $this->sRow[49],
+            ]);
+        }
+
+        if ($personType === 'legal') {
+            $data = array_merge($data, [
+                'name_or_company' => $this->sRow[50],
+                'birth_or_constitution_date' => $this->sRow[51],
+                'tax_id' => $this->sRow[52],
+                'nationality' => $this->sRow[53],
+            ]);
+        }
+
+        if ($personType === 'trust') {
+            $data = array_merge($data, [
+                'name_or_company' => $this->sRow[54],
+                'tax_id' => $this->sRow[55],
+                'trust_identification' => $this->sRow[56]
+            ]);
+        }
+
+        $this->currentNotice->objectPerson()->create($data);
     }
 
     public function unitData(): void

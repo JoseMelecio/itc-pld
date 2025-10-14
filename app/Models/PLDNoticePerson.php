@@ -24,7 +24,6 @@ class PLDNoticePerson extends Model
         'nationality',
         'business_activity',
         'trust_identification',
-        'pld_notice_person_id',
     ];
     protected static function boot(): void
     {

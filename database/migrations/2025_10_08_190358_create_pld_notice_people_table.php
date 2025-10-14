@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('pld_notice_people', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->foreignIdFor(PLDNoticeNotice::class, 'pld_notice_notice_id')->constrained();
-            $table->enum('person_notice_type', ['object', 'beneficiary']);
+            $table->enum('person_notice_type', ['object', 'beneficiary', 'representative']);
             $table->enum('person_type', ['individual', 'legal', 'trust']);
             $table->string('name_or_company')->nullable();
             $table->string('paternal_last_name')->nullable();
@@ -27,7 +27,6 @@ return new class extends Migration
             $table->string('nationality')->nullable();
             $table->string('business_activity')->nullable();
             $table->string('trust_identification')->nullable();
-            $table->foreignIdFor(PLDNoticePerson::class, 'pld_notice_person_id')->nullable()->constrained();
 
             $table->timestamps();
         });
