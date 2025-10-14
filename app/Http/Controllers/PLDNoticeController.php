@@ -25,6 +25,7 @@ class PLDNoticeController extends Controller
 
         $xsdName = Str::camel($pldNotice->name);
         $xsd = public_path('xsd/'.$xsdName.'.xsd');
+        Log::info($xsd);
 
         return Inertia::render('pld-notice/ShowForm', [
             'pldNotice' => $pldNotice,

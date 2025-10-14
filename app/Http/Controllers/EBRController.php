@@ -52,7 +52,6 @@ class EBRController extends Controller
      */
     public function store(EBRStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
-        Log::info("Store");
         $fileClients = $request->file('file_clients');
         $fileOperations = $request->file('file_operations');
 
@@ -63,7 +62,6 @@ class EBRController extends Controller
             'file_name_operations' => $fileOperations->getClientOriginalName(),
             'status' => 'processing',
         ]);
-        Log::info($newEbr);
 
         $clientsFileName = $newEbr->id . '_clients.' . $fileClients->getClientOriginalExtension();
         $operationsFileName = $newEbr->id . '_operations.' . $fileOperations->getClientOriginalExtension();
