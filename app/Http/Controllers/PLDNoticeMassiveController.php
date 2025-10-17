@@ -8,6 +8,7 @@ use App\Models\Permission;
 use App\Models\PLDNotice;
 use App\Models\PLDNoticeMassive;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -31,7 +32,6 @@ class PLDNoticeMassiveController extends Controller
             ->where('tenant_id', $tenant)
             ->where('allow_massive', true)
             ->get();
-        Log::info($allowedNotices);
 
         return Inertia::render('pld-notice-massive/Index', [
             'pldMassives' => $pldMassives,
@@ -59,15 +59,23 @@ class PLDNoticeMassiveController extends Controller
     public function store(PLDNoticeMassiveStoreRequest $request)
     {
         $templateFile = $request->file('template');
+        $headerData = $request->validated();
+        $headerData['obligated_subject'] = Auth::user()->tax_id;
+        $headerData['tenant_id'] = Auth::user()->tenant_id;
+        unset($headerData['template']);
+        unset($headerData['notice_id']);
+
         $templateFileName = uniqid() . '.' . $templateFile->getClientOriginalExtension();
 
         $templateFile->storeAs('pld_massive', $templateFileName, 'local');
 
         $newMassiveNotice = PLDNoticeMassive::create([
-            'user_id' => \Auth::user()->id,
+            'user_id' => Auth::user()->id,
+            'tenant_id' => Auth::user()->tenant_id,
             'pld_notice_id' => $request->notice_id,
             'file_uploaded' => $templateFileName,
             'original_name' => $templateFile->getClientOriginalName(),
+            'form_data' => $headerData,
             'status' => 'processing',
         ]);
 

@@ -25,6 +25,12 @@ class PLDNoticeMassiveStoreRequest extends FormRequest
         return [
             'template' => 'required|file|mimes:xlsx|max:10240',
             'notice_id' => 'required|exists:pld_notice,id',
+            'month' => 'required',
+            'collegiate_entity_tax_id' => 'nullable',
+            'notice_reference' => 'required',
+            'exempt' => 'required',
+            'occupation_type' => 'required',
+            'occupation_description' => 'nullable',
         ];
     }
 
@@ -36,7 +42,10 @@ class PLDNoticeMassiveStoreRequest extends FormRequest
             'template.mimes' => 'El archivo debe ser un archivo excel 2007 en adelante',
             'notice_id.required' => 'La notificacion es requerida',
             'notice_id.exists' => 'La notificacion no existe',
-
+            'month.required' => 'El mes es requerido',
+            'notice_reference.required' => 'La referencia es requerida',
+            'exempt.required' => 'El campo excento es requerido',
+            'occupation_type.required' => 'La ocupacion es requerida',
         ];
     }
 }

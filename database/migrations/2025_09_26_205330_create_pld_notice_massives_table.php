@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('file_uploaded');
             $table->string('original_name');
             $table->string('xml_generated')->nullable();
+            $table->string('errors')->nullable();
             $table->json('form_data')->nullable();
             $table->enum('status', ['processing', 'done', 'error'])->default('processing');
             $table->timestamps();

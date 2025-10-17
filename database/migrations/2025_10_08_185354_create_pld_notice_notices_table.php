@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\PLDNotice;
+use App\Models\PLDNoticeMassive;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,6 +16,7 @@ return new class extends Migration
         Schema::create('pld_notice_notices', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->foreignIdFor(PldNotice::class, 'pld_notice_id')->constrained();
+            $table->foreignIdFor(PLDNoticeMassive::class, 'pld_notice_massive_id')->constrained();
             $table->string('hash')->nullable();
             $table->string('modification_folio')->nullable();
             $table->string('modification_description')->nullable();

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(PLDNoticeNotice::class, 'pld_notice_notice_id')->constrained();
             $table->enum('person_notice_type', ['object', 'beneficiary', 'representative']);
             $table->enum('person_type', ['individual', 'legal', 'trust']);
+            $table->string('hash')->nullable();
             $table->string('name_or_company')->nullable();
             $table->string('paternal_last_name')->nullable();
             $table->string('maternal_last_name')->nullable();

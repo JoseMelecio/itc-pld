@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class PLDNoticeMassive extends Model
 {
@@ -18,6 +19,7 @@ class PLDNoticeMassive extends Model
         'file_uploaded',
         'original_name',
         'xml_generated',
+        'errors',
         'form_data',
         'status'
     ];
@@ -38,5 +40,10 @@ class PLDNoticeMassive extends Model
                 $model->id = uniqid();
             }
         });
+    }
+
+    public function notices(): HasMany
+    {
+        return $this->hasMany(PLDNoticeNotice::class, 'pld_notice_massive_id');
     }
 }

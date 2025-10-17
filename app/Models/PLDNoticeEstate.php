@@ -13,7 +13,7 @@ class PLDNoticeEstate extends Model
     protected $fillable = [
         'id',
         'pld_notice_notice_id',
-        'pld_notice_person_id',
+        'estate_type',
         'estate',
         'reference_value',
         'state',

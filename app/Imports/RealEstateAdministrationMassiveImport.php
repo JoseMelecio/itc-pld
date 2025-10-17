@@ -15,11 +15,11 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
 
-class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkReading, ShouldQueue, WithStartRow, WithMultipleSheets
+class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkReading, WithStartRow, WithMultipleSheets
 {
     protected string $pldNoticeMassiveId;
     protected PLDNoticeMassive $noticeMassive;
-    protected PLDNoticeNotice $currentNotice;
+    protected ?PLDNoticeNotice $currentNotice = null;
 
     protected array $sRow = [];
     protected $hash = '';
@@ -33,7 +33,11 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
     public function collection(Collection $collection): void
     {
         foreach ($collection as $row) {
-            $this->sRow = $this->sanitizeRow($row);
+            $this->sRow = $this->sanitizeRow($row->toArray());
+
+            $this->notice();
+            $this->financialData();
+            $this->estateData();
         }
     }
 
@@ -64,11 +68,6 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
             }
 
             $sanitizedRow[$key] = Str::upper(trim($value));
-            $this->hash();
-            $this->objectPerson();
-            $this->address();
-            $this->contact();
-            $this->beneficiaryPerson();
         }
 
         return $sanitizedRow;
@@ -89,20 +88,28 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
 
     public function notice(): void
     {
-        $this->currentNotice = PLDNoticeNotice::where('notice_massive_id', $this->pldNoticeMassiveId)
+        $this->currentNotice = PLDNoticeNotice::where('pld_notice_massive_id', $this->pldNoticeMassiveId)
             ->where('hash', $this->hash())
             ->first();
 
         if (!$this->currentNotice) {
             $this->currentNotice = PLDNoticeNotice::create([
-                'pld_notice_id' => $this->noticeMassive->id,
+                'pld_notice_id' => $this->noticeMassive->pld_notice_id,
+                'pld_notice_massive_id' => $this->noticeMassive->id,
                 'hash' => $this->hash(),
                 'modification_folio' => $this->sRow[0],
                 'modification_description' => $this->sRow[1],
                 'priority' => $this->sRow[2],
-                'alert_type' => null,
+                'alert_type' => 100,
                 'alert_description' => null,
             ]);
+
+            // Se agregan aqui porque son unicos por aviso
+            $this->objectPerson();
+            $this->address();
+            $this->contact();
+            $this->beneficiaryPerson();
+            $this->uniqueData();
         }
     }
 
@@ -136,7 +143,7 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
                 'tax_id' => $this->sRow[7],
                 'personal_id' => $this->sRow[8],
                 'nationality' => $this->sRow[9],
-                'economic_activity' => $this->sRow[10],
+                'business_activity' => $this->sRow[10],
             ]);
         }
 
@@ -146,7 +153,7 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
                 'birth_or_constitution_date' => $this->sRow[12],
                 'tax_id' => $this->sRow[13],
                 'nationality' => $this->sRow[14],
-                'economic_activity' => $this->sRow[15],
+                'business_activity' => $this->sRow[15],
             ]);
         }
 
@@ -174,26 +181,24 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
             ];
             $this->currentNotice->objectPerson()->create($representativeData);
         }
-
     }
 
     public function address(): void
     {
-        $data = [];
         if (strlen($this->sRow[25]) > 0) {
-            $data = [
+            $this->currentNotice->address()->create([
                 'pld_notice_notice_id' => $this->currentNotice->id,
                 'type' => 'national',
-                'postal_code' => $this->sRow[25],
                 'state' => $this->sRow[25],
-                'city' => $this->sRow[27],
-                'settlement' => $this->sRow[28],
+                'city' => $this->sRow[26],
+                'settlement' => $this->sRow[27],
+                'postal_code' => $this->sRow[28],
                 'street' => $this->sRow[29],
                 'external_number' => $this->sRow[30],
                 'internal_number' => $this->sRow[31],
-            ];
+            ]);
         } else {
-            $data = [
+            $this->currentNotice->address()->create([
                 'pld_notice_notice_id' => $this->currentNotice->id,
                 'type' => 'foreign',
                 'country' => $this->sRow[32],
@@ -202,11 +207,10 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
                 'settlement' => $this->sRow[35],
                 'street' => $this->sRow[36],
                 'external_number' => $this->sRow[37],
-                'internal_number' => $this->sRow[37],
+                'internal_number' => $this->sRow[38],
                 'postal_code' => $this->sRow[39],
-            ];
+            ]);
         }
-        $this->currentNotice->address()->create($data);
     }
 
     public function contact(): void
@@ -269,21 +273,42 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
             ]);
         }
 
-        $this->currentNotice->objectPerson()->create($data);
+        $this->currentNotice->beneficiaryPerson()->create($data);
     }
 
-    public function unitData(): void
+    public function uniqueData(): void
     {
-
+        $this->currentNotice->uniqueData()->create([
+            'pld_notice_notice_id' => $this->currentNotice->id,
+            'operation_date' => $this->sRow[57],
+            'reported_operations' => $this->sRow[58],
+        ]);
     }
 
-    public function operationData(): void
+    public function financialData(): void
     {
-
+        $this->currentNotice->financialOperation()->create([
+            'pld_notice_notice_id' => $this->currentNotice->id,
+            'monetary_instrument' => $this->sRow[59],
+            'currency' => $this->sRow[60],
+            'amount' => $this->sRow[61],
+        ]);
     }
 
     public function estateData(): void
     {
-
+        $this->currentNotice->estateOperation()->create([
+            'pld_notice_notice_id' => $this->currentNotice->id,
+            'estate_type' => $this->sRow[62],
+            'reference_value' => $this->sRow[63],
+            'postal_code' => $this->sRow[64],
+            'state' => $this->sRow[65],
+            'city' => $this->sRow[66],
+            'settlement' => $this->sRow[67],
+            'street' => $this->sRow[68],
+            'external_number' => $this->sRow[69],
+            'internal_number' => $this->sRow[70],
+            'real_folio' => $this->sRow[71],
+        ]);
     }
 }

@@ -13,7 +13,7 @@ class PLDNoticePerson extends Model
     protected $fillable = [
         'id',
         'pld_notice_notice_id',
-        'beneficiary',
+        'person_notice_type',
         'person_type',
         'name_or_company',
         'paternal_last_name',

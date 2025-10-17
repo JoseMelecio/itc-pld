@@ -16,6 +16,7 @@ class PLDNoticeNotice extends Model
         'id',
         'hash',
         'pld_notice_id',
+        'pld_notice_massive_id',
         'reference',
         'priority',
         'alert_type',
@@ -46,7 +47,8 @@ class PLDNoticeNotice extends Model
 
     public function legalRepresentativePerson(): hasOne
     {
-        return $this->hasOne(PLDNoticePerson::class, 'pld_notice_notice_id', 'id');
+        return $this->hasOne(PLDNoticePerson::class, 'pld_notice_notice_id', 'id')
+            ->where('person_notice_type', 'representative');
     }
 
     public function contact(): hasOne
@@ -69,7 +71,7 @@ class PLDNoticeNotice extends Model
         return $this->hasMany(PLDNoticeFinancialOperation::class, 'pld_notice_notice_id', 'id');
     }
 
-    public function estate(): hasMany
+    public function estateOperation(): hasMany
     {
         return $this->hasMany(PLDNoticeEstate::class, 'pld_notice_notice_id', 'id');
     }

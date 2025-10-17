@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('pld_notice_estates', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->foreignIdFor(PLDNoticeNotice::class, 'pld_notice_notice_id')->constrained();
+            $table->string('estate_type')->nullable();
             $table->string('estate')->nullable();
             $table->string('reference_value')->nullable();
             $table->string('state')->nullable();
