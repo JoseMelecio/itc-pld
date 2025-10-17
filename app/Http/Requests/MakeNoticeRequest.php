@@ -57,7 +57,7 @@ class MakeNoticeRequest extends FormRequest
             'custom_obligated_subject' => 'nullable|string',
             'notice_reference' => 'nullable|string',
             'exempt' => 'required|in:yes,no',
-            'file' => 'required|file|mimes:xlsx,xls|max:2048',
+            'file' => 'required|file|mimes:xlsx,xls|max:51200',
         ];
 
         if (Auth::user()->multi_subject) {

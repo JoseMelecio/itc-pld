@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\PLDNoticeMassiveController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Models\PLDNoticeMassive;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -78,6 +80,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/ebr_indicators_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementIndicatorController::class, 'destroy'])->name('ebr.riskElementIndicators.destroy');
 
     Route::get('/logs/pld_notice', [\App\Http\Controllers\SystemLogController::class, 'pldNotices'])->name('logs.pldNotices');
+
+    Route::get('notification-pld-massive', [PLDNoticeMassiveController::class, 'index'])->name('notification-pld-massive.index');
+    Route::get('notification-pld-massive-download-template/{noticeType}', [PLDNoticeMassiveController::class, 'downloadTemplate'])->name('notification-pld-massive.download-template');
+    Route::post('notification-pld-massive', [PLDNoticeMassiveController::class, 'store'])->name('notification-pld-massive.store');
+
 });
 
 //// Landing (Guest)

@@ -8,6 +8,7 @@
         "php": "^8.2",
         "ext-dom": "*",
         "ext-libxml": "*",
+        "ext-xmlwriter": "*",
         "barryvdh/laravel-dompdf": "^3.1",
         "google/cloud-storage": "^1.48",
         "inertiajs/inertia-laravel": "^1.3",
@@ -18,10 +19,10 @@
         "league/flysystem-aws-s3-v3": "^3.0",
         "maatwebsite/excel": "^3.1",
         "mongodb/laravel-mongodb": "^5.1",
+        "spatie/array-to-xml": "^3.4",
         "spatie/laravel-backup": "^9.3",
         "spatie/laravel-permission": "^6.10",
-        "tightenco/ziggy": "^2.4",
-        "ext-xmlwriter": "*"
+        "tightenco/ziggy": "^2.4"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.2",
