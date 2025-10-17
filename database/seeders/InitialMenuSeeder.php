@@ -145,6 +145,21 @@ class InitialMenuSeeder extends Seeder
                     'permission_id' => $parentPermission->id,
                 ]);
             }
+
+            if (! Permission::where('name', 'notification_pld_massive')->where('tenant_id', $tenant->id)->exists()) {
+                $parentPermission = Permission::where('name', 'menu')->where('tenant_id', $tenant->id)->first();
+                Permission::create([
+                    'tenant_id' => $tenant->id,
+                    'name' => 'notification_pld_massive',
+                    'guard_name' => 'web',
+                    'to' => '/notification-pld-massive',
+                    'icon' => 'fa fa-copy',
+                    'heading' => false,
+                    'menu_label' => 'Notificaciones PLD Masivas',
+                    'order_to_show' => null,
+                    'permission_id' => $parentPermission->id,
+                ]);
+            }
         }
 
     }
