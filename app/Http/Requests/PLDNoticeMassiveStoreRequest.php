@@ -16,6 +16,20 @@ class PLDNoticeMassiveStoreRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('validate_xsd_xml')) {
+            $this->merge([
+                'validate_xsd_xml' => filter_var($this->input('validate_xsd_xml'), FILTER_VALIDATE_BOOLEAN),
+            ]);
+        }
+    }
+
+    /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
@@ -31,6 +45,7 @@ class PLDNoticeMassiveStoreRequest extends FormRequest
             'exempt' => 'required',
             'occupation_type' => 'required',
             'occupation_description' => 'nullable',
+            'validate_xsd_xml' => 'nullable',
         ];
     }
 
