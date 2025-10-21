@@ -83,7 +83,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/ebr_indicators_risk_catalog/{id}', [EBRRiskElementIndicatorController::class, 'update'])->name('ebr.riskElementIndicators.update');
     Route::delete('/ebr_indicators_risk_catalog/{id}', [EBRRiskElementIndicatorController::class, 'destroy'])->name('ebr.riskElementIndicators.destroy');
 
-    Route::get('/logs/pld_notice', [SystemLogController::class, 'pldNotices'])->name('logs.pldNotices');
+    Route::get('/logs/pld_notice', [SystemLogController::class, 'index'])->name('logs.index');
 
     Route::get('notification-pld-massive', [PLDNoticeMassiveController::class, 'index'])->name('notification-pld-massive.index');
     Route::get('notification-pld-massive-download-template/{noticeType}', [PLDNoticeMassiveController::class, 'downloadTemplate'])->name('notification-pld-massive.download-template');

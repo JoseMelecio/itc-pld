@@ -27,7 +27,7 @@ class UserUpdateRequest extends FormRequest
         return [
             'user_name' => [
                 'required',
-                Rule::unique('users')->ignore($userId),
+                Rule::unique('users', 'id')->ignore($userId),
             ],
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -35,18 +35,18 @@ class UserUpdateRequest extends FormRequest
                 'required',
                 'string',
                 'max:13',
-                Rule::unique('users')->ignore($userId),
+                Rule::unique('users', 'id')->ignore($userId),
             ],
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users')->ignore($userId),
+                Rule::unique('users', 'id')->ignore($userId),
             ],
             'phone' => [
                 'required',
                 'string',
                 'min:13',
-                Rule::unique('users')->ignore($userId),
+                Rule::unique('users', 'id')->ignore($userId),
             ],
             'password' => 'nullable|string|min:8|confirmed',
             'password_confirmation' => 'nullable|string|min:8',

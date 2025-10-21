@@ -20,6 +20,7 @@ class SystemLogPldNoticeResource extends JsonResource
             'user_name' => $this->user->name . ' ' . $this->user->last_name,
             'type' => $this->type,
             'pld_notice' => $this->model->name,
+            'pld_notice_spanish_name' => $this->model->spanish_name,
             'status' => $this->content['status'],
             'content' => $this->content,
             'created_at' => $this->created_at->toDateTimeString(),
