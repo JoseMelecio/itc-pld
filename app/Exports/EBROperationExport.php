@@ -13,9 +13,7 @@ class EBROperationExport implements FromArray, WithTitle, WithStyles
 {
     public function array(): array
     {
-        $config = EBRConfiguration::where('tenant_id', auth()->user()->tenant_id)
-            ->where('user_id', auth()->user()->id)
-            ->first();
+        $config = EBRConfiguration::where('user_id', auth()->user()->id)->first();
         return [$config->template_operations_config];
     }
 

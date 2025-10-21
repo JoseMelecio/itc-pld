@@ -16,20 +16,17 @@ class EBRClientImport implements ToCollection, ShouldQueue, WithChunkReading, Wi
     use Queueable;
 
     protected string $ebrId;
-    protected string $tenantId;
     protected string $userId;
 
-    public function __construct(string $ebrId, string $tenantId, string $userId)
+    public function __construct(string $ebrId, string $userId)
     {
         $this->ebrId = $ebrId;
-        $this->tenantId = $tenantId;
         $this->userId = $userId;
     }
 
     public function collection(Collection $collection): void
     {
-        $ebrConfiguration = EBRConfiguration::where('tenant_id', $this->tenantId)
-            ->where('user_id', $this->userId)->first();
+        $ebrConfiguration = EBRConfiguration::where('user_id', $this->userId)->first();
 
         $column_var_name = $ebrConfiguration->template_clients_config;
 

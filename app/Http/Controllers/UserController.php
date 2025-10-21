@@ -17,8 +17,7 @@ class UserController extends Controller
      */
     public function index(): \Inertia\Response
     {
-        $tenantId = \Auth::user()->tenant_id;
-        $users = User::where('tenant_id', $tenantId)->orderBy('last_name')->get();
+        $users = User::orderBy('last_name')->get();
 
         return Inertia::render('user/Index', [
             'users' => UserResource::collection($users),
@@ -43,7 +42,7 @@ class UserController extends Controller
     public function store(UserCreateRequest $request): \Illuminate\Http\RedirectResponse
     {
         $data = $request->validated();
-        $newUser = User::create(array_merge($data, ['tenant_id' => \Auth::user()->tenant_id]));
+        $newUser = User::create($data);
 
         $newPermissions = [];
         foreach ($data['permissions'] as $permission) {

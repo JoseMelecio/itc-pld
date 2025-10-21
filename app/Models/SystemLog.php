@@ -12,7 +12,6 @@ class SystemLog extends Model
     use HasFactory;
 
     protected $fillable = [
-        'tenant_id',
         'user_id',
         'model_type',
         'model_id',

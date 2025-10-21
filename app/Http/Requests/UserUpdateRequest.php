@@ -23,12 +23,11 @@ class UserUpdateRequest extends FormRequest
     public function rules(): array
     {
         $userId = $this->route('user') ? $this->route('user')->id : null;
-        $tenantId = auth()->user()->tenant_id;
 
         return [
             'user_name' => [
                 'required',
-                Rule::unique('users')->where('tenant_id', $tenantId)->ignore($userId),
+                Rule::unique('users')->ignore($userId),
             ],
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -36,18 +35,18 @@ class UserUpdateRequest extends FormRequest
                 'required',
                 'string',
                 'max:13',
-                Rule::unique('users')->where('tenant_id', $tenantId)->ignore($userId),
+                Rule::unique('users')->ignore($userId),
             ],
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users')->where('tenant_id', $tenantId)->ignore($userId),
+                Rule::unique('users')->ignore($userId),
             ],
             'phone' => [
                 'required',
                 'string',
                 'min:13',
-                Rule::unique('users')->where('tenant_id', $tenantId)->ignore($userId),
+                Rule::unique('users')->ignore($userId),
             ],
             'password' => 'nullable|string|min:8|confirmed',
             'password_confirmation' => 'nullable|string|min:8',

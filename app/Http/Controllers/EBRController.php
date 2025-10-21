@@ -56,7 +56,6 @@ class EBRController extends Controller
         $fileOperations = $request->file('file_operations');
 
         $newEbr = EBR::create([
-            'tenant_id' => auth()->user()->tenant_id,
             'user_id' => auth()->user()->id,
             'file_name_clients' => $fileClients->getClientOriginalName(),
             'file_name_operations' => $fileOperations->getClientOriginalName(),
@@ -71,13 +70,11 @@ class EBRController extends Controller
 
         Excel::queueImport(new EBRClientImport(
             $newEbr->id,
-            auth()->user()->id,
-            auth()->user()->tenant_id), $clientsPath);
+            auth()->user()->id), $clientsPath);
 
         Excel::queueImport(new EBROperationImport(
             $newEbr->id,
-            auth()->user()->id,
-            auth()->user()->tenant_id), $operationsPath);
+            auth()->user()->id), $operationsPath);
 
 //        Bus::batch([
 //            new ImportClientsFileJob($newEbr->id, $clientsPath),
@@ -130,8 +127,7 @@ class EBRController extends Controller
      */
     public function configuration()
     {
-        $ebrConfiguration = EBRConfiguration::where('tenant_id', auth()->user()->tenant_id)
-            ->where('user_id', auth()->user()->id)
+        $ebrConfiguration = EBRConfiguration::where('user_id', auth()->user()->id)
             ->first();
 
         return Inertia::render('ebr/Configuration', [
@@ -145,8 +141,7 @@ class EBRController extends Controller
     public function configurationStore(EBRConfigurationStoreRequest $request)
     {
         $data = $request->validated();
-        $ebrConfiguration = EBRConfiguration::where('tenant_id', $data['tenant_id'])
-            ->where('user_id', $data['user_id'])
+        $ebrConfiguration = EBRConfiguration::where('user_id', $data['user_id'])
             ->first();
 
         if ($ebrConfiguration) {
