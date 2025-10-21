@@ -24,6 +24,7 @@ const showLog = ref({
   type: '',
   status: '',
   content: '',
+  pld_notice_spanish_name: ''
 })
 
 function loadLogInModal(log) {
@@ -33,6 +34,7 @@ function loadLogInModal(log) {
   showLog.value.type = log.type
   showLog.value.status = log.status
   showLog.value.content = log.content
+  showLog.value.pld_notice_spanish_name = log.pld_notice_spanish_name
 }
 function filter() {
   form.get('/logs/pld_notice', {})
@@ -133,7 +135,7 @@ function formatNumber(num) {
                       {{ toTitleCase(log.user_name) }}
                     </td>
                     <td class="fw-semibold fs-sm">
-                      {{ toTitleCase(log.pld_notice) }}
+                      {{ toTitleCase(log.pld_notice_spanish_name) }}
                     </td>
                     <td class="fw-semibold fs-sm">
                       {{ toTitleCase(log.type) }}
@@ -207,7 +209,7 @@ function formatNumber(num) {
                       Notificacion
                     </td>
                     <td class="fw-semibold fs-sm">
-                      {{ showLog.notice}}
+                      {{ toTitleCase(showLog.pld_notice_spanish_name) }}
                     </td>
                   </tr>
                   <tr>
