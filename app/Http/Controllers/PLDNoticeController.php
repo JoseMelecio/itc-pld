@@ -80,7 +80,7 @@ class PLDNoticeController extends Controller
             $xsd = public_path('xsd/' . $xsdName . '.xsd');;
 
             //file_exists($xsd)
-            if (file_exists($xsd)) {
+            if (file_exists($xsd) && $dataRequest->validate_xsd_xml == true) {
                 $dom = new DOMDocument;
                 $dom->loadXML($xmlContent);
                 libxml_use_internal_errors(true);

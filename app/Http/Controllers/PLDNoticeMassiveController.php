@@ -48,7 +48,10 @@ class PLDNoticeMassiveController extends Controller
     public function downloadTemplate(string $notice): BinaryFileResponse
     {
         $pldNotice = PLDNotice::where('route_param', $notice)->firstOrFail();
-        $filePath = public_path('templates/'.$pldNotice->template);
+        $onlyName = explode('.', $pldNotice->template);
+        $name = $onlyName[0] . 'Masivo.' . $onlyName[1];
+        $filePath = public_path('templates/'.$name);
+        Log::info($filePath);
 
         return response()->download($filePath);
     }

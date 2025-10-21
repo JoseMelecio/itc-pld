@@ -14,6 +14,12 @@ class MakeNoticeRequest extends FormRequest
 
     public function prepareForValidation(): void
     {
+        if ($this->has('validate_xsd_xml')) {
+            $this->merge([
+                'validate_xsd_xml' => filter_var($this->input('validate_xsd_xml'), FILTER_VALIDATE_BOOLEAN),
+            ]);
+        }
+
         $pldNotice = PLDNotice::find($this->input('pld_notice_id'));
 
         foreach ($pldNotice->customFields as $customField) {
@@ -53,6 +59,7 @@ class MakeNoticeRequest extends FormRequest
                 'string',
                 'regex:/^\d{4}(0[1-9]|1[0-2])$/',
             ],
+            'validate_xsd_xml' => 'nullable',
             'collegiate_entity_tax_id' => 'nullable|string',
             'custom_obligated_subject' => 'nullable|string',
             'notice_reference' => 'nullable|string',

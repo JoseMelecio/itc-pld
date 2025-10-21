@@ -63,7 +63,7 @@ class ProcessPLDNoticeMassive implements ShouldQueue
             $status = 'done';
             $errorMessages = null;
             //file_exists($xsd)
-            if (file_exists($xsd)) {
+            if (file_exists($xsd) && $formData['validate_xsd_xml']) {
                 $dom = new DOMDocument;
                 $dom->loadXML($xmlGenerated);
                 libxml_use_internal_errors(true);

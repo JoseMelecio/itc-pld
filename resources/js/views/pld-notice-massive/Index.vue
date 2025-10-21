@@ -80,7 +80,7 @@ const handleNoticeChange = () => {
 };
 
 const downloadTemplate = () => {
-  const url = route('pld-notice.downloadTemplate', {noticeType: noticeSelected.value.route_param });
+  const url = route('notification-pld-massive.download-template', {noticeType: noticeSelected.value.route_param });
 
   axios({
     url: url,
@@ -90,9 +90,11 @@ const downloadTemplate = () => {
     const blob = new Blob([response.data]);
     const downloadUrl = window.URL.createObjectURL(blob);
 
+    const massiveName = noticeSelected.value.template.split('.').slice(0, -1).join('.') + 'Masivo.xlsx';
+
     const link = document.createElement('a');
     link.href = downloadUrl;
-    link.setAttribute('download', noticeSelected.value.template);
+    link.setAttribute('download', massiveName);
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -109,6 +111,7 @@ const form = useForm({
   occupation_type: '',
   occupation_description: '',
   file: '',
+  validate_xsd_xml: '',
 });
 
 function submit() {
@@ -254,12 +257,26 @@ function loadLogInModal(log) {
 
 
             <div class="row">
-              <div class="col-6">
+              <div class="col-12">
                 <div class="mb-4">
                   <label class="form-label" for="file">Plantilla <span class="text-danger">*</span></label>
                   <input class="form-control" :class="{ 'is-invalid': errors.template }" type="file" id="template" name="template" @input="form.template = $event.target.files[0]">
                   <div id="template-error" class="text-danger">{{ errors.template}}</div>
                 </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-3">
+                <div class="mb-4">
+                  <div class="space-y-2">
+                    <div class="form-check">
+                      <input class="form-check-input" type="checkbox" id="validate_xsd_xml" name="validate_xsd_xml" v-model="form.validate_xsd_xml">
+                      <label class="form-check-label" for="validate_xsd_xml">Activar Validación XSD</label>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
 
