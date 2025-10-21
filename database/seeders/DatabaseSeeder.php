@@ -14,7 +14,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // PLD Seeders
-            AddBasicTenantsSeeder::class,
             InitialMenuSeeder::class,
             RealEstateLeasingNoticeSeeder::class,
             MutualLoanNoticeSeeder::class,

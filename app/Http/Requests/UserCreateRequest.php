@@ -22,12 +22,10 @@ class UserCreateRequest extends FormRequest
      */
     public function rules(): array
     {
-        $tenantId = auth()->user()->tenant_id;
-
         return [
             'user_name' => [
                 'required',
-                Rule::unique('users')->where('tenant_id', $tenantId),
+                Rule::unique('users'),
             ],
             'name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -35,18 +33,18 @@ class UserCreateRequest extends FormRequest
                 'required',
                 'string',
                 'max:13',
-                Rule::unique('users')->where('tenant_id', $tenantId),
+                Rule::unique('users'),
             ],
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users')->where('tenant_id', $tenantId),
+                Rule::unique('users'),
             ],
             'phone' => [
                 'required',
                 'string',
                 'min:13',
-                Rule::unique('users')->where('tenant_id', $tenantId),
+                Rule::unique('users'),
             ],
             'password' => 'required|string|min:8|confirmed',
             'password_confirmation' => 'required|string|min:8',

@@ -40,7 +40,6 @@ class ProcessPLDNoticeMassive implements ShouldQueue
         $filePath = Storage::disk('local')->path('pld_massive/'.$noticeMassive->file_uploaded);
 
         $logContent = [];
-        $logContent['tenant_id'] = $formData['tenant_id'];
         $logContent['model_type'] = get_class($pldNotice);
         $logContent['model_id'] = $pldNotice->id;
         $logContent['user_id'] = $noticeMassive->user_id;

@@ -1,9 +1,17 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\EBRController;
+use App\Http\Controllers\EBRRiskElementController;
+use App\Http\Controllers\EBRRiskElementIndicatorController;
+use App\Http\Controllers\EBRRiskZoneController;
+use App\Http\Controllers\PersonListController;
+use App\Http\Controllers\PLDNoticeController;
 use App\Http\Controllers\PLDNoticeMassiveController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SystemLogController;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\CheckDynamicPermission;
 use App\Models\PLDNoticeMassive;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -28,11 +36,7 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-
-    Route::resource('/tenants', \App\Http\Controllers\TenantController::class)->middleware([\App\Http\Middleware\AdminSubdomainMiddleware::class]);
-
-
+Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     //Route::patch('/profile-update-password', [ProfileController::class, 'update'])->name('profile.update');
@@ -40,46 +44,46 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('/users', UserController::class);
 
-    Route::get('/pld-notices/{noticeType}', [\App\Http\Controllers\PLDNoticeController::class, 'showForm'])->name('pld-notice.showForm');
-    Route::post('/pld-notices', [\App\Http\Controllers\PLDNoticeController::class, 'makeNotice'])->name('pld-notice.makeNotice');
-    Route::get('/pld-notices-download/{noticeType}', [\App\Http\Controllers\PLDNoticeController::class, 'downloadTemplate'])->name('pld-notice.downloadTemplate');
-    Route::get('/person-blocked-list', [\App\Http\Controllers\PersonListController::class, 'index'])->name('person-blocked-list');
-    Route::get('/person-blocked-form-finder', [\App\Http\Controllers\PersonListController::class, 'formFind'])->name('person-blocked-form-finder');
-    Route::post('/person-list-blocked-find', [\App\Http\Controllers\PersonListController::class, 'find'])->name('person-list-blocked-find');
-    Route::get('/person-list-blocked-result', [\App\Http\Controllers\PersonListController::class, 'result'])->name('person-list-blocked-result');
-    Route::get('/person-list-blocked-download-template', [\App\Http\Controllers\PersonListController::class, 'downloadTemplate'])->name('person-list-blocked-download-template');
-    Route::get('/ebr', [\App\Http\Controllers\EBRController::class, 'index'])->name('ebr.index');
-    Route::post('/ebr', [\App\Http\Controllers\EBRController::class, 'store'])->name('ebr.store');
-    Route::get('/ebr-client-template', [\App\Http\Controllers\EBRController::class, 'downloadClientTemplate'])->name('ebr.downloadClientTemplate');
-    Route::get('/ebr-operation-template', [\App\Http\Controllers\EBRController::class, 'downloadOperationTemplate'])->name('ebr.downloadOperationTemplate');
-    Route::get('/ebr-demo', [\App\Http\Controllers\EBRController::class, 'downloadDemoEBR'])->name('ebr.downloadDemo');
-    Route::get('/calcular', [\App\Http\Controllers\EBRController::class, 'calcs']);
-    Route::get('/graficos', [\App\Http\Controllers\EBRController::class, 'graficos']);
-    Route::post('/graficos/pdf', [\App\Http\Controllers\EBRController::class, 'exportPDF'])->name('grafico.pdf');
+    Route::get('/pld-notices/{noticeType}', [PLDNoticeController::class, 'showForm'])->name('pld-notice.showForm');
+    Route::post('/pld-notices', [PLDNoticeController::class, 'makeNotice'])->name('pld-notice.makeNotice');
+    Route::get('/pld-notices-download/{noticeType}', [PLDNoticeController::class, 'downloadTemplate'])->name('pld-notice.downloadTemplate');
+    Route::get('/person-blocked-list', [PersonListController::class, 'index'])->name('person-blocked-list');
+    Route::get('/person-blocked-form-finder', [PersonListController::class, 'formFind'])->name('person-blocked-form-finder');
+    Route::post('/person-list-blocked-find', [PersonListController::class, 'find'])->name('person-list-blocked-find');
+    Route::get('/person-list-blocked-result', [PersonListController::class, 'result'])->name('person-list-blocked-result');
+    Route::get('/person-list-blocked-download-template', [PersonListController::class, 'downloadTemplate'])->name('person-list-blocked-download-template');
+    Route::get('/ebr', [EBRController::class, 'index'])->name('ebr.index');
+    Route::post('/ebr', [EBRController::class, 'store'])->name('ebr.store');
+    Route::get('/ebr-client-template', [EBRController::class, 'downloadClientTemplate'])->name('ebr.downloadClientTemplate');
+    Route::get('/ebr-operation-template', [EBRController::class, 'downloadOperationTemplate'])->name('ebr.downloadOperationTemplate');
+    Route::get('/ebr-demo', [EBRController::class, 'downloadDemoEBR'])->name('ebr.downloadDemo');
+    Route::get('/calcular', [EBRController::class, 'calcs']);
+    Route::get('/graficos', [EBRController::class, 'graficos']);
+    Route::post('/graficos/pdf', [EBRController::class, 'exportPDF'])->name('grafico.pdf');
 
-    Route::get('/ebr-configuration', [\App\Http\Controllers\EBRController::class, 'configuration'])->name('ebr.configurations');
-    Route::post('/ebr-configuration', [\App\Http\Controllers\EBRController::class, 'configurationStore'])->name('ebr.ConfigurationStore');
+    Route::get('/ebr-configuration', [EBRController::class, 'configuration'])->name('ebr.configurations');
+    Route::post('/ebr-configuration', [EBRController::class, 'configurationStore'])->name('ebr.ConfigurationStore');
 
-    Route::get('/ebr-risk-zones-catalog', [\App\Http\Controllers\EBRRiskZoneController::class, 'index'])->name('ebr.riskZones.index');;
-    Route::post('/ebr-risk-zones-catalog', [\App\Http\Controllers\EBRRiskZoneController::class, 'store'])->name('ebr.riskZones.store');
-    Route::patch('/ebr-risk-zones-catalog/{id}', [\App\Http\Controllers\EBRRiskZoneController::class, 'update'])->name('ebr.riskZones.update');
-    Route::delete('/ebr-risk-zones-catalog/{id}', [\App\Http\Controllers\EBRRiskZoneController::class, 'destroy'])->name('ebr.riskZones.destroy');
+    Route::get('/ebr-risk-zones-catalog', [EBRRiskZoneController::class, 'index'])->name('ebr.riskZones.index');;
+    Route::post('/ebr-risk-zones-catalog', [EBRRiskZoneController::class, 'store'])->name('ebr.riskZones.store');
+    Route::patch('/ebr-risk-zones-catalog/{id}', [EBRRiskZoneController::class, 'update'])->name('ebr.riskZones.update');
+    Route::delete('/ebr-risk-zones-catalog/{id}', [EBRRiskZoneController::class, 'destroy'])->name('ebr.riskZones.destroy');
 
-    Route::get('/ebr_inherent_risk_catalog', [\App\Http\Controllers\EBRRiskElementController::class, 'index'])->name('ebr.riskElements.index');
-    Route::get('/ebr_inherent_risk_catalog_create', [\App\Http\Controllers\EBRRiskElementController::class, 'create'])->name('ebr.riskElements.create');
-    Route::post('/ebr_inherent_risk_catalog', [\App\Http\Controllers\EBRRiskElementController::class, 'store'])->name('ebr.riskElements.store');
-    Route::get('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'show'])->name('ebr.riskElements.show');
-    Route::patch('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'update'])->name('ebr.riskElements.update');
-    Route::delete('/ebr_inherent_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementController::class, 'destroy'])->name('ebr.riskElements.destroy');
+    Route::get('/ebr_inherent_risk_catalog', [EBRRiskElementController::class, 'index'])->name('ebr.riskElements.index');
+    Route::get('/ebr_inherent_risk_catalog_create', [EBRRiskElementController::class, 'create'])->name('ebr.riskElements.create');
+    Route::post('/ebr_inherent_risk_catalog', [EBRRiskElementController::class, 'store'])->name('ebr.riskElements.store');
+    Route::get('/ebr_inherent_risk_catalog/{id}', [EBRRiskElementController::class, 'show'])->name('ebr.riskElements.show');
+    Route::patch('/ebr_inherent_risk_catalog/{id}', [EBRRiskElementController::class, 'update'])->name('ebr.riskElements.update');
+    Route::delete('/ebr_inherent_risk_catalog/{id}', [EBRRiskElementController::class, 'destroy'])->name('ebr.riskElements.destroy');
 
-    Route::get('/ebr_indicators_risk_catalog', [\App\Http\Controllers\EBRRiskElementIndicatorController::class, 'index'])->name('ebr.riskElementIndicators.index');
-    Route::get('/ebr_indicators_risk_catalog_create', [\App\Http\Controllers\EBRRiskElementIndicatorController::class, 'create'])->name('ebr.riskElementIndicators.create');
-    Route::post('/ebr_indicators_risk_catalog', [\App\Http\Controllers\EBRRiskElementIndicatorController::class, 'store'])->name('ebr.riskElementIndicators.store');
-    Route::get('/ebr_indicators_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementIndicatorController::class, 'show'])->name('ebr.riskElementIndicators.show');
-    Route::patch('/ebr_indicators_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementIndicatorController::class, 'update'])->name('ebr.riskElementIndicators.update');
-    Route::delete('/ebr_indicators_risk_catalog/{id}', [\App\Http\Controllers\EBRRiskElementIndicatorController::class, 'destroy'])->name('ebr.riskElementIndicators.destroy');
+    Route::get('/ebr_indicators_risk_catalog', [EBRRiskElementIndicatorController::class, 'index'])->name('ebr.riskElementIndicators.index');
+    Route::get('/ebr_indicators_risk_catalog_create', [EBRRiskElementIndicatorController::class, 'create'])->name('ebr.riskElementIndicators.create');
+    Route::post('/ebr_indicators_risk_catalog', [EBRRiskElementIndicatorController::class, 'store'])->name('ebr.riskElementIndicators.store');
+    Route::get('/ebr_indicators_risk_catalog/{id}', [EBRRiskElementIndicatorController::class, 'show'])->name('ebr.riskElementIndicators.show');
+    Route::patch('/ebr_indicators_risk_catalog/{id}', [EBRRiskElementIndicatorController::class, 'update'])->name('ebr.riskElementIndicators.update');
+    Route::delete('/ebr_indicators_risk_catalog/{id}', [EBRRiskElementIndicatorController::class, 'destroy'])->name('ebr.riskElementIndicators.destroy');
 
-    Route::get('/logs/pld_notice', [\App\Http\Controllers\SystemLogController::class, 'pldNotices'])->name('logs.pldNotices');
+    Route::get('/logs/pld_notice', [SystemLogController::class, 'pldNotices'])->name('logs.pldNotices');
 
     Route::get('notification-pld-massive', [PLDNoticeMassiveController::class, 'index'])->name('notification-pld-massive.index');
     Route::get('notification-pld-massive-download-template/{noticeType}', [PLDNoticeMassiveController::class, 'downloadTemplate'])->name('notification-pld-massive.download-template');

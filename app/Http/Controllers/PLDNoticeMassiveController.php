@@ -7,6 +7,7 @@ use App\Jobs\ProcessPLDNoticeMassive;
 use App\Models\Permission;
 use App\Models\PLDNotice;
 use App\Models\PLDNoticeMassive;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -17,19 +18,16 @@ class PLDNoticeMassiveController extends Controller
 {
     /**
      * Handles the retrieval and display of PLD massive notices.
-     * Retrieves tenant-specific notices and permissions, filters allowed notices for the tenant,
      * and logs the authorized notices. Renders the 'pld-notice-massive/Index' view with the retrieved data.
      */
     public function index()
     {
         $pldMassives = PLDNoticeMassive::orderBy('created_at', 'ASC')->get();
-        $tenant = Auth()->user()->tenant_id;
-        $notificationPldPermission = Permission::where('name', 'notification_pld')->where('tenant_id', $tenant)->first();
+        $notificationPldPermission = Permission::where('name', 'notification_pld')->first();
         $notices = Permission::where('permission_id', $notificationPldPermission->id)
             ->select('name')->get();
         $noticesByUser = $notices->pluck('name');
         $allowedNotices = PLDNotice::whereIn('route_param', $noticesByUser)
-            ->where('tenant_id', $tenant)
             ->where('allow_massive', true)
             ->get();
 
@@ -40,17 +38,16 @@ class PLDNoticeMassiveController extends Controller
     }
 
     /**
-     * Handles the download of a template file associated with a specific notice.
+     * Handles the download of a specific template file based on the given notice.
      *
-     * @param string $notice The notice identifier used to locate the template file.
-     * @return BinaryFileResponse The response object that initiates the file download.
+     * @param string $notice The identifier for the notice used to locate the template.
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse The response containing the file to download.
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If the specified notice is not found for the tenant.
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If the specified notice is not found.
      */
     public function downloadTemplate(string $notice): BinaryFileResponse
     {
-        $tenantId = \Auth::user()->tenant_id;
-        $pldNotice = PLDNotice::where('route_param', $notice)->where('tenant_id', $tenantId)->firstOrFail();
+        $pldNotice = PLDNotice::where('route_param', $notice)->firstOrFail();
         $filePath = public_path('templates/'.$pldNotice->template);
 
         return response()->download($filePath);
@@ -61,7 +58,6 @@ class PLDNoticeMassiveController extends Controller
         $templateFile = $request->file('template');
         $headerData = $request->validated();
         $headerData['obligated_subject'] = Auth::user()->tax_id;
-        $headerData['tenant_id'] = Auth::user()->tenant_id;
         unset($headerData['template']);
         unset($headerData['notice_id']);
 
@@ -71,7 +67,6 @@ class PLDNoticeMassiveController extends Controller
 
         $newMassiveNotice = PLDNoticeMassive::create([
             'user_id' => Auth::user()->id,
-            'tenant_id' => Auth::user()->tenant_id,
             'pld_notice_id' => $request->notice_id,
             'file_uploaded' => $templateFileName,
             'original_name' => $templateFile->getClientOriginalName(),

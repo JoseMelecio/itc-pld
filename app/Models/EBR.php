@@ -18,7 +18,6 @@ class EBR extends Model
 
     protected $fillable = [
         'id',
-        'tenant_id',
         'user_id',
         'file_name_clients',
         'file_name_operations',

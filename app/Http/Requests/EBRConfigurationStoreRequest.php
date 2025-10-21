@@ -10,7 +10,6 @@ class EBRConfigurationStoreRequest extends FormRequest
     public function prepareForValidation(): void
     {
         $this->merge([
-            'tenant_id' => auth()->user()->tenant_id,
             'user_id' => auth()->user()->id,
             'template_clients_config' => array_filter(
                 array_map('trim', explode(',', $this->template_clients_config)),
@@ -38,7 +37,6 @@ class EBRConfigurationStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tenant_id' => 'required|integer',
             'user_id' => 'required|integer',
             'template_clients_config' => 'required|array|min:1',
             'template_operations_config' => 'required|array|min:1',

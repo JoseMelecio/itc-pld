@@ -12,9 +12,7 @@ class MenuBuilderService
      */
     public static function AllPermissions(?array $selectedPermissions = null): \Illuminate\Database\Eloquent\Collection|array|\Illuminate\Support\Collection
     {
-        $tenantId = \Auth::user()->tenant_id;
-
-        $permissions = Permission::where('tenant_id', $tenantId)->where('heading', true)->get();
+        $permissions = Permission::where('heading', true)->get();
         foreach ($permissions as $key => $permission) {
             $permissions[$key]['selected'] = ! empty($selectedPermissions) && in_array($permission->id, $selectedPermissions);
             $permissions[$key]['sub'] = $permission->children;

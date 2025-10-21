@@ -18,7 +18,6 @@ class EBRFactory extends Factory
     {
         return [
             'id' => $this->faker->uuid(),
-            'tenant_id' => 3,
             'user_id' => 3,
             'file_name' => $this->faker->word(),
         ];
