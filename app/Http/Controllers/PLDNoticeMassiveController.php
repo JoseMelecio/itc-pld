@@ -22,7 +22,10 @@ class PLDNoticeMassiveController extends Controller
      */
     public function index()
     {
-        $pldMassives = PLDNoticeMassive::orderBy('created_at', 'ASC')->get();
+        $pldMassives = PLDNoticeMassive::orderBy('created_at', 'ASC')
+            ->where('user_id', Auth::user()->id)
+            ->get();
+
         $notificationPldPermission = Permission::where('name', 'notification_pld')->first();
         $notices = Permission::where('permission_id', $notificationPldPermission->id)
             ->select('name')->get();
@@ -51,7 +54,6 @@ class PLDNoticeMassiveController extends Controller
         $onlyName = explode('.', $pldNotice->template);
         $name = $onlyName[0] . 'Masivo.' . $onlyName[1];
         $filePath = public_path('templates/'.$name);
-        Log::info($filePath);
 
         return response()->download($filePath);
     }
