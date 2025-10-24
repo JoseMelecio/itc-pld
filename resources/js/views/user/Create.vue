@@ -36,6 +36,10 @@ const submit = () => {
   }
 };
 
+const setDefaultPassword = () => {
+  router.patch(route('users.set-default-password', { user: props.user.id}))
+}
+
 const clearForm = () => {
   form.reset();
 };
@@ -123,24 +127,6 @@ const clearForm = () => {
               </div>
 
               <div class="row">
-                <div class="col-6">
-                  <div class="mb-4">
-                    <label class="form-label" for="password">Contraseña <span class="text-danger" v-if="!form.id">*</span></label>
-                    <input type="password" class="form-control" :class="{ 'is-invalid': errors.password }" id="password" name="password" placeholder="Contraseña.." v-model="form.password">
-                    <div id="password-error" class="invalid-feedback animated fadeIn">{{ errors.password }}</div>
-                  </div>
-                </div>
-
-                <div class="col-6">
-                  <div class="mb-4">
-                    <label class="form-label" for="confirm_password">Confirmar contraseña <span class="text-danger" v-if="!form.id">*</span></label>
-                    <input type="password" class="form-control" :class="{ 'is-invalid': errors.password_confirmation }" id="confirm_password" name="confirm_password" placeholder="Confirmar contraseña.." v-model="form.password_confirmation">
-                    <div id="confirm_password-error" class="invalid-feedback animated fadeIn">{{ errors.password_confirmation }}</div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
                 <div class="col-3">
                   <div class="mb-4">
                     <label class="form-label" for="example-select">Multiples Sujetos Obligados <span class="text-danger">*</span></label>
@@ -159,6 +145,14 @@ const clearForm = () => {
                       <option value="disabled">Deshabilitado</option>
                       <option value="suspended">Suspendido</option>
                     </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-3">
+                  <div class="mb-4">
+                    <button v-if="user.id" type="button" @click="setDefaultPassword()" class="btn btn-info">Restablecer Contraseña</button>
                   </div>
                 </div>
               </div>
@@ -200,3 +194,4 @@ const clearForm = () => {
     </form>
   </div>
 </template>
+
