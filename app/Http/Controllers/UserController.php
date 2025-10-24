@@ -103,7 +103,9 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        User::findOrFail($id)->delete();
+
+        return redirect()->route('dashboard');
     }
 
     /**
@@ -125,7 +127,6 @@ class UserController extends Controller
     public function firstPassword()
     {
         $user = Auth::user();
-        Log::info($user);
         if (!$user->has_default_password) {
             return redirect()->route('login');
         }
@@ -133,8 +134,19 @@ class UserController extends Controller
         return Inertia::render('user/SetNewPassword');
     }
 
-    public function setFirstPassword(string $id)
+    public function eraseCache()
     {
+        User::query()->update(['erase_cache' => true]);
 
+        return redirect()->route('dashboard');
+    }
+
+    public function eraseCacheDone()
+    {
+        $user = Auth::user();
+        $user->erase_cache = false;
+        $user->save();
+
+        return redirect()->route('dashboard');
     }
 }

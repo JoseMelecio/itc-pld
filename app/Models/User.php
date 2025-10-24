@@ -80,7 +80,8 @@ class User extends Authenticatable // implements MustVerifyEmail
         'status',
         'user_type',
         'multi_subject',
-        'has_default_password'
+        'has_default_password',
+        'erase_cache'
     ];
 
     /**
