@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -30,7 +29,7 @@ class AuthenticatedSessionController extends Controller
     /**
      * Handle an incoming authentication request.
      */
-    public function store(LoginRequest $request): RedirectResponse
+    public function store(LoginRequest $request)
     {
         $user = User::where('user_name', $request->get('user_name'))->first();
 
@@ -41,9 +40,11 @@ class AuthenticatedSessionController extends Controller
         }
 
         $request->authenticate();
-
         $request->session()->regenerate();
 
+        if ($user->has_default_password) {
+            return redirect()->intended(route('profile.edit'));
+        }
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

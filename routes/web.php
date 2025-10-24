@@ -41,8 +41,10 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     //Route::patch('/profile-update-password', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::put('/password', [ProfileController::class, 'password'])->name('profile.password');
 
     Route::resource('/users', UserController::class);
+    Route::patch('/users/{user}/set-default-password', [UserController::class, 'setDefaultPassword'])->name('users.set-default-password');
 
     Route::get('/pld-notices/{noticeType}', [PLDNoticeController::class, 'showForm'])->name('pld-notice.showForm');
     Route::post('/pld-notices', [PLDNoticeController::class, 'makeNotice'])->name('pld-notice.makeNotice');
