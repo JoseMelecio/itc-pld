@@ -45,6 +45,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('/users', UserController::class);
     Route::patch('/users/{user}/set-default-password', [UserController::class, 'setDefaultPassword'])->name('users.set-default-password');
+    Route::patch('/users-erase-cache', [UserController::class, 'eraseCache'])->name('users.erase-cache');
+    Route::get('/users-erase-cache-done', [UserController::class, 'eraseCacheDone'])->name('users.erase-cache-done');
 
     Route::get('/pld-notices/{noticeType}', [PLDNoticeController::class, 'showForm'])->name('pld-notice.showForm');
     Route::post('/pld-notices', [PLDNoticeController::class, 'makeNotice'])->name('pld-notice.makeNotice');

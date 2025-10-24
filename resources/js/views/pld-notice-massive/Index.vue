@@ -111,7 +111,7 @@ const form = useForm({
   occupation_type: '',
   occupation_description: '',
   file: '',
-  validate_xsd_xml: '',
+  validate_xsd_xml: true,
 });
 
 function submit() {

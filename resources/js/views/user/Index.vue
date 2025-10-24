@@ -26,6 +26,10 @@ const editUser = (id) => {
     { method: 'get' });
 }
 
+const eraseCache = () => {
+  router.patch(route('users.erase-cache'))
+}
+
 </script>
 
 <template>
@@ -40,12 +44,21 @@ const editUser = (id) => {
         <i class="fa fa-plus opacity-50 me-1"></i>
         Nuevo Usuario
       </button>
+
     </template>
   </BasePageHeading>
 
   <div class="content">
     <div class="row items-push">
       <div class="col-sm-12 col-xl-12">
+        <div class="col-2">
+          <button type="button" class="btn btn-alt-warning" @click="eraseCache">
+            <i class="fa fa-trash opacity-50 me-1"></i>
+            Borrar Cache
+          </button>
+        </div>
+      </div>
+        <div class="row">
         <BaseBlock title="Usuarios" class="h-100 mb-0" content-class="fs-sm">
             <table class="table table-hover table-vcenter">
               <thead>

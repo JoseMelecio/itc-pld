@@ -124,7 +124,7 @@ class RealEstateAdministrationMassiveExport
             if (empty($estate->internal_number)) {
                 unset($estateData['numero_interior']);
             }
-            $data['tipo_actividad']['administracion_recursos']['tipo_activo']['activo_inmobiliario'] = $estateData;
+            $data['tipo_actividad']['administracion_recursos']['tipo_activo'][] = ['activo_inmobiliario' => $estateData];
             $data['tipo_actividad']['administracion_recursos']['numero_operaciones'] = $uniqueData->reported_operations;
         }
 
@@ -134,7 +134,7 @@ class RealEstateAdministrationMassiveExport
                 'moneda' => $financial->currency,
                 'monto_operacion' => number_format($financial->amount, 2, '.', ''),
             ];
-            $data['datos_operacion_financiera'] = $financialData;
+            $data['datos_operacion_financiera'][] = $financialData;
         }
 
         return $data;
