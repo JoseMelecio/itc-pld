@@ -38,7 +38,6 @@ class PLDNotice extends Model
     protected $table = 'pld_notice';
 
     protected $fillable = [
-        'tenant_id',
         'route_param',
         'name',
         'spanish_name',

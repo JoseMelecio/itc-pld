@@ -38,13 +38,12 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate(int $tenantId): void
+    public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
         $credentials = $this->only('user_name', 'password');
 
-        $user = User::where('tenant_id', $tenantId)
-            ->where('user_name', $credentials['user_name'])
+        $user = User::where('user_name', $credentials['user_name'])
             ->first();
 
         if (!$user || !\Hash::check($credentials['password'], $user->password)) {

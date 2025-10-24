@@ -8,6 +8,9 @@ use App\Http\Resources\UserResource;
 use App\Models\Permission;
 use App\Models\User;
 use App\Services\MenuBuilderService;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -17,8 +20,7 @@ class UserController extends Controller
      */
     public function index(): \Inertia\Response
     {
-        $tenantId = \Auth::user()->tenant_id;
-        $users = User::where('tenant_id', $tenantId)->orderBy('last_name')->get();
+        $users = User::orderBy('last_name')->get();
 
         return Inertia::render('user/Index', [
             'users' => UserResource::collection($users),
@@ -43,7 +45,9 @@ class UserController extends Controller
     public function store(UserCreateRequest $request): \Illuminate\Http\RedirectResponse
     {
         $data = $request->validated();
-        $newUser = User::create(array_merge($data, ['tenant_id' => \Auth::user()->tenant_id]));
+        $data['password'] = Hash::make(config('pld.default_password'));
+        $data['has_default_password'] = true;
+        $newUser = User::create($data);
 
         $newPermissions = [];
         foreach ($data['permissions'] as $permission) {
@@ -99,6 +103,50 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        User::findOrFail($id)->delete();
+
+        return redirect()->route('dashboard');
+    }
+
+    /**
+     * Set the default password for a user.
+     */
+    public function setDefaultPassword(string $id)
+    {
+        $user = User::findOrFail($id);
+        $user->password = config('pld.default_password');
+        $user->has_default_password = true;
+        $user->save();
+
+        return redirect()->route('users.index');
+    }
+
+    /**
+     * Handle the first password use case for the specified user.
+     */
+    public function firstPassword()
+    {
+        $user = Auth::user();
+        if (!$user->has_default_password) {
+            return redirect()->route('login');
+        }
+
+        return Inertia::render('user/SetNewPassword');
+    }
+
+    public function eraseCache()
+    {
+        User::query()->update(['erase_cache' => true]);
+
+        return redirect()->route('dashboard');
+    }
+
+    public function eraseCacheDone()
+    {
+        $user = Auth::user();
+        $user->erase_cache = false;
+        $user->save();
+
+        return redirect()->route('dashboard');
     }
 }

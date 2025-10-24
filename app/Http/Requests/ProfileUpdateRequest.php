@@ -29,4 +29,12 @@ class ProfileUpdateRequest extends FormRequest
             ],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'phone.unique' => 'El telefono ya está en uso.',
+            'email.unique' => 'El correo electrónico ya está en uso.',
+        ];
+    }
 }

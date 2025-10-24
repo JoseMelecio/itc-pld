@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Requests\StoreNewPasswordRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -70,6 +71,19 @@ class ProfileController extends Controller
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
+        return Redirect::to('/');
+    }
+
+    /**
+     * Update the authenticated user's password and mark the default password flag as false.
+     */
+    public function password(StoreNewPasswordRequest $request)
+    {
+        $user = Auth::user();
+        $user->password = $request->password;
+        $user->has_default_password = false;
+        $user->save();
 
         return Redirect::to('/');
     }

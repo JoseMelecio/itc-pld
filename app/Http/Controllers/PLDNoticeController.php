@@ -19,8 +19,7 @@ class PLDNoticeController extends Controller
 {
     public function showForm(string $notice): \Inertia\Response
     {
-        $tenantId = Auth::user()->tenant_id;
-        $pldNotice = PLDNotice::where('route_param', $notice)->where('tenant_id', $tenantId)->firstOrFail();
+        $pldNotice = PLDNotice::where('route_param', $notice)->firstOrFail();
         $customFields = $pldNotice->customFields;
 
         $xsdName = Str::camel($pldNotice->name);
@@ -36,8 +35,7 @@ class PLDNoticeController extends Controller
 
     public function downloadTemplate(string $notice): \Symfony\Component\HttpFoundation\BinaryFileResponse
     {
-        $tenantId = \Auth::user()->tenant_id;
-        $pldNotice = PLDNotice::where('route_param', $notice)->where('tenant_id', $tenantId)->firstOrFail();
+        $pldNotice = PLDNotice::where('route_param', $notice)->firstOrFail();
         $filePath = public_path('templates/'.$pldNotice->template);
 
         return response()->download($filePath);
@@ -45,17 +43,15 @@ class PLDNoticeController extends Controller
 
     public function makeNotice(MakeNoticeRequest $request): \Symfony\Component\HttpFoundation\BinaryFileResponse|\Illuminate\Http\JsonResponse
     {
-        $tenantId = Auth::user()->tenant_id;
         $dataRequest = $request->validated();
         $dataRequest['tax_id'] = Auth::user()->tax_id;
-        $pldNotice = PLDNotice::where('id', $dataRequest['pld_notice_id'])->where('tenant_id', $tenantId)->firstOrFail();
+        $pldNotice = PLDNotice::where('id', $dataRequest['pld_notice_id'])->firstOrFail();
 
         //overwriting tax_id with custom_obligated_subjet
         if (Auth::user()->multi_subject) {
             $dataRequest['tax_id'] = $dataRequest['custom_obligated_subject'];
         }
 
-        $logContent['tenant_id'] = $tenantId;
         $logContent['model_type'] = get_class($pldNotice);
         $logContent['model_id'] = $pldNotice->id;
         $logContent['user_id'] = Auth::user()->id;
@@ -84,7 +80,7 @@ class PLDNoticeController extends Controller
             $xsd = public_path('xsd/' . $xsdName . '.xsd');;
 
             //file_exists($xsd)
-            if (file_exists($xsd)) {
+            if (file_exists($xsd) && $dataRequest->validate_xsd_xml == true) {
                 $dom = new DOMDocument;
                 $dom->loadXML($xmlContent);
                 libxml_use_internal_errors(true);

@@ -12,7 +12,6 @@ class SystemLogService
     {
         SystemLog::create([
             'user_id' => Auth::user()->id,
-            'tenant_id' => $data['tenant_id'],
             'model_type' => $data['model_type'],
             'model_id' => $data['model_id'],
             'type' => $data['type'],

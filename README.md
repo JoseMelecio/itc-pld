@@ -11,12 +11,4 @@
 
 1. `composer install`
 2. `npm i`
-3. Despues de instalar las dependencias modificar el archivo: `vendor\spatie\laravel-permission\src\Models\Permission.php` que permitir que los permission se relacion con tenant_id y no los marque como duplicados, en la funcion `create`
-```php
-$permission = static::getPermission([
-    'team_id' => $attributes['team_id'],
-    'name' => $attributes['name'],
-    'guard_name' => $attributes['guard_name']
-]);
-```
-4. `php artisan migrate --seed`
+3. `php artisan migrate --seed`

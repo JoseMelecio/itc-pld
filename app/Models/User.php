@@ -70,7 +70,6 @@ class User extends Authenticatable // implements MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
-        'tenant_id',
         'user_name',
         'name',
         'last_name',
@@ -80,7 +79,9 @@ class User extends Authenticatable // implements MustVerifyEmail
         'password',
         'status',
         'user_type',
-        'multi_subject'
+        'multi_subject',
+        'has_default_password',
+        'erase_cache'
     ];
 
     /**
@@ -104,6 +105,7 @@ class User extends Authenticatable // implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'multi_subject' => 'boolean',
+            'has_default_password' => 'boolean',
         ];
     }
 

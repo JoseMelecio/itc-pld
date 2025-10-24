@@ -2,10 +2,8 @@
 
 namespace App\Imports;
 
-use App\Jobs\FinalizeEBRProcessingJob;
 use App\Models\EBRConfiguration;
 use App\Models\EBROperation;
-use App\Models\EBRTemplateComposition;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
@@ -13,27 +11,23 @@ use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 use Maatwebsite\Excel\Concerns\WithEvents;
-use Maatwebsite\Excel\Events\AfterImport;
 
 class EBROperationImport implements ToCollection, ShouldQueue, WithChunkReading, WithStartRow//, WithEvents
 {
     use Queueable;
 
     protected string $ebrId;
-    protected string $tenantId;
     protected string $userId;
 
-    public function __construct(string $ebrId, string $tenantId, string $userId)
+    public function __construct(string $ebrId, string $userId)
     {
         $this->ebrId = $ebrId;
-        $this->tenantId = $tenantId;
         $this->userId = $userId;
     }
 
     public function collection(Collection $collection): void
     {
-        $ebrConfiguration = EBRConfiguration::where('tenant_id', $this->tenantId)
-            ->where('user_id', $this->userId)->first();
+        $ebrConfiguration = EBRConfiguration::where('user_id', $this->userId)->first();
 
         $column_var_name = $ebrConfiguration->template_operations_config;
 

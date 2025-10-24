@@ -7,6 +7,7 @@ use App\Http\Resources\SystemLogPldNoticeResource;
 use App\Models\SystemLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class SystemLogController extends Controller
@@ -14,7 +15,7 @@ class SystemLogController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function pldNotices(SystemLogDatesRequest $request)
+    public function index(SystemLogDatesRequest $request)
     {
         $validated = $request->validated();
 
