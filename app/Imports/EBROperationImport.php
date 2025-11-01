@@ -47,7 +47,7 @@ class EBROperationImport implements ToCollection, ShouldQueue, WithChunkReading,
 
     public function chunkSize(): int
     {
-        return 1000;
+        return 200;
     }
 
     public function startRow(): int

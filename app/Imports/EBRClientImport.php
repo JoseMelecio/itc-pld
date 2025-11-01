@@ -50,7 +50,7 @@ class EBRClientImport implements ToCollection, ShouldQueue, WithChunkReading, Wi
 
     public function chunkSize(): int
     {
-        return 1000;
+        return 200;
     }
 
     public function startRow(): int
