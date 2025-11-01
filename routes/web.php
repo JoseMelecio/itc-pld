@@ -67,7 +67,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/ebr-configuration', [EBRController::class, 'showConfiguration'])->name('ebr.configurations');
     Route::post('/ebr-configuration', [EBRController::class, 'configurationStore'])->name('ebr.ConfigurationStore');
-    Route::post('/ebr-configuration-risk-element', [EBRController::class, 'riskElementConfigurationStore'])->name('ebr.ConfigurationStore');
+    Route::post('/ebr-configuration-risk-element', [EBRController::class, 'riskElementConfigurationStore'])->name('ebr.riskElementConfigurationStore');
 
     Route::get('/ebr-risk-zones-catalog', [EBRRiskZoneController::class, 'index'])->name('ebr.riskZones.index');;
     Route::post('/ebr-risk-zones-catalog', [EBRRiskZoneController::class, 'store'])->name('ebr.riskZones.store');
