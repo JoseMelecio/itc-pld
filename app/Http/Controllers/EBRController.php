@@ -209,7 +209,10 @@ class EBRController extends Controller
 
         $ebrConfiguration = EBRConfiguration::where('user_id', auth()->user()->id)->first();
         $riskElements = EBRRiskElement::where('active', true)->orderBy('risk_element')->get();
-        $riskElementSelectedIds = $ebrConfiguration->riskElements()->pluck('ebr_risk_elements.id')->toArray();
+
+        if ($ebrConfiguration) {
+            $riskElementSelectedIds = $ebrConfiguration->riskElements()->pluck('ebr_risk_elements.id')->toArray();
+        }
 
         return [
             'templates' => [
@@ -217,11 +220,11 @@ class EBRController extends Controller
                 'operations' => $operationsFields,
             ],
             'ebr_configuration' => [
-                'clients' => $ebrConfiguration->template_clients_config,
-                'operations' => $ebrConfiguration->template_operations_config,
+                'clients' => $ebrConfiguration ? $ebrConfiguration->template_clients_config : [],
+                'operations' => $ebrConfiguration ? $ebrConfiguration->template_operations_config : [],
             ],
             'risk_elements' => $riskElements,
-            'risk_elements_selected' => $riskElementSelectedIds
+            'risk_elements_selected' => $ebrConfiguration ? $riskElementSelectedIds : []
         ];
     }
 }
