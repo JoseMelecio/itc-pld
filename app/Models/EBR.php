@@ -20,9 +20,19 @@ class EBR extends Model
         'id',
         'user_id',
         'file_name_clients',
+        'import_clients_done',
         'file_name_operations',
+        'import_operations_done',
         'ebr_type_id'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'import_operations_done' => 'boolean',
+            'import_clients_done' => 'boolean',
+        ];
+    }
 
     public function user(): BelongsTo
     {
@@ -46,7 +56,7 @@ class EBR extends Model
 
     public function getTotalAmountAttribute()
     {
-        return DB::table('ebr_operations')->where('ebr_id', $this->id)->sum('operation_amount');
+        return DB::table('ebr_operations')->where('ebr_id', $this->id)->sum('monto_operacion');
     }
 
     public function getTotalClientsCountAttribute(): int
@@ -63,5 +73,4 @@ class EBR extends Model
     {
         return 100;
     }
-
 }

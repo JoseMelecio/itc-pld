@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Seeders\eliminar\EBRTemplateCompositionSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -26,13 +27,14 @@ class DatabaseSeeder extends Seeder
             AdminBankAccountCustomFieldsSeeder::class,
             // EBR Seeders
             EBRPermissionSeeder::class,
-            EBRTemplateCompositionSeeder::class,
+            //EBRTemplateCompositionSeeder::class,
             EBRTypeSeeder::class,
-            EBRSofomRiskElementsSeeder::class,
+            //EBRSofomRiskElementsSeeder::class,
             EBRMatrixQualitativeRiskSeeder::class,
             //Last seeder to sync permissions
             UserSeeder::class,
             EBRPermissionSeeder::class,
+            EBRMenuSeeder::class,
         ]);
     }
 }

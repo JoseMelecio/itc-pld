@@ -19,11 +19,17 @@ const props = defineProps({
       report_config: {},
       active: true,
     }),
-  }
+  },
+  groupFields: {
+    type: Array,
+    default: () => [],
+  },
+  grouper_field: ''
 })
 
 const form = useForm({
   ...props.riskElement,
+  grouper_field: props.grouper_field,
 });
 
 function submit() {
@@ -125,64 +131,59 @@ watch(() => form.report_config, (newVal) => {
             <div class="block-content block-content-full">
 
               <div class="row">
-                <div class="col-6">
-
+                <div class="col-4">
                   <div class="mb-4">
                     <label class="form-label" for="month">Elemento de Riesgo <span class="text-danger">*</span></label>
                     <input type="text" class="form-control form-control-sm" :class="{ 'is-invalid': errors.risk_element }"  id="risk_element" name="risk_element" placeholder="Elemento de riesgo" v-model="form.risk_element">
                     <div id="risk_element-error" class="text-danger" >{{ errors.risk_element }}</div>
                   </div>
+                </div>
 
+                <div class="col-4">
                   <div class="mb-4">
                     <label class="form-label" for="month">Sub Encabezado <span class="text-danger">*</span></label>
                     <input type="text" class="form-control form-control-sm" :class="{ 'is-invalid': errors.sub_header }"  id="sub_header" name="sub_header" placeholder="Sub Encabezado" v-model="form.sub_header">
                     <div id="sub_header-error" class="text-danger" >{{ errors.sub_header }}</div>
                   </div>
+                </div>
 
+                <div class="col-4">
                   <div class="mb-4">
                     <label class="form-label" for="month">Encabezado Lateral <span class="text-danger">*</span></label>
                     <input type="text" class="form-control form-control-sm" :class="{ 'is-invalid': errors.lateral_header }"  id="lateral_header" name="lateral_header" placeholder="Encabezado Lateral" v-model="form.lateral_header">
                     <div id="lateral_header-error" class="text-danger" >{{ errors.lateral_header }}</div>
                   </div>
+                </div>
+              </div>
 
+              <div class="row">
+                <div class="col-4">
                   <div class="mb-4">
                     <label class="form-label" for="file">Descripcion <span class="text-danger">*</span></label>
-                    <textarea
-                        v-model="form.description"
-                        class="form-control form-control-sm"
-                        :class="{ 'is-invalid': errors.description }"
-                        id="description"
-                        name="description"
-                        rows="4"
-                    ></textarea>
+                    <input type="text" class="form-control form-control-sm" :class="{ 'is-invalid': errors.description }" id="description" name="description" placeholder="Descripcion" v-model="form.description">
                     <div id="decription-error" class="text-danger">{{ errors.decription}}</div>
-
-                    <div class="mb-4">
-                      <label class="form-label" for="example-select">Activo <span class="text-danger">*</span></label>
-                      <select class="form-select form-control form-control-sm" id="active" name="active" v-model="form.active">
-                        <option value="true">Si</option>
-                        <option value="false">No</option>
-                      </select>
-                    </div>
                   </div>
-
                 </div>
 
-                <div class="col-6">
+                <div class="col-4">
                   <div class="mb-4">
-                    <label class="form-label" for="file">Reglas <span class="text-danger">*</span></label>
-                    <textarea
-                        v-model="reportConfigString"
-                        class="form-control form-control-sm"
-                        :class="{ 'is-invalid': errors.report_config }"
-                        id="report_config"
-                        name="report_config"
-                        rows="19"
-                    ></textarea>
-                    <div id="report_config-error" class="text-danger">{{ errors.report_config}}</div>
+                    <label class="form-label" for="month">Agrupar por<span class="text-danger">*</span></label>
+                    <select class="form-select form-control form-control-sm" id="grouper_field" name="grouper_field" v-model="form.grouper_field">
+                      <option :value=field v-for="(field, index) in groupFields">{{ field }}</option>
+                    </select>
+                    <div id="grouper_field-error" class="text-danger">{{ errors.grouper_field}}</div>
                   </div>
                 </div>
 
+                <div class="col-4">
+                  <div class="mb-4">
+                    <label class="form-label" for="example-select">Activo <span class="text-danger">*</span></label>
+                    <select class="form-select form-control form-control-sm" id="active" name="active" v-model="form.active">
+                      <option value="true">Si</option>
+                      <option value="false">No</option>
+                    </select>
+                  </div>
+                </div>
               </div>
 
               <hr>
@@ -191,6 +192,7 @@ watch(() => form.report_config, (newVal) => {
                 <button type="submit" class="btn btn-success me-2">Guardar</button>
                 <button type="button" @click="clearForm" class="btn btn-info me-2" v-if="form.id === null">Limpiar</button>
                 <button type="button" @click="deleteRiskElement" class="btn btn-danger me-2" v-if="form.id">Eliminar</button>
+                <button type="button" v-if="form.id" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modal-block-extra-large">Ver Regla completa</button>
               </div>
 
             </div>
@@ -199,4 +201,36 @@ watch(() => form.report_config, (newVal) => {
       </div>
     </div>
   </div>
+
+  <!-- Extra Large Block Modal -->
+  <div class="modal" id="modal-block-extra-large" tabindex="-1" role="dialog" aria-labelledby="modal-block-extra-large" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="block block-rounded block-transparent mb-0">
+          <div class="block-header block-header-default">
+            <h3 class="block-title">Errores</h3>
+            <div class="block-options">
+              <button type="button" class="btn-block-option" data-bs-dismiss="modal" aria-label="Close">
+                <i class="fa fa-fw fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="block-content fs-sm">
+            <div class="row">
+              <div class="col-12">
+                <p class="fw-semibold fs-sm">Detalle</p>
+                <textarea class="form-control form-control-sm" id="log_details" name="log_details" rows="20">{{ form.report_config }}</textarea>
+              </div>
+            </div>
+            <br>
+          </div>
+          <div class="block-content block-content-full text-end bg-body">
+            <button type="button" class="btn btn-sm btn-alt-secondary me-1" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END Extra Large Block Modal -->
 </template>
+

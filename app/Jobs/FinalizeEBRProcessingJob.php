@@ -2,10 +2,14 @@
 
 namespace App\Jobs;
 
+use App\Exports\EBRMultiSheetExport;
 use App\Models\EBR;
+use App\Models\EBRConfiguration;
 use App\Models\EBRRiskElementRelated;
 use App\Exports\EBRRiskInherentExport;
+use App\Services\JsonQueryBuilder;
 use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
@@ -36,29 +40,34 @@ class FinalizeEBRProcessingJob implements ShouldQueue
         $ebr->total_operations = $ebr->total_operations_count;
         $ebr->maximum_risk_level = $ebr->maximum_risk_level_count;
 
-        foreach ($ebr->type->riskElements as $riskElement) {
-            $dataCalculated = $riskElement->calculate($ebr->id);
-            foreach ($dataCalculated as $value) {
-                EBRRiskElementRelated::create([
+        $ebrConfiguration = EBRConfiguration::where('user_id', $ebr->user_id)->first();
+        foreach ($ebrConfiguration->riskElements as $riskElement) {
+            $builder = new JsonQueryBuilder($riskElement->report_config, $ebr->id);
+            $query = $builder->build();
+            $result = $query->get();
+
+            foreach ($result as $item) {
+                $newElement = [
                     'ebr_id' => $ebr->id,
                     'ebr_risk_element_id' => $riskElement->id,
-                    'element' => $value['risk_element'],
-                    'amount_mxn' => $value['amount_mxn'],
-                    'total_clients' => $value['total_clients'],
-                    'total_operations' => $value['total_operations'],
-                    'weight_range_impact' => ($value['amount_mxn'] / $ebr->total_operation_amount) * 100,
+                    'element' => $item->label,
+                    'amount_mxn' => $item->amount_mxn,
+                    'total_clients' => $item->total_clients,
+                    'total_operations' => $item->total_operations,
+                    'weight_range_impact' => ($item->amount_mxn / $ebr->total_operation_amount) * 100,
                     'frequency_range_impact' => 0,
                     'risk_inherent_concentration' => 0,
                     'risk_level_features' => 0,
                     'risk_level_integrated' => 0,
-                ]);
+                ];
+                EBRRiskElementRelated::create($newElement);
             }
+
         }
 
-        $ebr->status = 'done';
-        $ebr->save();
-
         $path = "ebr_reports/reporte_ebr_{$ebr->id}.xlsx";
-        Excel::store(new EBRRiskInherentExport($ebr), $path, 'public');
+        Excel::store(new EBRMultiSheetExport($ebr), $path, 'public');
+        $ebr->status = 'done';
+        $ebr->saveQuietly();
     }
 }

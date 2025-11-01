@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class EBRConfiguration extends Model
 {
@@ -20,5 +21,15 @@ class EBRConfiguration extends Model
             'template_clients_config' => 'array',
             'template_operations_config' => 'array'
         ];
+    }
+
+    public function riskElements(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            EBRRiskElement::class,
+            'ebr_configuration_risk_element',
+            'ebr_configuration_id',
+            'risk_element_id'
+        );
     }
 }

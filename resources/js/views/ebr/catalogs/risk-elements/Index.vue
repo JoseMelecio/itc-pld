@@ -83,16 +83,16 @@ function formatNumber(num) {
                   <tbody>
                   <tr v-for="(riskElement, index) in riskElements" :key="index">
                     <th class="text-center" scope="row">{{ index + 1 }}</th>
-                    <td class="fw-semibold fs-sm">
+                    <td class="fs-sm">
                       {{ toTitleCase(riskElement.risk_element) }}
                     </td>
-                    <td class="fw-semibold fs-sm">
+                    <td class="fs-sm">
                       {{ toTitleCase(riskElement.sub_header) }}
                     </td>
-                    <td class="fw-semibold fs-sm">
+                    <td class="fs-sm">
                       {{ riskElement.lateral_header }}
                     </td>
-                    <td class="fw-semibold fs-sm">
+                    <td class="fs-sm">
                       {{ riskElement.description }}
                     </td>
                     <td class="d-none d-sm-table-cell">

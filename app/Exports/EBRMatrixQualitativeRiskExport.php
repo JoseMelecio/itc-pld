@@ -250,7 +250,7 @@ class EBRMatrixQualitativeRiskExport implements FromCollection, WithEvents, With
 
     public function title(): string
     {
-        return 'Estimacion Cualitavica';
+        return 'Estimacion Cualitativa';
     }
 
     public function columnWidths(): array

@@ -61,12 +61,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/ebr-client-template', [EBRController::class, 'downloadClientTemplate'])->name('ebr.downloadClientTemplate');
     Route::get('/ebr-operation-template', [EBRController::class, 'downloadOperationTemplate'])->name('ebr.downloadOperationTemplate');
     Route::get('/ebr-demo', [EBRController::class, 'downloadDemoEBR'])->name('ebr.downloadDemo');
-    Route::get('/calcular', [EBRController::class, 'calcs']);
+    Route::get('/calcular/{id}', [EBRController::class, 'calcs']);
     Route::get('/graficos', [EBRController::class, 'graficos']);
     Route::post('/graficos/pdf', [EBRController::class, 'exportPDF'])->name('grafico.pdf');
 
-    Route::get('/ebr-configuration', [EBRController::class, 'configuration'])->name('ebr.configurations');
+    Route::get('/ebr-configuration', [EBRController::class, 'showConfiguration'])->name('ebr.configurations');
     Route::post('/ebr-configuration', [EBRController::class, 'configurationStore'])->name('ebr.ConfigurationStore');
+    Route::post('/ebr-configuration-risk-element', [EBRController::class, 'riskElementConfigurationStore'])->name('ebr.ConfigurationStore');
 
     Route::get('/ebr-risk-zones-catalog', [EBRRiskZoneController::class, 'index'])->name('ebr.riskZones.index');;
     Route::post('/ebr-risk-zones-catalog', [EBRRiskZoneController::class, 'store'])->name('ebr.riskZones.store');
