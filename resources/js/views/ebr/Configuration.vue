@@ -1,40 +1,61 @@
 <script setup lang="ts">
-
-import {route} from "ziggy-js";
-import { useForm, usePage} from "@inertiajs/vue3";
-import axios from "axios";
-import {ref, computed, onMounted } from "vue";
-import { router } from '@inertiajs/vue3'
-const page = usePage();
+import { router, useForm } from "@inertiajs/vue3";
+import { onMounted } from "vue";
 
 const props = defineProps({
   errors: Object,
-  configs: {
+  templates: {
     type: Object,
     default: () => ({
-      template_clients_config: null,
-      template_operations_config: null,
+      clients: [],
+      operations: [],
     }),
-  }
-})
-
-const form = useForm({
-  ...props.configs,
+  },
+  ebr_configuration: {
+    type: Object,
+    default: () => ({
+      clients: [],
+      operations: [],
+    }),
+  },
+  risk_elements: Object,
+  risk_elements_selected: Array
 });
 
-function submit() {
-  form.post('/ebr-configuration', {
-    onSuccess: () => {
-      form.reset();
-    }
-  })
+
+const form = useForm({
+  template_clients_config: [] as string[],
+  template_operations_config: [] as string[],
+  risk_element_config: props.risk_elements_selected
+});
+
+onMounted(() => {
+  form.template_clients_config = [...(props.ebr_configuration.clients ?? [])];
+  form.template_operations_config = [...(props.ebr_configuration.operations ?? [])];
+});
+
+function toTitleCase(str) {
+  if (!str) return "";
+  return str
+    .toLowerCase()
+    .replace(/\b\w/g, char => char.toUpperCase());
 }
 
+function submitConfigTemplate() {
+  form.post("/ebr-configuration", {
+    onSuccess: () => form.reset(),
+  });
+}
 
+function submitRiskElementConfig() {
+  form.post("/ebr-configuration-risk-element", {
+    onSuccess: () => form.reset(),
+  });
+}
 </script>
 
 <template>
-  <Head title="Dashboard" />
+  <Head title="EBR" />
 
   <BasePageHeading
     title="EBR"
@@ -47,7 +68,7 @@ function submit() {
             <a class="link-fx" href="/dashboard">Dashboard</a>
           </li>
           <li class="breadcrumb-item" aria-current="page">
-            Configuracion EBR
+            Configuracion del EBR
           </li>
         </ol>
       </nav>
@@ -55,60 +76,129 @@ function submit() {
   </BasePageHeading>
 
   <div class="content">
+    <div class="row">
+      <div class="col-12">
+        <!-- Block Tabs Default Style -->
+        <div class="block block-rounded">
+          <ul class="nav nav-tabs nav-tabs-block" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="btabs-static-home-tab" data-bs-toggle="tab" data-bs-target="#btabs-static-home" role="tab" aria-controls="btabs-static-home" aria-selected="true">Plantillas</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="btabs-static-profile-tab" data-bs-toggle="tab" data-bs-target="#btabs-static-profile" role="tab" aria-controls="btabs-static-profile" aria-selected="false" tabindex="-1">Riesgos Inherentes</button>
+            </li>
+          </ul>
+          <div class="block-content tab-content">
+            <div class="tab-pane active" id="btabs-static-home" role="tabpanel" aria-labelledby="btabs-static-home-tab" tabindex="0">
+              <div class="row">
+                <div class="col-5">
+                  <h4 class="fw-normal">Plantilla Clientes</h4>
+                  <table class="table table-sm table-hover table-vcenter">
+                    <thead>
+                    <tr>
+                      <th class="text-center" style="width: 50px;">#</th>
+                      <th>Columna</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr
+                      v-for="(column, index) in props.templates.clients"
+                      :key="index"
+                    >
+                      <td class="text-center">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          :value="column"
+                          v-model="form.template_clients_config"
+                        />
+                      </td>
+                      <td class="fs-sm">{{ column }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
 
-    <div class="alert alert-danger alert-dismissible" role="alert" v-if="hasFormErrors">
-      <p class="mb-0" v-for="error in formErrors">
-        {{ error }}
-      </p>
-      <button type="button" class="btn-close" @click="hasFormErrors = false"></button>
-    </div>
+                <div class="col-2"></div>
 
-
-    <div class="row items-push">
-      <div class="col-sm-12 col-xl-12">
-        <form @submit.prevent="submit()" enctype="multipart/form-data">
-          <BaseBlock title="Configuracion de las plantillas" class="h-100 mb-0" content-class="fs-sm">
-
-            <div class="row">
-              <div class="col-6">
-                <div class="mb-4">
-                  <label class="form-label" for="file">Plantilla Clientes <span class="text-danger">*</span></label>
-                  <textarea
-                    v-model="form.template_clients_config"
-                    class="form-control"
-                    :class="{ 'is-invalid': errors.template_clients_config }"
-                    id="template_clients_config"
-                    name="template_clients_config"
-                    rows="10"
-                    ></textarea>
-                  <div id="template_clients_config-error" class="text-danger">{{ errors.template_clients_config}}</div>
+                <div class="col-5">
+                  <h4 class="fw-normal">Plantilla Operaciones</h4>
+                  <table class="table table-sm table-hover table-vcenter">
+                    <thead>
+                    <tr>
+                      <th class="text-center" style="width: 50px;">#</th>
+                      <th>Columna</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr
+                      v-for="(column, index) in props.templates.operations"
+                      :key="index"
+                    >
+                      <td class="text-center">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          :value="column"
+                          v-model="form.template_operations_config"
+                        />
+                      </td>
+                      <td class="fs-sm">{{ column }}</td>
+                    </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
-
-              <div class="col-6">
+              <div class="row">
                 <div class="mb-4">
-                  <label class="form-label" for="file">Plantilla Operaciones <span class="text-danger">*</span></label>
-                  <textarea
-                    v-model="form.template_operations_config"
-                    class="form-control"
-                    :class="{ 'is-invalid': errors.template_operations_config }"
-                    id="template_operations_config"
-                    name="template_operations_config"
-                    rows="10"
-                  ></textarea>
-                  <div id="template_operations_config-error" class="text-danger">{{ errors.template_operations_config}}</div>
+                  <button type="button" @click="submitConfigTemplate" class="btn btn-success me-2">Guardar</button>
                 </div>
               </div>
-
             </div>
-
-            <div class="mb-4">
-              <button type="submit" class="btn btn-success me-2">Guardar</button>
+            <div class="tab-pane" id="btabs-static-profile" role="tabpanel" aria-labelledby="btabs-static-profile-tab" tabindex="0">
+              <table class="table table-hover table-sm table-vcenter">
+                <thead>
+                <tr>
+                  <th class="text-center" style="width: 50px;">#</th>
+                  <th>Elementos de Riesgo</th>
+                  <th class="d-none d-sm-table-cell">Sub Encabezado</th>
+                  <th class="d-none d-sm-table-cell">Encabezado Lateral</th>
+                  <th class="d-none d-sm-table-cell">Descripcion</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(riskElement, indexRiskElement) in risk_elements" :key="indexRiskElement">
+                  <th class="text-center" scope="row">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      :value="riskElement.id"
+                      v-model="form.risk_element_config"
+                    />
+                  </th>
+                  <td class="fs-sm">
+                    {{ toTitleCase(riskElement.risk_element) }}
+                  </td>
+                  <td class="fs-sm">
+                    {{ toTitleCase(riskElement.sub_header) }}
+                  </td>
+                  <td class="fs-sm">
+                    {{ riskElement.lateral_header }}
+                  </td>
+                  <td class="fs-sm">
+                    {{ riskElement.description }}
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <div class="row">
+                <div class="mb-4">
+                  <button type="button" @click="submitRiskElementConfig" class="btn btn-success me-2">Guardar</button>
+                </div>
+              </div>
             </div>
-
-
-          </BaseBlock>
-        </form>
+          </div>
+        </div>
       </div>
     </div>
   </div>

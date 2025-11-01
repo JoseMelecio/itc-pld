@@ -7,15 +7,15 @@ use Illuminate\Support\Facades\Log;
 
 class EBRRiskElementStoreRequest extends FormRequest
 {
-    public function prepareForValidation(): void
-    {
-        if (!is_array($this->report_config)) {
-            $this->merge([
-                'report_config' => json_decode($this->report_config, true),
-            ]);
-        }
-
-    }
+//    public function prepareForValidation(): void
+//    {
+//        if (!is_array($this->report_config)) {
+//            $this->merge([
+//                'report_config' => json_decode($this->report_config, true),
+//            ]);
+//        }
+//
+//    }
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -36,7 +36,8 @@ class EBRRiskElementStoreRequest extends FormRequest
             'lateral_header' => 'required|string',
             'sub_header' => 'required|string',
             'description' => 'required|string',
-            'report_config' => 'required|array',
+            'report_config' => 'array',
+            'grouper_field' => 'required|string',
             'active' => 'required|boolean',
         ];
     }

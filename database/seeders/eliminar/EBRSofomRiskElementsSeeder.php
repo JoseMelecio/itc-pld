@@ -1,10 +1,9 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\eliminar;
 
 use App\Models\EBRRiskElement;
 use App\Models\EBRType;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class EBRSofomRiskElementsSeeder extends Seeder

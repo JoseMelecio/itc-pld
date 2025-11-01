@@ -3,8 +3,12 @@
 namespace App\Exports;
 
 use App\Models\EBR;
+use App\Models\EBRConfiguration;
+use App\Models\EBRRiskElement;
+use App\Models\EBRRiskElementRelated;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
@@ -20,6 +24,7 @@ class EBRRiskInherentExport implements FromCollection, WithEvents, WithStyles, W
 {
     protected EBR $ebr;
     protected $currentRow = 9;
+    protected $riskElementRelated = [];
 
     public function __construct(EBR $ebr)
     {
@@ -37,8 +42,10 @@ class EBRRiskInherentExport implements FromCollection, WithEvents, WithStyles, W
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
                 $this->totalTable($sheet);
+                $ebrConfiguration = EBRConfiguration::where('user_id', $this->ebr->user_id)->first();
 
-                foreach ($this->ebr->type->riskElements as $riskElement) {
+                foreach ($ebrConfiguration->riskElements as $riskElement) {
+
                     $this->riskElementTable($riskElement, $sheet);
                 }
 
@@ -359,10 +366,10 @@ class EBRRiskInherentExport implements FromCollection, WithEvents, WithStyles, W
         ]);
 
         $bgBlue = $this->currentRow+1;
-        foreach ($riskElement->riskElementRelated as $related) {
+        foreach ($riskElement->riskElementRelated()->where('ebr_id', $this->ebr->id)->get() as $related) {
             $this->currentRow++;
             $sheet->setCellValue("A{$this->currentRow}", Str::upper($related->element));
-            $sheet->setCellValue("B{$this->currentRow}", '$' . number_format($related->amount_mxn, 2, '.', ','));
+            $sheet->setCellValue("B{$this->currentRow}", number_format($related->amount_mxn, 2, '.', ','));
             $sheet->setCellValue("C{$this->currentRow}", number_format($related->total_clients, 0,'.', ','));
             $sheet->setCellValue("D{$this->currentRow}", number_format($related->total_operations, 0,'.', ','));
             $sheet->setCellValue("E{$this->currentRow}", $related->weight_range_impact);

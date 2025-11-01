@@ -11,11 +11,13 @@ const props = defineProps({
   ebrs: Object,
   ebrTypeUser: Object,
   errors: Object,
+  show_debug_mode: Boolean,
 })
 
 const form = useForm({
   file_clients: '',
   file_operations: '',
+  show_debug_mode: '',
 });
 
 function submit() {

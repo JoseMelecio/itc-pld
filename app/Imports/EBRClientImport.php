@@ -2,16 +2,22 @@
 
 namespace App\Imports;
 
+use App\Models\EBR;
 use App\Models\EBRClient;
-use App\Models\EBRConfiguration;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithStartRow;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Events\ImportFailed;
+use Maatwebsite\Excel\Events\AfterImport;
 
-class EBRClientImport implements ToCollection, ShouldQueue, WithChunkReading, WithStartRow
+
+class EBRClientImport implements ToCollection, ShouldQueue, WithChunkReading, WithStartRow, WithHeadingRow, WithEvents
 {
     use Queueable;
 
@@ -26,18 +32,14 @@ class EBRClientImport implements ToCollection, ShouldQueue, WithChunkReading, Wi
 
     public function collection(Collection $collection): void
     {
-        $ebrConfiguration = EBRConfiguration::where('user_id', $this->userId)->first();
-
-        $column_var_name = $ebrConfiguration->template_clients_config;
-
         $bulkInsert = [];
 
         foreach ($collection as $row) {
-            $dataToInsert = [];
-            foreach ($column_var_name as $key => $var_name) {
-                $dataToInsert[$var_name] = $row[$key] ?? null;
-            }
+            $dataToInsert = ['id' => uniqid('', true)];
             $dataToInsert['ebr_id'] = $this->ebrId;
+
+            $dataToInsert = array_merge($dataToInsert, $row->toArray());
+
             $bulkInsert[] = $dataToInsert;
         }
 
@@ -54,5 +56,21 @@ class EBRClientImport implements ToCollection, ShouldQueue, WithChunkReading, Wi
     public function startRow(): int
     {
         return 2;
+    }
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterImport::class => function (AfterImport $event) {
+                Log::info("✅ Import de clientes completado para EBR {$this->ebrId}");
+                $ebr = EBR::find($this->ebrId);
+                $ebr->import_clients_done = true;
+                $ebr->save();
+            },
+
+            ImportFailed::class => function (ImportFailed $event) {
+                Log::error("❌ Falló el import de clientes ({$this->ebrId}): " . $event->getException()->getMessage());
+            },
+        ];
     }
 }

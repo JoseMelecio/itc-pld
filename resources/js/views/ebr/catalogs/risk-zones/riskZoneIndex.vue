@@ -128,7 +128,7 @@ function loadForm(riskZone) {
               <div class="col-2">
                 <div class="mb-4">
                   <label class="form-label" for="month">Porcentaje 1<span class="text-danger">*</span></label>
-                  <input type="number" class="form-control form-control-sm" :class="{ 'is-invalid': errors.percentage_1 }"  id="percentage_1" name="percentage_1" placeholder="Porcentaje 1" v-model="form.percentage_1">
+                  <input type="number" step="0.01" class="form-control form-control-sm" :class="{ 'is-invalid': errors.percentage_1 }"  id="percentage_1" name="percentage_1" placeholder="Porcentaje 1" v-model="form.percentage_1">
                   <div id="percentage_1-error" class="text-danger" >{{ errors.percentage_1 }}</div>
                 </div>
               </div>
@@ -136,7 +136,7 @@ function loadForm(riskZone) {
               <div class="col-2">
                 <div class="mb-4">
                   <label class="form-label" for="month">Porcentaje 2<span class="text-danger">*</span></label>
-                  <input type="number" class="form-control form-control-sm" :class="{ 'is-invalid': errors.percentage_2 }"  id="percentage_2" name="percentage_2" placeholder="Porcentaje 2" v-model="form.percentage_2">
+                  <input type="number" step="0.01" class="form-control form-control-sm" :class="{ 'is-invalid': errors.percentage_2 }"  id="percentage_2" name="percentage_2" placeholder="Porcentaje 2" v-model="form.percentage_2">
                   <div id="percentage_2-error" class="text-danger" >{{ errors.percentage_2 }}</div>
                 </div>
               </div>

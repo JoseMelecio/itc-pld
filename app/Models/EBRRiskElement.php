@@ -11,6 +11,30 @@ use phpDocumentor\Reflection\Types\Integer;
 
 class EBRRiskElement extends Model
 {
+    const DEFAULT_REPORT_RULES = [
+        "selects" => [
+            [
+                "type" => "sum",
+                "value" => "ebr_operations.monto_operacion",
+                "alias" => "amount_mxn"
+            ],
+            [
+                "type" => "count_distinct",
+                "value" => "ebr_clients.id",
+                "alias" => "total_clients"
+            ],
+            [
+                "type" => "count",
+                "value" => "ebr_operations.id",
+                "alias" => "total_operations"
+            ]
+        ],
+        "wheres" => [],
+        "orders" => []
+    ];
+
+    const DONT_SHOW_FILES_IN_EXCEL = ['id', 'ebr_id', 'created_at', 'updated_at'];
+
     protected $table = 'ebr_risk_elements';
 
     protected $fillable = [
