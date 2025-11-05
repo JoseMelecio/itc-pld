@@ -200,6 +200,16 @@ class EBRController extends Controller
      */
     public function configuration(): array
     {
+        $ebrConfiguration = EBRConfiguration::where('user_id', auth()->user()->id)->first();
+        if (!$ebrConfiguration) {
+            $ebrConfiguration = EBRConfiguration::create([
+                'user_id' => auth()->user()->id,
+                'template_clients_config' => [],
+                'template_operations_config' => [],
+            ]);
+            $ebrConfiguration->riskElements()->attach(EBRRiskElement::first()->id);
+        }
+
         $clientsFields = array_diff(
             Schema::getColumnListing('ebr_clients'), EBRRiskElement::DONT_SHOW_FILES_IN_EXCEL
         );
@@ -207,7 +217,7 @@ class EBRController extends Controller
             Schema::getColumnListing('ebr_operations'), EBRRiskElement::DONT_SHOW_FILES_IN_EXCEL
         );
 
-        $ebrConfiguration = EBRConfiguration::where('user_id', auth()->user()->id)->first();
+
         $riskElements = EBRRiskElement::where('active', true)->orderBy('risk_element')->get();
 
         $riskElementSelectedIds = $ebrConfiguration->riskElements()->pluck('ebr_risk_elements.id')->toArray();
