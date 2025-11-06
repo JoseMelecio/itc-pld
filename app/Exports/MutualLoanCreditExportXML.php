@@ -47,7 +47,7 @@ class MutualLoanCreditExportXML
         $xmlObject->endElement(); // clave_sujeto_obligado
 
         $xmlObject->startElement('clave_actividad');
-        $xmlObject->text('MCP');
+        $xmlObject->text('MPC');
         $xmlObject->endElement(); // clave_actividad
 
         if ($this->headers['exempt'] == 'yes') {
@@ -63,9 +63,6 @@ class MutualLoanCreditExportXML
             $xmlObject->startElement('referencia_aviso');
             $xmlObject->text($this->headers['notice_reference']);
             $xmlObject->endElement(); // referencia_aviso
-            $xmlObject->startElement('prioridad');
-            $xmlObject->text(1);
-            $xmlObject->endElement(); //
 
             if (strlen($notice['modification']['folio']) > 0) {
                 $xmlObject->startElement('modificatorio');
@@ -77,17 +74,22 @@ class MutualLoanCreditExportXML
                 $xmlObject->text($notice['modification']['description']);
                 $xmlObject->endElement(); // descripcion_modificacion
 
-                $xmlObject->startElement('prioridad');
-                $xmlObject->text($notice['modification']['priority']);
-                $xmlObject->endElement(); // prioridad
-
                 $xmlObject->endElement(); // modificatorio
             }
 
+            $xmlObject->startElement('prioridad');
+            $xmlObject->text($notice['modification']['priority']);
+            $xmlObject->endElement(); // prioridad
+
             $xmlObject->startElement('alerta');
             $xmlObject->startElement('tipo_alerta');
-            $xmlObject->text('100');
+            $xmlObject->text($notice['alert']['alert_type']);
             $xmlObject->endElement(); // tipo_alerta
+            if ($notice['alert']['alert_type'] == '9999' ) {
+                $xmlObject->startElement('descripcion_alerta');
+                $xmlObject->text($notice['alert']['alert_description']);
+                $xmlObject->endElement();
+            }
             $xmlObject->endElement(); // alerta
 
             $xmlObject->startElement('persona_aviso');
@@ -205,9 +207,7 @@ class MutualLoanCreditExportXML
                 $xmlObject->text($notice['identificationDataPersonSubjectNotice']['trust']['identification']);
                 $xmlObject->endElement(); // identificador_trust
 
-                $xmlObject->endElement(); // fideicomiso
-
-                $xmlObject->startElement('representante_apoderado');
+                $xmlObject->startElement('apoderado_delegado');
                 $xmlObject->startElement('nombre');
                 $xmlObject->text($notice['identificationDataPersonSubjectNotice']['representativeData']['name']);
                 $xmlObject->endElement(); // nombre
@@ -237,6 +237,7 @@ class MutualLoanCreditExportXML
                 }
 
                 $xmlObject->endElement(); // representante_apoderado
+                $xmlObject->endElement(); // fideicomiso
             }
 
             $xmlObject->endElement(); // tipo_persona
@@ -514,7 +515,7 @@ class MutualLoanCreditExportXML
 
                 if (strlen($notice['operationDetails']['identificationDataPersonGuarantee']['physicalPerson']['population_id']) > 0) {
                     $xmlObject->startElement('curp');
-                    $xmlObject->text($notice['identificationDataPersonBeneficiary']['physicalPerson']['population_id']);
+                    $xmlObject->text($notice['operationDetails']['identificationDataPersonGuarantee']['physicalPerson']['population_id']);
                     $xmlObject->endElement(); // curp
                 }
 
@@ -571,12 +572,13 @@ class MutualLoanCreditExportXML
             $xmlObject->endElement(); // moneda
 
             $xmlObject->startElement('monto_operacion');
-            $xmlObject->text($notice['operationDetails']['operationSaleData']['amount_operation']);
+            $xmlObject->text(number_format($notice['operationDetails']['operationSaleData']['amount_operation'], 2, '.', ''));
             $xmlObject->endElement(); // monto_operacion
 
             $xmlObject->endElement(); // datos_operacion
             $xmlObject->endElement(); // detalle_operacion
 
+            $xmlObject->endElement(); // aviso
             $xmlObject->endElement(); // aviso
         }
 
@@ -588,3 +590,4 @@ class MutualLoanCreditExportXML
         return $xmlObject->outputMemory();
     }
 }
+
