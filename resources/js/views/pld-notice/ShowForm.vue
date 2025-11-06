@@ -22,7 +22,7 @@ const form = useForm({
   notice_reference: '',
   exempt: 'no',
   file: '',
-  validate_xsd_xml: false,
+  validate_xsd_xml: true,
 });
 
 if (Array.isArray(props.customFields)) {
