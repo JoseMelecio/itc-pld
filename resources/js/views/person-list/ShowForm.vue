@@ -122,31 +122,9 @@ const downloadTemplate = () => {
                 </div>
               </div>
 
-              <div class="row">
-                <div class="mb-4">
-                  <label class="form-label" for="file">Archivo de Excel</label>
-                  <input class="form-control" :class="{ 'is-invalid': errors.file }" type="file" id="file" name="file" @input="form.file = $event.target.files[0]">
-                  <div id="file-error" class="text-danger">{{ errors.file}}</div>
-                </div>
-              </div>
-
               <div class="mb-4">
                 <button type="submit" class="btn btn-success me-2">Buscar</button>
-                <button type="button" @click="downloadTemplate()" class="btn btn-info me-2">Plantilla</button>
-                <!--              <button type="button" class="btn btn-light me-2">Ayuda</button>-->
               </div>
-
-              <div class="row">
-                <div class="mb-4">
-                  <h6>Ayuda:</h6>
-                  Capture el formulario (al menos el nombre) o suba la plantilla.<br><br>
-                  <h6>Definición:</h6>
-                  <strong>Estricta:</strong> coincide nombre, alias y fecha de nacimiento/constitución.<br>
-                  <strong>Exacta:</strong> coincide nombre y fecha de nacimiento o alias y fecha de nacimiento.<br>
-                  <strong>Aproximada:</strong> coincide alias o nombre.<br>
-                </div>
-              </div>
-
 
             </div>
 
