@@ -6,6 +6,7 @@ use App\Models\EBR;
 use App\Models\EBRConfiguration;
 use App\Models\EBRRiskElement;
 use App\Models\EBRRiskElementRelated;
+use App\Models\EBRRiskElementRelatedAverage;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -19,6 +20,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Maatwebsite\Excel\Concerns\WithTitle;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class EBRRiskInherentExport implements FromCollection, WithEvents, WithStyles, WithColumnWidths, WithTitle
 {
@@ -263,12 +265,27 @@ class EBRRiskInherentExport implements FromCollection, WithEvents, WithStyles, W
 
     public function riskElementTable($riskElement, $sheet): void
     {
+        $riskElementAve = EBRRiskElementRelatedAverage::where('ebr_id', $this->ebr->id)
+            ->where('ebr_risk_element_id', $riskElement->id)
+            ->first();
+        Log::info($riskElementAve);
         $borderStart = $this->currentRow;
         $sheet->setCellValue("A{$this->currentRow}", Str::upper($riskElement->order . '. ' . $riskElement->risk_element));
         $sheet->setCellValue("B{$this->currentRow}", Str::upper($riskElement->latera_header));
-        $sheet->setCellValue("E{$this->currentRow}", "CALCULAR 1.00");;
-        $sheet->setCellValue("F{$this->currentRow}", "CALCULAR 1.10");
-        $sheet->setCellValue("G{$this->currentRow}", "CALCULAR 1.11");
+        $sheet->setCellValue("E{$this->currentRow}", $riskElementAve->weight_impact_range_header);
+        $sheet->getStyle("E{$this->currentRow}")
+            ->getNumberFormat()
+            ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+
+        $sheet->setCellValue("F{$this->currentRow}", $riskElementAve->frequency_range_header);
+        $sheet->getStyle("F{$this->currentRow}")
+            ->getNumberFormat()
+            ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
+
+        $sheet->setCellValue("G{$this->currentRow}", $riskElementAve->risk_inherent_concentration_header);
+        $sheet->getStyle("G{$this->currentRow}")
+            ->getNumberFormat()
+            ->setFormatCode(NumberFormat::FORMAT_NUMBER_00);
 
         $sheet->mergeCells("B{$this->currentRow}:D{$this->currentRow}");
         $sheet->mergeCells("H{$this->currentRow}:I{$this->currentRow}");
