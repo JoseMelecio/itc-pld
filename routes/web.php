@@ -51,11 +51,15 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pld-notices/{noticeType}', [PLDNoticeController::class, 'showForm'])->name('pld-notice.showForm');
     Route::post('/pld-notices', [PLDNoticeController::class, 'makeNotice'])->name('pld-notice.makeNotice');
     Route::get('/pld-notices-download/{noticeType}', [PLDNoticeController::class, 'downloadTemplate'])->name('pld-notice.downloadTemplate');
+
     Route::get('/person-blocked-list', [PersonListController::class, 'index'])->name('person-blocked-list');
     Route::get('/person-blocked-form-finder', [PersonListController::class, 'formFind'])->name('person-blocked-form-finder');
+    Route::get('/person-blocked-form-finder-massive', [PersonListController::class, 'formFindMassive'])->name('person-blocked-form-finder-massive');
+    Route::post('/person-blocked-form-finder-massive', [PersonListController::class, 'storeMassive'])->name('person-blocked-form-finder-store-massive');
     Route::post('/person-list-blocked-find', [PersonListController::class, 'find'])->name('person-list-blocked-find');
     Route::get('/person-list-blocked-result', [PersonListController::class, 'result'])->name('person-list-blocked-result');
     Route::get('/person-list-blocked-download-template', [PersonListController::class, 'downloadTemplate'])->name('person-list-blocked-download-template');
+
     Route::get('/ebr', [EBRController::class, 'index'])->name('ebr.index');
     Route::post('/ebr', [EBRController::class, 'store'])->name('ebr.store');
     Route::get('/ebr-client-template', [EBRController::class, 'downloadClientTemplate'])->name('ebr.downloadClientTemplate');

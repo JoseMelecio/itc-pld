@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PersonListFindMassiveRequest;
 use App\Http\Requests\PersonListFindRequest;
+use App\Imports\BlockedPersonMassiveSearchImport;
 use App\Imports\PersonListFinderImport;
+use App\Models\BlockedPersonMassive;
 use App\Models\PersonList;
 use App\Services\PersonBlockedFinderService;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
@@ -115,5 +119,33 @@ class PersonListController extends Controller
         $filePath = public_path('templates/plantillaBuscarPersonasBloqueadas.xlsx');
 
         return response()->download($filePath);
+    }
+
+    public function formFindMassive()
+    {
+        $massiveFinds = BlockedPersonMassive::where('user_id', auth()->user()->id)->get();
+
+        return Inertia::render('person-list/Massive', [
+            'massiveFinds' => $massiveFinds
+        ]);
+    }
+
+    public function storeMassive(PersonListFindMassiveRequest $request)
+    {
+        $file = $request->file('file');
+        $newSearch = BlockedPersonMassive::create([
+            'user_id' => auth()->user()->id,
+            'file_uploaded' => $file->getClientOriginalName(),
+            'status' => 'pending',
+        ]);
+
+        $fileName = $newSearch->id . '_massive_search.' . $file->getClientOriginalExtension();
+        $filePath = $file->storeAs('massive_search', $fileName, 'local');
+
+        Excel::queueImport(new BlockedPersonMassiveSearchImport(
+            $newSearch->id
+        ), $filePath);
+
+        return redirect()->route('person-blocked-form-finder-store-massive');
     }
 }
