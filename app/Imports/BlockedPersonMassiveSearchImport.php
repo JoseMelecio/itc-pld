@@ -80,10 +80,14 @@ class BlockedPersonMassiveSearchImport implements ToCollection, ShouldQueue, Wit
                     'public'
                 );
 
+                $totalPersons = BlockedPersonMassiveDetail::where('blocked_person_massive_id', $this->massiveSearchId)->count();
+                $matches = BlockedPersonMassiveDetail::where('blocked_person_massive_id', $this->massiveSearchId)->where('coincidence', '!=', 'Sin coincidencias')->count();
                 BlockedPersonMassive::where('id', $this->massiveSearchId)
                     ->update([
                         'status' => 'done',
-                        'download_file_name' => $fileName
+                        'download_file_name' => $fileName,
+                        'total_rows' => $totalPersons,
+                        'matches' => $matches,
                     ]);
 
             }

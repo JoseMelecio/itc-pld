@@ -66,6 +66,7 @@ const noticeSelected = ref({
 
 const hasFormErrors = ref(false);
 const selectedId = ref(0);
+const alertSelectedNotice = ref(false);
 
 const handleNoticeChange = () => {
   const found = props.allowedNotices.find(n => n.id == selectedId.value);
@@ -80,6 +81,12 @@ const handleNoticeChange = () => {
 };
 
 const downloadTemplate = () => {
+
+  if (selectedId.value == 0) {
+    alertSelectedNotice.value = true;
+    return;
+  }
+
   const url = route('notification-pld-massive.download-template', {noticeType: noticeSelected.value.route_param });
 
   axios({
@@ -165,6 +172,13 @@ function loadLogInModal(log) {
         {{ error }}
       </p>
       <button type="button" class="btn-close" @click="hasFormErrors = false"></button>
+    </div>
+
+    <div class="alert alert-danger alert-dismissible" role="alert" v-if="alertSelectedNotice">
+      <p class="mb-0">
+        Seleccione una notificación (aviso) para poder descargar la plantilla correspondiente.
+      </p>
+      <button type="button" class="btn-close" @click="alertSelectedNotice = false"></button>
     </div>
 
     <div class="row items-push">
@@ -342,7 +356,6 @@ function loadLogInModal(log) {
                           <i class="fa fa-fw fa-magnifying-glass"></i>
                         </button>
                       </div>
-
                     </td>
                   </tr>
                   </tbody>

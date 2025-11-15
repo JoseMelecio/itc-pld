@@ -4,6 +4,7 @@ import { router, useForm } from "@inertiajs/vue3";
 import {route} from "ziggy-js";
 import axios from "axios";
 import { computed, onMounted, ref } from "vue";
+import formatters from "chart.js/dist/core/core.ticks";
 
 const props = defineProps({
   errors: Object,
@@ -103,7 +104,31 @@ onMounted(() => {
   }, 60000)
 })
 
+const resumen = ref({})
+const setResumen = (id: number) => {
+  resumen.value = massiveFindsValidos.value.find(e => e.id == id)
+}
 
+function formatFecha(fechaISO) {
+  const date = new Date(fechaISO)
+
+  const meses = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+  ]
+
+  const dia = date.getUTCDate()
+  const mes = meses[date.getUTCMonth()]
+  const año = date.getUTCFullYear()
+
+  let horas = date.getUTCHours()
+  const minutos = date.getUTCMinutes().toString().padStart(2, "0")
+
+  const ampm = horas >= 12 ? "pm" : "am"
+  horas = horas % 12 || 12 // Convierte 0 a 12, 13 → 1, etc.
+
+  return `${dia} de ${mes} del ${año} ${horas}:${minutos} ${ampm}`
+}
 
 </script>
 
@@ -186,6 +211,14 @@ onMounted(() => {
                           <i class="fa fa-fw fa-file-arrow-down"></i>
                         </a>
                       </div>
+                      <div class="btn-group" v-if="find.status == 'done'">
+                        <button type="button" @click="setResumen(find.id)"
+                                class="btn btn-sm btn-alt-primary js-bs-tooltip-enabled"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modal-resume">
+                          <i class="fa fa-fw fa-magnifying-glass"></i>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                   </tbody>
@@ -200,6 +233,48 @@ onMounted(() => {
       </div>
     </div>
   </div>
+
+  <!-- Modal Resume -->
+  <div class="modal" id="modal-resume" tabindex="-1" role="dialog" aria-labelledby="modal-resume" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+      <div class="modal-content">
+        <div class="block block-rounded block-transparent mb-0">
+          <div class="block-header block-header-default">
+            <h3 class="block-title">Resumen de la busqueda</h3>
+            <div class="block-options">
+              <button type="button" class="btn-block-option" data-bs-dismiss="modal" aria-label="Close">
+                <i class="fa fa-fw fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="block-content fs-sm">
+            <div class="row">
+              <div class="col-6">
+                <div class="mb-4">
+                  <h6>Barrido de Listas de Personas Bloqueadas UIF</h6>
+                </div>
+
+                <div class="mb-4">
+                  <p><strong>Personas y Entidades</strong></p>
+                  <p>Creación del reporte: {{ formatFecha(resumen.created_at) }}</p>
+                  <p>Total de personas o empresas en el archivo de Excel: {{ resumen.total_rows }}</p>
+                  <p>Personas o empresas sin coincidencias: {{ resumen.total_rows - resumen.matches }}</p>
+                  <p>Personas o empresas con coincidencias: {{ resumen.matches }}</p>
+                </div>
+
+              </div>
+
+            </div>
+            <br>
+          </div>
+          <div class="block-content block-content-full text-end bg-body">
+            <button type="button" class="btn btn-sm btn-alt-secondary me-1" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- END Extra Large Block Modal -->
 
   <!-- Extra Large Block Modal -->
   <div class="modal" id="modal-block-extra-large" tabindex="-1" role="dialog" aria-labelledby="modal-block-extra-large" aria-hidden="true">
