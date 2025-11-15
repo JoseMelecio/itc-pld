@@ -117,17 +117,17 @@ function formatFecha(fechaISO) {
     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
   ]
 
-  const dia = date.getUTCDate()
-  const mes = meses[date.getUTCMonth()]
-  const año = date.getUTCFullYear()
+  const dia = date.getDate()
+  const mes = meses[date.getMonth()]
+  const anio = date.getFullYear()
 
-  let horas = date.getUTCHours()
-  const minutos = date.getUTCMinutes().toString().padStart(2, "0")
+  let horas = date.getHours()
+  const minutos = date.getMinutes().toString().padStart(2, "0")
 
   const ampm = horas >= 12 ? "pm" : "am"
-  horas = horas % 12 || 12 // Convierte 0 a 12, 13 → 1, etc.
+  horas = horas % 12 || 12
 
-  return `${dia} de ${mes} del ${año} ${horas}:${minutos} ${ampm}`
+  return `${dia} de ${mes} del ${anio} ${horas}:${minutos} ${ampm}`
 }
 
 </script>
