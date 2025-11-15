@@ -11,6 +11,7 @@ use App\Models\PLDNoticePerson;
 use App\Models\PLDNoticeUniqueDataPerson;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Spatie\ArrayToXml\ArrayToXml;
 
 class RealEstateAdministrationMassiveExport
@@ -48,9 +49,12 @@ class RealEstateAdministrationMassiveExport
             $aviso['prioridad'] = $notice->priority;
 
             $aviso['alerta'] = [
-                'tipo_alerta' => array_merge([$notice->alert_type],
-                    $notice->alert_type == '9999' ? ['descripcion_otra_alerta' => $notice->alert_description] : []),
+                'tipo_alerta' => $notice->alert_type,
             ];
+
+            if ($notice->alert_type == '9999') {
+                $aviso['alerta']['descripcion_alerta'] = $notice->alert_description;
+            }
 
             $aviso['persona_aviso'] = $this->personObject(
                 $notice->objectPerson,

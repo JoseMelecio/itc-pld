@@ -125,6 +125,8 @@ class PersonListController extends Controller
     {
         $massiveFinds = BlockedPersonMassive::where('user_id', auth()->user()->id)->get();
 
+
+
         return Inertia::render('person-list/Massive', [
             'massiveFinds' => $massiveFinds
         ]);
