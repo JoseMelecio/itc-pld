@@ -62,7 +62,10 @@ class RealEstateAdministrationMassiveExport
                 $notice->contact,
                 $notice->legalRepresentativePerson);
 
-            $aviso['dueno_beneficiario'] = $this->personBeneficiary($notice->beneficiaryPerson);
+            if ($notice->beneficiaryPerson) {
+                $aviso['dueno_beneficiario'] = $this->personBeneficiary($notice->beneficiaryPerson);
+            }
+
             $aviso['detalle_operaciones']['datos_operacion'] = $this->operationData($notice->uniqueData, $notice->financialOperation, $notice->estateOperation);
 
             $avisos[] = $aviso;
@@ -152,12 +155,21 @@ class RealEstateAdministrationMassiveExport
                     'nombre' => $beneficiaryPerson->name_or_company,
                     'apellido_paterno' => $beneficiaryPerson->paternal_last_name,
                     'apellido_materno' => $beneficiaryPerson->maternal_last_name,
-                    'fecha_nacimiento' => $beneficiaryPerson->birth_or_constitution_date,
-                    'rfc' => $beneficiaryPerson->tax_id,
-                    'curp' => $beneficiaryPerson->personal_id,
-                    'pais_nacionalidad' => $beneficiaryPerson->nationality,
                 ]
             ];
+            if (strlen($beneficiaryPerson->birth_or_constitution_date) > 0) {
+                $individual['persona_fisica']['fecha_nacimiento'] = $beneficiaryPerson->birth_or_constitution_date;
+            }
+
+            if (strlen($beneficiaryPerson->tax_id) > 0) {
+                $individual['persona_fisica']['rfc'] = $beneficiaryPerson->tax_id;
+            }
+
+            if (strlen($beneficiaryPerson->curp) > 0) {
+                $individual['persona_fisica']['curp'] = $beneficiaryPerson->curp;
+            }
+
+            $individual['persona_fisica']['pais_nacionalidad'] = $beneficiaryPerson->nationality;
             $data['tipo_persona'] = $individual;
         }
 
@@ -166,10 +178,13 @@ class RealEstateAdministrationMassiveExport
                 'persona_moral' => [
                     'denominacion_razon' => $beneficiaryPerson->name_or_company,
                     'fecha_constitucion' => $beneficiaryPerson->birth_or_constitution_date,
-                    'rfc' => $beneficiaryPerson->tax_id,
                     'pais_nacionalidad' => $beneficiaryPerson->nationality,
                 ]
             ];
+
+            if (strlen($beneficiaryPerson->tax_id) > 0) {
+                $legal['persona_moral']['rfc'] = $beneficiaryPerson->tax_id;
+            }
             $data['tipo_persona'] = $legal;
         }
 
@@ -177,10 +192,13 @@ class RealEstateAdministrationMassiveExport
             $trust = [
                 'fideicomiso' => [
                     'denominacion_razon' => $beneficiaryPerson->name_or_company,
-                    'rfc' => $beneficiaryPerson->tax_id,
                     'identificador_fideicomiso' => $beneficiaryPerson->trust_identification
                 ]
             ];
+
+            if (str($beneficiaryPerson->tax_id) > 0) {
+                $trust['fideicomiso']['rfc'] = $beneficiaryPerson->tax_id;
+            }
             $data['tipo_persona'] = $trust;
         }
 
@@ -199,23 +217,43 @@ class RealEstateAdministrationMassiveExport
                     'nombre' => $personObject->name_or_company,
                     'apellido_paterno' => $personObject->paternal_last_name,
                     'apellido_materno' => $personObject->maternal_last_name,
-                    'fecha_nacimiento' => $personObject->birth_or_constitution_date,
-                    'rfc' => $personObject->tax_id,
-                    'curp' => $personObject->personal_id,
-                    'pais_nacionalidad' => $personObject->nationality,
-                    'actividad_economica' => $personObject->business_activity
                 ]
             ];
+
+            if (strlen($personObject->birth_or_constitution_date) > 0) {
+                $individual['persona_fisica']['fecha_nacimiento'] = $personObject->birth_or_constitution_date;
+            }
+
+            if (strlen($personObject->tax_id) > 0) {
+                $individual['persona_fisica']['rfc'] = $personObject->tax_id;
+            }
+
+            if (strlen($personObject->personal_id) > 0) {
+                $individual['persona_fisica']['curp'] = $personObject->personal_id;
+            }
+
+            $individual['persona_fisica']['pais_nacionalidad'] = $personObject->nationality;
+            $individual['persona_fisica']['actividad_economica'] = $personObject->business_activity;
+
 
             if ($legalRepresentativePerson) {
                 $individual['persona_fisica']['representante_apoderado'] = [
                     'nombre' => $legalRepresentativePerson->name_or_company,
                     'apellido_paterno' => $legalRepresentativePerson->paternal_last_name,
                     'apellido_materno' => $legalRepresentativePerson->maternal_last_name,
-                    'fecha_nacimiento' => $legalRepresentativePerson->birth_or_constitution_date,
-                    'rfc' => $legalRepresentativePerson->tax_id,
-                    'curp' => $legalRepresentativePerson->personal_id,
                 ];
+
+                if (strlen($legalRepresentativePerson->birth_or_constitution_date) > 0) {
+                    $individual['persona_fisica']['representante_apoderado']['fecha_nacimiento'] = $legalRepresentativePerson->birth_or_constitution_date;
+                }
+
+                if (strlen($legalRepresentativePerson->tax_id) > 0) {
+                    $individual['persona_fisica']['representante_apoderado']['rfc'] = $legalRepresentativePerson->tax_id;
+                }
+
+                if (strlen($legalRepresentativePerson->personal_id) > 0) {
+                    $individual['persona_fisica']['representante_apoderado']['curp'] = $legalRepresentativePerson->personal_id;
+                }
             }
             $data['tipo_persona'] = $individual;
         }
@@ -224,22 +262,39 @@ class RealEstateAdministrationMassiveExport
             $legal = [
                 'persona_moral' => [
                     'denominacion_razon' => $personObject->name_or_company,
-                    'fecha_constitucion' => $personObject->birth_or_constitution_date,
-                    'rfc' => $personObject->tax_id,
-                    'pais_nacionalidad' => $personObject->nationality,
-                    'giro_mercantil' => $personObject->business_activity,
                 ]
             ];
+
+            if (strlen($personObject->birth_or_constitution_date) > 0) {
+                $legal['persona_moral']['fecha_constitucion'] = $personObject->birth_or_constitution_date;
+            }
+
+            if (strlen($personObject->tax_id) > 0) {
+                $legal['persona_moral']['rfc'] = $personObject->tax_id;
+            }
+
+            $legal['persona_moral']['pais_nacionalidad'] = $personObject->nationality;
+            $legal['persona_moral']['giro_mercantil'] = $personObject->business_activity;
 
             if ($legalRepresentativePerson) {
                 $legal['persona_moral']['representante_apoderado'] = [
                     'nombre' => $legalRepresentativePerson->name_or_company,
                     'apellido_paterno' => $legalRepresentativePerson->paternal_last_name,
                     'apellido_materno' => $legalRepresentativePerson->maternal_last_name,
-                    'fecha_nacimiento' => $legalRepresentativePerson->birth_or_constitution_date,
-                    'rfc' => $legalRepresentativePerson->tax_id,
-                    'curp' => $legalRepresentativePerson->personal_id,
                 ];
+
+                if (strlen($legalRepresentativePerson->birth_or_constitution_date) > 0) {
+                    $legal['persona_moral']['representante_apoderado']['fecha_nacimiento'] = $legalRepresentativePerson->birth_or_constitution_date;
+                }
+
+                if (strlen($legalRepresentativePerson->tax_id) > 0) {
+                    $legal['persona_moral']['representante_apoderado']['rfc'] = $legalRepresentativePerson->tax_id;
+                }
+
+                if (strlen($legalRepresentativePerson->personal_id) > 0) {
+                    $legal['persona_moral']['representante_apoderado']['curp'] = $legalRepresentativePerson->personal_id;
+                }
+
             }
             $data['tipo_persona'] = $legal;
         }
@@ -248,20 +303,32 @@ class RealEstateAdministrationMassiveExport
             $trust = [
                 'fideicomiso' => [
                     'denominacion_razon' => $personObject->name_or_company,
-                    'rfc' => $personObject->tax_id,
                     'identificador_fideicomiso' => $personObject->trust_identification
                 ]
             ];
+
+            if (strlen($personObject->tax_id) > 0) {
+                $trust['fideicomiso']['rfc'] = $personObject->tax_id;
+            }
 
             if ($legalRepresentativePerson) {
                 $trust['fideicomiso']['representante_apoderado'] = [
                     'nombre' => $legalRepresentativePerson->name_or_company,
                     'apellido_paterno' => $legalRepresentativePerson->paternal_last_name,
                     'apellido_materno' => $legalRepresentativePerson->maternal_last_name,
-                    'fecha_nacimiento' => $legalRepresentativePerson->birth_or_constitution_date,
-                    'rfc' => $legalRepresentativePerson->tax_id,
-                    'curp' => $legalRepresentativePerson->personal_id,
                 ];
+
+                if (strlen($legalRepresentativePerson->birth_or_constitution_date) > 0) {
+                    $trust['fideicomiso']['representante_apoderado']['fecha_nacimiento'] = $legalRepresentativePerson->birth_or_constitution_date;
+                }
+
+                if (strlen($legalRepresentativePerson->tax_id) > 0) {
+                    $trust['fideicomiso']['representante_apoderado']['rfc'] = $legalRepresentativePerson->tax_id;
+                }
+
+                if (strlen($legalRepresentativePerson->personal_id) > 0) {
+                    $trust['fideicomiso']['representante_apoderado']['curp'] = $legalRepresentativePerson->personal_id;
+                }
             }
             $data['tipo_persona'] = $trust;
         }

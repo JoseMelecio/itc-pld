@@ -92,7 +92,6 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
             ->where('hash', $this->hash())
             ->first();
 
-        Log::info($this->sRow[3]);
         if (!$this->currentNotice) {
             $this->currentNotice = PLDNoticeNotice::create([
                 'pld_notice_id' => $this->noticeMassive->pld_notice_id,
@@ -274,7 +273,10 @@ class RealEstateAdministrationMassiveImport implements ToCollection, WithChunkRe
             ]);
         }
 
-        $this->currentNotice->beneficiaryPerson()->create($data);
+        if (!empty($personType)) {
+            $this->currentNotice->beneficiaryPerson()->create($data);
+        }
+
     }
 
     public function uniqueData(): void
