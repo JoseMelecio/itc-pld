@@ -87,7 +87,9 @@ const downloadTemplate = () => {
     return;
   }
 
-  const url = route('notification-pld-massive.download-template', {noticeType: noticeSelected.value.route_param });
+  let url = route('notification-pld-massive.download-template', {noticeType: noticeSelected.value.route_param });
+  const timestamp = new Date().getTime();
+  url = `${url}?v=${timestamp}`;
 
   axios({
     url: url,
