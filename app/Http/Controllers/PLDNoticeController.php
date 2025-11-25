@@ -57,6 +57,7 @@ class PLDNoticeController extends Controller
         $logContent['user_id'] = Auth::user()->id;
         $logContent['type'] = 'create';
         $logContent['content']['status'] = 'pending';
+        $logContent['content']['subject'] = $dataRequest['tax_id'];
         $systemLog = SystemLog::create($logContent);
 
         try {

@@ -4,14 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PersonListFindMassiveRequest;
 use App\Http\Requests\PersonListFindRequest;
+use App\Http\Requests\PersonListStoreRequest;
 use App\Imports\BlockedPersonMassiveSearchImport;
 use App\Imports\PersonListFinderImport;
+use App\Models\Alias;
+use App\Models\BirthDate;
+use App\Models\BirthPlace;
 use App\Models\BlockedPersonMassive;
 use App\Models\PersonList;
 use App\Services\PersonBlockedFinderService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -60,7 +65,8 @@ class PersonListController extends Controller
                 $places = '';
                 $count = 1;
                 foreach ($person->birthPlaces as $place) {
-                    $places .= $count.': '.$place->place.'<br>';
+                    $placeConcat = [$place->city, $place->state_province, $place->country];
+                    $places .= $count.': '. implode(', ', $placeConcat) . '<br>';
                     $count++;
                 }
                 $record['birth_place'] = $places;
@@ -80,6 +86,75 @@ class PersonListController extends Controller
         }
 
         return Inertia::render('person-list/Index', ['person_list' => $data]);
+    }
+
+    public function create(): \Inertia\Response
+    {
+        return Inertia::render('person-list/Create');
+    }
+
+    public function store(PersonListStoreRequest $request): \Inertia\Response
+    {
+        $data = $request->validated();
+        $filePath = $request->file('file')->storeAs('person-list', uniqid().'.pdf', 'public' );
+
+        $personList = PersonList::create([
+            'origin' => Str::upper($data['origin']),
+            'record_type' => Str::upper($data['record_type']),
+            'un_list_type' => Str::upper($data['un_list_type']),
+            'first_name' => Str::upper($data['first_name']),
+            'second_name' => Str::upper($data['second_name']),
+            'third_name' => Str::upper($data['third_name']),
+            'file' => $filePath,
+        ]);
+
+        $birthDates = array_filter(
+            preg_split('/\r\n|\r|\n/', $data['birth_date']),
+            fn($value) => trim($value) !== ''
+        );
+
+        foreach ($birthDates as $birthDate) {
+
+            $year = substr($birthDate, 0, 4);   // 2025
+            $month = substr($birthDate, 4, 2);  // 02
+            $day = substr($birthDate, 6, 2);    // 26
+
+            BirthDate::create([
+                'year' => $year,
+                'month' => $month,
+                'day' => $day,
+                'person_list_id' => $personList->id,
+            ]);
+        }
+
+        $alias = array_filter(
+            preg_split('/\r\n|\r|\n/', $data['alias']),
+            fn($value) => trim($value) !== ''
+        );
+
+        foreach ($alias as $value) {
+            Alias::create([
+                'alias' => $value,
+                'person_list_id' => $personList->id,
+            ]);
+        }
+
+        $birthPlaces = array_filter(
+            preg_split('/\r\n|\r|\n/', $data['birth_place']),
+            fn($value) => trim($value) !== ''
+        );
+
+        foreach ($birthPlaces as $place) {
+            $place = explode('-', $place);
+            BirthPlace::create([
+                'city' => $place[0],
+                'state_province' => $place[1],
+                'country' => $place[2],
+                'person_list_id' => $personList->id,
+            ]);
+        }
+
+        return Inertia::render('person-list/Create');
     }
 
     public function formFind(): \Inertia\Response

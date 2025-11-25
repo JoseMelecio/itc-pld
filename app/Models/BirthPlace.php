@@ -14,5 +14,6 @@ class BirthPlace extends Model
         'city',
         'state_province',
         'country',
+        'person_list_id'
     ];
 }

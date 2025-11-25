@@ -56,6 +56,7 @@ const props = defineProps({
   pldMassives: Object,
   allowedNotices: Array,
   errors: Object,
+  multi_subject: null,
 })
 
 const noticeSelected = ref({
@@ -121,6 +122,7 @@ const form = useForm({
   occupation_description: '',
   file: '',
   validate_xsd_xml: true,
+  custom_obligated_subject: '',
 });
 
 function submit() {
@@ -271,6 +273,15 @@ function loadLogInModal(log) {
                 </div>
               </div>
 
+            <div class="row" v-if="multi_subject">
+              <div class="col-3">
+                <div class="mb-4">
+                  <label class="form-label" for="custom_obligated_subject">RFC Sujeto Obligado <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" :class="{ 'is-invalid': errors.custom_obligated_subject }"  id="custom_obligated_subject" name="custom_obligated_subject" placeholder="XAXX010101000" v-model="form.custom_obligated_subject">
+                  <div id="custom_obligated_subject-error" class="invalid-feedback animated fadeIn">{{ errors.custom_obligated_subject}}</div>
+                </div>
+              </div>
+            </div>
 
             <div class="row">
               <div class="col-12">

@@ -45,6 +45,8 @@ class ProcessPLDNoticeMassive implements ShouldQueue
         $logContent['user_id'] = $noticeMassive->user_id;
         $logContent['type'] = 'create';
         $logContent['content']['status'] = 'pending';
+        $logContent['content']['subject'] = $formData['obligated_subject'];
+        $logContent['content']['massive'] = true;
         $systemLog = SystemLog::create($logContent);
 
         try {
@@ -91,6 +93,8 @@ class ProcessPLDNoticeMassive implements ShouldQueue
             $content = $systemLog->content ?? [];
             $content['status'] = 'success';
             $content['messages'] = "file_name: " . $fileName;
+            $systemLog->content = $content;
+            $systemLog->save();
 
         } catch (Throwable $th) {
             Log::error('Error procesando PLDNoticeMassive: ' . $th->getMessage(), [

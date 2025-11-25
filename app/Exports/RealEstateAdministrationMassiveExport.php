@@ -333,7 +333,10 @@ class RealEstateAdministrationMassiveExport
             $data['tipo_persona'] = $trust;
         }
 
-        $data['tipo_domicilio'] = $this->personObjectAddress($personAddress);
+        if ($personObject->person_type !== 'trust') {
+            $data['tipo_domicilio'] = $this->personObjectAddress($personAddress);
+        }
+
         $data['telefono'] = $this->personObjectContact($contact);
         return $data;
     }
