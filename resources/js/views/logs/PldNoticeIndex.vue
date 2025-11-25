@@ -10,11 +10,15 @@ const page = usePage();
 const props = defineProps({
   logs: Object,
   errors: Object,
+  users: Object,
+  pld_notices: Object,
 })
 
 const form = useForm({
   start_date: '',
   end_date: '',
+  user_id: '',
+  notice_id: ''
 });
 
 const showLog = ref({
@@ -84,7 +88,7 @@ function formatNumber(num) {
 
               <div class="col-2">
                 <div class="mb-4">
-                  <label class="form-label" for="month">Fecha Inicial <span class="text-danger">*</span></label>
+                  <label class="form-label" for="month">Fecha Inicial </label>
                   <input type="text" class="form-control form-control" :class="{ 'is-invalid': errors.start_date }"  id="start_date" name="start_date" placeholder="AAAA-MM-DD" v-model="form.start_date">
                   <div id="start_date-error" class="text-danger" >{{ errors.start_date }}</div>
                 </div>
@@ -92,9 +96,53 @@ function formatNumber(num) {
 
               <div class="col-2">
                 <div class="mb-4">
-                  <label class="form-label" for="month">Fecha Final <span class="text-danger">*</span></label>
+                  <label class="form-label" for="month">Fecha Final </label>
                   <input type="text" class="form-control form-control" :class="{ 'is-invalid': errors.end_date }"  id="end_date" name="end_date" placeholder="AAAA-MM-DD" v-model="form.end_date">
                   <div id="end_date-error" class="text-danger" >{{ errors.end_date }}</div>
+                </div>
+              </div>
+
+              <div class="col-3">
+                <div class="mb-4">
+                  <label class="form-label" for="month">Usuario </label>
+                  <div class="mb-4">
+                    <select
+                      class="form-select"
+                      id="user-select"
+                      name="user-select"
+                      v-model="form.user_id">
+                      <option value="0">Selecciona una opción</option>
+                      <option
+                        v-for="(user, index) in users"
+                        :key="index"
+                        :value="user.id"
+                      >
+                        {{ user.name + ' ' + user.last_name }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-3">
+                <div class="mb-4">
+                  <label class="form-label" for="month">Aviso </label>
+                  <div class="mb-4">
+                    <select
+                      class="form-select"
+                      id="user-select"
+                      name="user-select"
+                      v-model="form.notice_id">
+                      <option value="0">Selecciona una opción</option>
+                      <option
+                        v-for="(notice, index) in pld_notices"
+                        :key="index"
+                        :value="notice.id"
+                      >
+                        {{ notice.spanish_name }}
+                      </option>
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -119,25 +167,33 @@ function formatNumber(num) {
                     <th class="text-center" style="width: 50px;">#</th>
                     <th class="d-none d-sm-table-cell">Fecha</th>
                     <th class="d-none d-sm-table-cell">Usuario</th>
+                    <th class="d-none d-sm-table-cell">Sujeto Obligado</th>
                     <th class="d-none d-sm-table-cell">Notificacion</th>
+                    <th class="d-none d-sm-table-cell">Masivo</th>
                     <th class="d-none d-sm-table-cell">Tipo</th>
                     <th class="d-none d-sm-table-cell">Status</th>
-                    <th class="d-none d-sm-table-cell"></th>
+                    <th class="d-none d-sm-table-cell">Detalle</th>
                   </tr>
                   </thead>
                   <tbody>
                   <tr v-for="(log, index) in logs.data" :key="index">
                     <th class="text-center" scope="row">{{ index + 1 }}</th>
-                    <td class="fw-semibold fs-sm">
+                    <td>
                       {{ log.created_at }}
                     </td>
-                    <td class="fw-semibold fs-sm">
+                    <td>
                       {{ toTitleCase(log.user_name) }}
                     </td>
-                    <td class="fw-semibold fs-sm">
+                    <td>
+                      {{ log.content.subject }}
+                    </td>
+                    <td>
                       {{ toTitleCase(log.pld_notice_spanish_name) }}
                     </td>
-                    <td class="fw-semibold fs-sm">
+                    <td>
+                      {{ log.content.massive ? 'Si' : 'No' }}
+                    </td>
+                    <td>
                       {{ toTitleCase(log.type) }}
                     </td>
                     <td class="d-none d-sm-table-cell">

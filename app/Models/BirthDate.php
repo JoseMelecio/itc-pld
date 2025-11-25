@@ -16,5 +16,6 @@ class BirthDate extends Model
         'final_year',
         'month',
         'day',
+        'person_list_id'
     ];
 }

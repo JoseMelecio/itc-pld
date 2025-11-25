@@ -65,7 +65,7 @@ class RealEstateDevelopmentExportXML
             $xmlObject->endElement(); //referencia_aviso
 
             $xmlObject->startElement('prioridad');
-            $xmlObject->text('1');
+            $xmlObject->text($notice['modificatorio']['prioridad']);
             $xmlObject->endElement(); //prioridad
 
             if (strlen($notice['modificatorio']['folioModificacion']) > 0 && strlen($notice['modificatorio']['descripcionModificacion']) > 0) {
@@ -87,8 +87,14 @@ class RealEstateDevelopmentExportXML
 
             $xmlObject->startElement('alerta');
             $xmlObject->startElement('tipo_alerta');
-            $xmlObject->text('100');
+            $xmlObject->text($notice['alerta']['tipo_alerta']);;
             $xmlObject->endElement(); // tipo_alerta
+
+            if ($notice['alerta']['tipo_alerta'] == '9999') {
+                $xmlObject->startElement('descripcion_alerta');
+                $xmlObject->text($notice['alerta']['descripcion_alerta']);;
+                $xmlObject->endElement(); // tipo_alerta
+            }
             $xmlObject->endElement(); // alerta
 
             $xmlObject->startElement('detalle_operaciones');

@@ -59,8 +59,8 @@ const props = defineProps({
                   <th>Tipo de Registro</th>
                   <th>Tipo de Lista</th>
                   <th>Alias</th>
-                  <th>Lugar Nacimiento</th>
                   <th>Fecha Nacimiento</th>
+                  <th>Lugar Nacimiento</th>
                   <th>Documento</th>
                 </tr>
                 </thead>

@@ -13,5 +13,6 @@ class Alias extends Model
     protected $fillable = [
         'alias',
         'quality',
+        'person_list_id'
     ];
 }

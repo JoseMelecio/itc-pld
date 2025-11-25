@@ -37,6 +37,7 @@ class PLDNoticeMassiveController extends Controller
         return Inertia::render('pld-notice-massive/Index', [
             'pldMassives' => $pldMassives,
             'allowedNotices' => $allowedNotices,
+            'multi_subject' => Auth::user()->multi_subject,
         ]);
     }
 
@@ -65,6 +66,11 @@ class PLDNoticeMassiveController extends Controller
         $headerData['obligated_subject'] = Auth::user()->tax_id;
         unset($headerData['template']);
         unset($headerData['notice_id']);
+
+        //overwriting tax_id with custom_obligated_subjet
+        if (Auth::user()->multi_subject) {
+            $headerData['obligated_subject'] = $headerData['custom_obligated_subject'];
+        }
 
         $templateFileName = uniqid() . '.' . $templateFile->getClientOriginalExtension();
 

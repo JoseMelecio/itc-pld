@@ -87,8 +87,14 @@ class RealEstateSaleExportXML
 
             $xmlObject->startElement('alerta');
             $xmlObject->startElement('tipo_alerta');
-            $xmlObject->text('100');
+            $xmlObject->text($notice['alerta']['tipo_alerta']);
             $xmlObject->endElement(); // Elemento tipo_alerta
+
+            if ($notice['alerta']['tipo_alerta'] == '9999') {
+                $xmlObject->startElement('descripcion_alerta');
+                $xmlObject->text($notice['alerta']['descripcion']);
+                $xmlObject->endElement();
+            }
             $xmlObject->endElement(); // Elemento alerta
 
             $xmlObject->startElement('persona_aviso');

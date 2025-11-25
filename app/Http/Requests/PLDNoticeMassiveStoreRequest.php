@@ -46,6 +46,7 @@ class PLDNoticeMassiveStoreRequest extends FormRequest
             'occupation_type' => 'required',
             'occupation_description' => 'nullable',
             'validate_xsd_xml' => 'nullable',
+            'custom_obligated_subject' => 'nullable',
         ];
     }
 

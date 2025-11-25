@@ -81,7 +81,9 @@ const submit = async () => {
 const showGenerarButton = page.props.auth?.user?.status === "active";
 
 const downloadTemplate = () => {
-  const url = route('pld-notice.downloadTemplate', {noticeType: props.pldNotice.route_param });
+  let url = route('pld-notice.downloadTemplate', {noticeType: props.pldNotice.route_param });
+  const timestamp = new Date().getTime();
+  url = `${url}?v=${timestamp}`;
 
   axios({
     url: url,

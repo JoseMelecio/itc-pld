@@ -24,6 +24,8 @@ class SystemLogDatesRequest extends FormRequest
         return [
             'start_date' => 'nullable|string|date_format:Y-m-d|required_with:end_date',
             'end_date' => 'nullable|string|date_format:Y-m-d|required_with:start_date',
+            'user_id' => 'nullable|string',
+            'notice_id' => 'nullable|string',
         ];
     }
 }
