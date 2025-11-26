@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
@@ -314,17 +315,17 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
 
             //Instrumento Privado
             $m_contratoPrivado = [
-                'fechaContrato' => trim(strtoupper($row[96])),   // CS -> 96
+                'fechaContrato' => trim(strtoupper($row[98])),   // CS -> 96
             ];
             $m_datos['actoOperacion']['contratoPrivado'] = $m_contratoPrivado;
 
             //Datos de liquidacion
             $m_datosLiquidacion = [
-                'fechaPago' => trim($row[98]),   // CT -> 97
-                'formaPago' => trim($row[99]),  // CU -> 98
-                'instrumento' => trim($row[100]),  // CV -> 99
-                'moneda' => trim($row[101]),  // CW -> 100
-                'monto' => trim($row[102]),   // CX -> 101
+                'fechaPago' => trim($row[99]),   // CT -> 97
+                'formaPago' => trim($row[100]),  // CU -> 98
+                'instrumento' => trim($row[101]),  // CV -> 99
+                'moneda' => trim($row[102]),  // CW -> 100
+                'monto' => trim($row[103]),   // CX -> 101
             ];
 
             if (strlen($m_datosLiquidacion['formaPago'] > 0)) {
@@ -363,6 +364,7 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
      */
     public function getData(): array
     {
+        Log::info($this->data);
         return $this->data;
     }
 
