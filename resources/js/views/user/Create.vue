@@ -36,6 +36,10 @@ const submit = () => {
   }
 };
 
+const deleteUser = () => {
+    router.delete(route('users.destroy', { user: props.user.id}))
+};
+
 const setDefaultPassword = () => {
   router.patch(route('users.set-default-password', { user: props.user.id}))
 }
@@ -155,6 +159,11 @@ const clearForm = () => {
                     <button v-if="user.id" type="button" @click="setDefaultPassword()" class="btn btn-info">Restablecer Contraseña</button>
                   </div>
                 </div>
+                <div class="col-3">
+                  <div class="mb-4">
+                    <button v-if="user.id" type="button" class="btn btn-danger push" data-bs-toggle="modal" data-bs-target="#modal-block-delete-user">Eliminar</button>
+                  </div>
+                </div>
               </div>
             </div>
           </BaseBlock>
@@ -192,6 +201,30 @@ const clearForm = () => {
 
       </div>
     </form>
+  </div>
+
+  <div class="modal" id="modal-block-delete-user" tabindex="-1" aria-labelledby="modal-block-delete-user" aria-modal="true" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="block block-rounded block-transparent mb-0">
+          <div class="block-header block-header-default">
+            <h3 class="block-title">Eliminar Usuario</h3>
+            <div class="block-options">
+              <button type="button" class="btn-block-option" data-bs-dismiss="modal" aria-label="Close">
+                <i class="fa fa-fw fa-times"></i>
+              </button>
+            </div>
+          </div>
+          <div class="block-content fs-sm">
+            <p>¿Estás seguro de que deseas eliminar el usuario?</p>
+          </div>
+          <div class="block-content block-content-full text-end bg-body">
+            <button type="button" class="btn btn-sm btn-alt-secondary me-1" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-sm btn-danger" @click="deleteUser()" data-bs-dismiss="modal">Eliminar</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
