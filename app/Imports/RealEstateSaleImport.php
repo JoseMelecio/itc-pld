@@ -3,7 +3,6 @@
 namespace App\Imports;
 
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
@@ -14,7 +13,16 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
     public function collection(Collection $collection): void
     {
         $e_posicion = 0;
+        $noticeHash = '';
         foreach ($collection->skip(3) as $row) {
+            $newRecord = false;
+            if (strlen($row[5]) > 0 ||
+                strlen($row[13]) > 0 ||
+                strlen($row[24]) > 0 ) {
+                $noticeHash = md5($row[5] . $row[6] . $row[7] . $row[8] . $row[13] . $row[14] . $row[24] . $row[27] . $row[81] . $row[82]. $row[83]. $row[84]. $row[85]. $row[86]);
+                $newRecord = true;
+            }
+
             //Modificatorio
             $m_modificatorio = [
                 'folio' => trim(strtoupper($row[0])),   // A -> 0
@@ -27,7 +35,10 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $m_modificatorio['prioridad'] = trim($tempprioridad[0]);
             }
 
-            $m_datos['modificatorio'] = $m_modificatorio;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['modificatorio'] = $m_modificatorio;
+            }
+
 
             //ALERTA
             $m_alerta = [
@@ -40,7 +51,10 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $m_alerta['tipo_alerta'] = trim($temptipo_alerta[0]);
             }
 
-            $m_datos['alerta'] = $m_alerta;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['alerta'] = $m_alerta;
+            }
+
 
             //IDENTIFICACION DE LA PERSONA OFICIO
             //Persona fisica
@@ -65,7 +79,9 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $m_personaFisica['nacionalidad'] = $tempNacionalidad[1];
             }
 
-            $m_datos['identificacionPersonaObjetoAviso']['personaFisica'] = $m_personaFisica;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['personaFisica'] = $m_personaFisica;
+            }
 
             //Persona moral
             $m_personaMoral = [
@@ -86,7 +102,9 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $m_personaMoral['nacionalidad'] = $tempNacionalidad[1];
             }
 
-            $m_datos['identificacionPersonaObjetoAviso']['personaMoral'] = $m_personaMoral;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['personaMoral'] = $m_personaMoral;
+            }
 
             //Datos representante
             $m_representante = [
@@ -98,7 +116,9 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 'curp' => trim(strtoupper($row[23])),    // V -> 21
             ];
 
-            $m_datos['identificacionPersonaObjetoAviso']['datosRepresentantesMoral'] = $m_representante;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['datosRepresentantesMoral'] = $m_representante;
+            }
 
             //Fideicomiso
             $m_fideicomiso = [
@@ -107,7 +127,9 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 'identificador' => trim(strtoupper($row[26])),    // Y -> 24
             ];
 
-            $m_datos['identificacionPersonaObjetoAviso']['fideicomiso'] = $m_fideicomiso;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['fideicomiso'] = $m_fideicomiso;
+            }
 
             //Datos representante fideicomiso
             $m_representante = [
@@ -119,7 +141,9 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 'curp' => trim(strtoupper($row[32])),    // AE -> 30
             ];
 
-            $m_datos['identificacionPersonaObjetoAviso']['datosRepresentantesFideicomiso'] = $m_representante;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['datosRepresentantesFideicomiso'] = $m_representante;
+            }
 
             //Domicilio Nacional de la persona objeto del aviso
             $m_domicilioNacionalPersonaAviso = [
@@ -131,7 +155,9 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 'municipio' => trim(strtoupper($row[38])),    // AK -> 36
             ];
 
-            $m_datos['identificacionPersonaObjetoAviso']['domicilioNacionalPersonaAviso'] = $m_domicilioNacionalPersonaAviso;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['domicilioNacionalPersonaAviso'] = $m_domicilioNacionalPersonaAviso;
+            }
 
             //Domicilio Internacional de la persona objeto del aviso
             $m_domicilioInternacionalPersonaAviso = [
@@ -150,7 +176,10 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $m_domicilioInternacionalPersonaAviso['pais'] = $tempPais[1];
             }
 
-            $m_datos['identificacionPersonaObjetoAviso']['domicilioInternacionalPersonaAviso'] = $m_domicilioInternacionalPersonaAviso;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['domicilioInternacionalPersonaAviso'] = $m_domicilioInternacionalPersonaAviso;
+            }
+
 
             //Datos del contacto
             $m_datosContactoAviso = [
@@ -164,7 +193,9 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $m_datosContactoAviso['pais'] = $tempPais[1];
             }
 
-            $m_datos['identificacionPersonaObjetoAviso']['datosContactoAviso'] = $m_datosContactoAviso;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['identificacionPersonaObjetoAviso']['datosContactoAviso'] = $m_datosContactoAviso;
+            }
 
             //DATOS DEL BENEFICIARIO
             //Persona fisica
@@ -183,7 +214,14 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $m_personaFisica['pais'] = $temppais[1];
             }
 
-            $m_datos['beneficiarioControlador']['personaFisica'] = $m_personaFisica;
+//            if ($newRecord) {
+//                $this->data['items'][$noticeHash]['beneficiarioControlador']['personaFisica'] = $m_personaFisica;
+//            }
+
+            if (strlen($m_personaFisica['nombre']) > 0) {
+                //$hashBeneficiario = md5(json_encode($m_personaFisica));
+                $this->data['items'][$noticeHash]['beneficiarioControlador']['personaFisica'][] = $m_personaFisica;
+            }
 
             //Persona moral
             $m_personaMoral = [
@@ -198,7 +236,14 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $m_personaMoral['nacionalidad'] = $tempGiro[1];
             }
 
-            $m_datos['beneficiarioControlador']['personaMoral'] = $m_personaMoral;
+//            if ($newRecord) {
+//                $this->data['items'][$noticeHash]['beneficiarioControlador']['personaMoral'] = $m_personaMoral;
+//            }
+
+            if (strlen($m_personaMoral['razonSocial']) > 0) {
+                //$hashBeneficiario = md5(json_encode($m_personaMoral));
+                $this->data['items'][$noticeHash]['beneficiarioControlador']['personaMoral'][] = $m_personaMoral;
+            }
 
             //Fideicomiso
             $m_fideicomiso = [
@@ -206,7 +251,15 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 'rfc' => trim(strtoupper($row[62])),   // BI -> 60
                 'identificador' => trim(strtoupper($row[63])),    // BJ -> 61
             ];
-            $m_datos['beneficiarioControlador']['fideicomiso'] = $m_fideicomiso;
+
+//            if ($newRecord) {
+//                $this->data['items'][$noticeHash]['beneficiarioControlador']['fideicomiso'] = $m_fideicomiso;
+//            }
+
+            if (strlen($m_fideicomiso['denominacion']) > 0) {
+//                $hashBeneficiario = md5(json_encode($m_fideicomiso));
+                $this->data['items'][$noticeHash]['beneficiarioControlador']['fideicomiso'][] = $m_fideicomiso;
+            }
 
             //Datos de la operacion
             $m_datosOperacion = [
@@ -225,7 +278,9 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $m_datosOperacion['figurapersonaRealizaActividad'] = $tempfigurapersonaRealizaActividad[0];
             }
 
-            $m_datos['detallesOperacion']['datosOperacion'] = $m_datosOperacion;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['detallesOperacion']['datosOperacion'] = $m_datosOperacion;
+            }
 
             //DATOS DE LA CONTRAPARTE
             //Persona fisica
@@ -243,7 +298,10 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $temppais = explode(',', $m_personaFisica['pais']);
                 $m_personaFisica['pais'] = $temppais[1];
             }
-            $m_datos['detallesOperacion']['contraparte']['personaFisica'] = $m_personaFisica;
+
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['detallesOperacion']['contraparte']['personaFisica'] = $m_personaFisica;
+            }
 
             //Persona moral
             $m_personaMoral = [
@@ -257,7 +315,10 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $tempGiro = explode(',', $m_personaMoral['nacionalidad']);
                 $m_personaMoral['nacionalidad'] = $tempGiro[1];
             }
-            $m_datos['detallesOperacion']['contraparte']['personaMoral'] = $m_personaMoral;
+
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['detallesOperacion']['contraparte']['personaMoral'] = $m_personaMoral;
+            }
 
             //Fideicomiso
             $m_fideicomiso = [
@@ -266,7 +327,9 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 'identificador' => trim(strtoupper($row[80])),    // CA -> 78
             ];
 
-            $m_datos['detallesOperacion']['contraparte']['fideicomiso'] = $m_fideicomiso;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['detallesOperacion']['contraparte']['fideicomiso'] = $m_fideicomiso;
+            }
 
             //CARACTERISTICAS DEL INMUEBLE OBJETO
             //Caracteristicas del Inmueble
@@ -295,7 +358,9 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $m_caracteristicasInmueble['estado'] = $m_tempCaracteristicas[0];
             }
 
-            $m_datos['actoOperacion']['caracteristicasInmueble'] = $m_caracteristicasInmueble;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['actoOperacion']['caracteristicasInmueble'] = $m_caracteristicasInmueble;
+            }
 
             //Instrumento Publico
             $m_instrumentoPublico = [
@@ -311,13 +376,18 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $m_instrumentoPublico['entidadNotario'] = $m_tempCaracteristicas[0];
             }
 
-            $m_datos['actoOperacion']['instrumentoPublico'] = $m_instrumentoPublico;
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['actoOperacion']['instrumentoPublico'] = $m_instrumentoPublico;
+            }
 
             //Instrumento Privado
             $m_contratoPrivado = [
                 'fechaContrato' => trim(strtoupper($row[98])),   // CS -> 96
             ];
-            $m_datos['actoOperacion']['contratoPrivado'] = $m_contratoPrivado;
+
+            if ($newRecord) {
+                $this->data['items'][$noticeHash]['actoOperacion']['contratoPrivado'] = $m_contratoPrivado;
+            }
 
             //Datos de liquidacion
             $m_datosLiquidacion = [
@@ -343,18 +413,20 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
                 $m_datosLiquidacion['moneda'] = $m_tempLiquidacion[0];
             }
 
-            unset($m_datos['actoOperacion']['datosLiquidacion']);
-            if (strlen($m_datos['identificacionPersonaObjetoAviso']['personaFisica']['nombre']) == 0 &&
-                strlen($m_datos['identificacionPersonaObjetoAviso']['personaMoral']['razonSocial']) == 0 &&
-                strlen($m_datos['identificacionPersonaObjetoAviso']['fideicomiso']['denominacion']) == 0 &&
-                strlen($m_datosLiquidacion['fechaPago']) > 0) {
-                $this->data['items'][$e_posicion - 1]['actoOperacion']['datosLiquidacion'][] = $m_datosLiquidacion;
-            } else {
+            $this->data['items'][$noticeHash]['actoOperacion']['datosLiquidacion'][] = $m_datosLiquidacion;
 
-                $m_datos['actoOperacion']['datosLiquidacion'][] = $m_datosLiquidacion;
-                $this->data['items'][] = $m_datos;
-                $e_posicion++;
-            }
+//            unset($m_datos['actoOperacion']['datosLiquidacion']);
+//            if (strlen($m_datos['identificacionPersonaObjetoAviso']['personaFisica']['nombre']) == 0 &&
+//                strlen($m_datos['identificacionPersonaObjetoAviso']['personaMoral']['razonSocial']) == 0 &&
+//                strlen($m_datos['identificacionPersonaObjetoAviso']['fideicomiso']['denominacion']) == 0 &&
+//                strlen($m_datosLiquidacion['fechaPago']) > 0) {
+//                $this->data['items'][$e_posicion - 1]['actoOperacion']['datosLiquidacion'][] = $m_datosLiquidacion;
+//            } else {
+//
+//                $m_datos['actoOperacion']['datosLiquidacion'][] = $m_datosLiquidacion;
+//                $this->data['items'][] = $m_datos;
+//                $e_posicion++;
+//            }
 
         }
     }
@@ -364,7 +436,6 @@ class RealEstateSaleImport implements ToCollection, WithMultipleSheets
      */
     public function getData(): array
     {
-        Log::info($this->data);
         return $this->data;
     }
 
