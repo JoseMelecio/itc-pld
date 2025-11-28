@@ -338,93 +338,121 @@ class RealEstateSaleExportXML
 
             $xmlObject->endElement(); // Elemento persona_aviso
 
-            if (strlen($notice['beneficiarioControlador']['personaFisica']['nombre']) > 0 ||
-                strlen($notice['beneficiarioControlador']['personaMoral']['razonSocial']) > 0 ||
-                strlen($notice['beneficiarioControlador']['fideicomiso']['denominacion']) > 0) {
 
-                //Dueño Beneficiario
-                $xmlObject->startElement('dueno_beneficiario');
+            //Benefiario persona fisica
+            if (isset($notice['beneficiarioControlador']['personaFisica'])) {
+                foreach ($notice['beneficiarioControlador']['personaFisica'] as $fisica) {
+                    //Dueño Beneficiario
+                    $xmlObject->startElement('dueno_beneficiario');
 
-                $xmlObject->startElement('tipo_persona');
+                    $xmlObject->startElement('tipo_persona');
 
-                // Persona Fisica
-                if (strlen($notice['beneficiarioControlador']['personaFisica']['nombre']) > 0) {
+                    // Persona Fisica
+                    if (strlen($fisica['nombre']) > 0) {
 
-                    $xmlObject->startElement('persona_fisica');
-                    $xmlObject->startElement('nombre');
-                    $xmlObject->text($notice['beneficiarioControlador']['personaFisica']['nombre']);
-                    $xmlObject->endElement(); // Elemento nombre
+                        $xmlObject->startElement('persona_fisica');
+                        $xmlObject->startElement('nombre');
+                        $xmlObject->text($fisica['nombre']);
+                        $xmlObject->endElement(); // Elemento nombre
 
-                    $xmlObject->startElement('apellido_paterno');
-                    $xmlObject->text($notice['beneficiarioControlador']['personaFisica']['apellidoPaterno']);
-                    $xmlObject->endElement(); // Elemento apellido_paterno
+                        $xmlObject->startElement('apellido_paterno');
+                        $xmlObject->text($fisica['apellidoPaterno']);
+                        $xmlObject->endElement(); // Elemento apellido_paterno
 
-                    $xmlObject->startElement('apellido_materno');
-                    $xmlObject->text($notice['beneficiarioControlador']['personaFisica']['apellidoMaterno']);
-                    $xmlObject->endElement(); // Elemento apellido_materno
+                        $xmlObject->startElement('apellido_materno');
+                        $xmlObject->text($fisica['apellidoMaterno']);
+                        $xmlObject->endElement(); // Elemento apellido_materno
 
-                    $xmlObject->startElement('fecha_nacimiento');
-                    $xmlObject->text($notice['beneficiarioControlador']['personaFisica']['fechaNacimiento']);
-                    $xmlObject->endElement(); // Elemento fecha_nacimiento
+                        $xmlObject->startElement('fecha_nacimiento');
+                        $xmlObject->text($fisica['fechaNacimiento']);
+                        $xmlObject->endElement(); // Elemento fecha_nacimiento
 
-                    if (strlen($notice['beneficiarioControlador']['personaFisica']['rfc']) > 0) {
+                        if (strlen($fisica['rfc']) > 0) {
+                            $xmlObject->startElement('rfc');
+                            $xmlObject->text($fisica['rfc']);
+                            $xmlObject->endElement(); // Elemento rfc
+                        }
+
+                        if (strlen($fisica['curp']) > 0) {
+                            $xmlObject->startElement('curp');
+                            $xmlObject->text($fisica['curp']);
+                            $xmlObject->endElement(); // Elemento curp
+                        }
+
+                        $xmlObject->startElement('pais_nacionalidad');
+                        $xmlObject->text($fisica['pais']);
+                        $xmlObject->endElement(); // Elemento pais_nacionalidad
+
+                        $xmlObject->endElement(); // Elemento persona_fisica
+                    }
+                    $xmlObject->endElement(); // persona fisica
+                    $xmlObject->endElement(); // beneficiario
+                }
+            }
+
+            //Benefiario persona moral
+            if (isset($notice['beneficiarioControlador']['personaMoral'])) {
+                foreach ($notice['beneficiarioControlador']['personaMoral'] as $moral) {
+                    //Dueño Beneficiario
+                    $xmlObject->startElement('dueno_beneficiario');
+
+                    $xmlObject->startElement('tipo_persona');
+
+                    // Persona moral
+                    if (strlen($fisica['nombre']) > 0) {
+
+                        $xmlObject->startElement('persona_moral');
+                        $xmlObject->startElement('denominacion_razon');
+                        $xmlObject->text($moral['razonSocial']);
+                        $xmlObject->endElement(); // Elemento denominacion_razon
+
+                        $xmlObject->startElement('fecha_constitucion');
+                        $xmlObject->text($moral['fechaConstitucion']);
+                        $xmlObject->endElement(); // Elemento fecha_constitucion
+
                         $xmlObject->startElement('rfc');
-                        $xmlObject->text($notice['beneficiarioControlador']['personaFisica']['rfc']);
+                        $xmlObject->text($moral['rfc']);
                         $xmlObject->endElement(); // Elemento rfc
+
+                        $xmlObject->startElement('pais_nacionalidad');
+                        $xmlObject->text($moral['nacionalidad']);
+                        $xmlObject->endElement(); // Elemento pais_nacionalidad
+
+                        $xmlObject->endElement(); // Elemento persona_moral
                     }
+                    $xmlObject->endElement(); // persona fisica
+                    $xmlObject->endElement(); // beneficiario
+                }
+            }
 
-                    if (strlen($notice['beneficiarioControlador']['personaFisica']['curp']) > 0) {
-                        $xmlObject->startElement('curp');
-                        $xmlObject->text($notice['beneficiarioControlador']['personaFisica']['curp']);
-                        $xmlObject->endElement(); // Elemento curp
+            if (isset($notice['beneficiarioControlador']['fideicomiso'])) {
+                foreach ($notice['beneficiarioControlador']['fideicomiso'] as $fideicomiso) {
+                    //Dueño Beneficiario
+                    $xmlObject->startElement('dueno_beneficiario');
+
+                    $xmlObject->startElement('tipo_persona');
+
+                    // Persona moral
+                    if (strlen($fideicomiso['denominacion_razon']) > 0) {
+
+                        $xmlObject->startElement('fideicomiso');
+                        $xmlObject->startElement('denominacion_razon');
+                        $xmlObject->text($fideicomiso['denominacion']);
+                        $xmlObject->endElement(); // Elemento denominacion_razon
+
+                        $xmlObject->startElement('rfc');
+                        $xmlObject->text($fideicomiso['rfc']);
+                        $xmlObject->endElement(); // Elemento rfc
+
+                        $xmlObject->startElement('identificador_fideicomiso');
+                        $xmlObject->text($fideicomiso['identificador']);
+                        $xmlObject->endElement(); // Elemento identificador_fideicomiso
+
+                        $xmlObject->endElement(); // Elemento fideicomiso
                     }
-
-                    $xmlObject->startElement('pais_nacionalidad');
-                    $xmlObject->text($notice['beneficiarioControlador']['personaFisica']['pais']);
-                    $xmlObject->endElement(); // Elemento pais_nacionalidad
-
-                    $xmlObject->endElement(); // Elemento persona_fisica
+                    $xmlObject->endElement(); // persona fisica
+                    $xmlObject->endElement(); // beneficiario
                 }
-                // Persona Moral
-                elseif (strlen($notice['beneficiarioControlador']['personaMoral']['nombre']) > 0) {
-                    $xmlObject->startElement('persona_moral');
-                    $xmlObject->startElement('denominacion_razon');
-                    $xmlObject->text($notice['beneficiarioControlador']['personaMoral']['razonSocial']);
-                    $xmlObject->endElement(); // Elemento denominacion_razon
-
-                    $xmlObject->startElement('fecha_constitucion');
-                    $xmlObject->text($notice['beneficiarioControlador']['personaMoral']['fechaConstitucion']);
-                    $xmlObject->endElement(); // Elemento fecha_constitucion
-
-                    $xmlObject->startElement('rfc');
-                    $xmlObject->text($notice['beneficiarioControlador']['personaMoral']['rfc']);
-                    $xmlObject->endElement(); // Elemento rfc
-
-                    $xmlObject->startElement('pais_nacionalidad');
-                    $xmlObject->text($notice['beneficiarioControlador']['personaMoral']['nacionalidad']);
-                    $xmlObject->endElement(); // Elemento pais_nacionalidad
-
-                    $xmlObject->endElement(); // Elemento persona_moral
-                } else {
-                    $xmlObject->startElement('fideicomiso');
-                    $xmlObject->startElement('denominacion_razon');
-                    $xmlObject->text($notice['beneficiarioControlador']['fideicomiso']['denominacion']);
-                    $xmlObject->endElement(); // Elemento denominacion_razon
-
-                    $xmlObject->startElement('rfc');
-                    $xmlObject->text($notice['beneficiarioControlador']['fideicomiso']['rfc']);
-                    $xmlObject->endElement(); // Elemento rfc
-
-                    $xmlObject->startElement('identificador_fideicomiso');
-                    $xmlObject->text($notice['beneficiarioControlador']['fideicomiso']['identificador']);
-                    $xmlObject->endElement(); // Elemento identificador_fideicomiso
-
-                    $xmlObject->endElement(); // Elemento fideicomiso
-                }
-
-                $xmlObject->endElement(); // Elemento tipo_persona
-
-                $xmlObject->endElement(); // Elemento dueno_beneficiario
             }
 
             //Datos de la operacion
