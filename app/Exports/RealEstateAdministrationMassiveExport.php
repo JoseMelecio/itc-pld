@@ -178,13 +178,14 @@ class RealEstateAdministrationMassiveExport
                 'persona_moral' => [
                     'denominacion_razon' => $beneficiaryPerson->name_or_company,
                     'fecha_constitucion' => $beneficiaryPerson->birth_or_constitution_date,
-                    'pais_nacionalidad' => $beneficiaryPerson->nationality,
                 ]
             ];
 
             if (strlen($beneficiaryPerson->tax_id) > 0) {
                 $legal['persona_moral']['rfc'] = $beneficiaryPerson->tax_id;
             }
+
+            $legal['persona_moral']['pais_nacionalidad'] = $beneficiaryPerson->nationality;
             $data['tipo_persona'] = $legal;
         }
 
