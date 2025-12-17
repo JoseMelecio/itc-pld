@@ -19,14 +19,17 @@ const props = defineProps({
     }),
   },
   risk_elements: Object,
-  risk_elements_selected: Array
+  risk_elements_selected: Array,
+  risk_indicators: Object,
+  risk_indicators_selected: Array,
 });
 
 
 const form = useForm({
   template_clients_config: [] as string[],
   template_operations_config: [] as string[],
-  risk_element_config: props.risk_elements_selected
+  risk_element_config: props.risk_elements_selected,
+  risk_indicator_config: props.risk_indicators_selected
 });
 
 onMounted(() => {
@@ -49,6 +52,12 @@ function submitConfigTemplate() {
 
 function submitRiskElementConfig() {
   form.post("/ebr-configuration-risk-element", {
+    onSuccess: () => form.reset(),
+  });
+}
+
+function submitRiskIndicatorConfig() {
+  form.post("/ebr-configuration-risk-indicator", {
     onSuccess: () => form.reset(),
   });
 }
@@ -86,6 +95,9 @@ function submitRiskElementConfig() {
             </li>
             <li class="nav-item" role="presentation">
               <button class="nav-link" id="btabs-static-profile-tab" data-bs-toggle="tab" data-bs-target="#btabs-static-profile" role="tab" aria-controls="btabs-static-profile" aria-selected="false" tabindex="-1">Riesgos Inherentes</button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="btabs-static-profile-tab" data-bs-toggle="tab" data-bs-target="#btabs-static-risk_indicator" role="tab" aria-controls="btabs-static-profile" aria-selected="false" tabindex="-1">Indicadores de Riesgo</button>
             </li>
           </ul>
           <div class="block-content tab-content">
@@ -194,6 +206,48 @@ function submitRiskElementConfig() {
               <div class="row">
                 <div class="mb-4">
                   <button type="button" @click="submitRiskElementConfig" class="btn btn-success me-2">Guardar</button>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane" id="btabs-static-risk_indicator" role="tabpanel" aria-labelledby="btabs-static-profile-tab" tabindex="0">
+              <table class="table table-hover table-sm table-vcenter">
+                <thead>
+                <tr>
+                  <th class="text-center" style="width: 50px;">#</th>
+                  <th>Caracteristica</th>
+                  <th class="d-none d-sm-table-cell">Clave</th>
+                  <th class="d-none d-sm-table-cell">Nombre</th>
+                  <th class="d-none d-sm-table-cell">Descripción</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(riskIndicator, indexRiskIndicator) in risk_indicators" :key="indexRiskIndicator">
+                  <th class="text-center" scope="row">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      :value="riskIndicator.id"
+                      v-model="form.risk_indicator_config"
+                    />
+                  </th>
+                  <td class="fs-sm">
+                    {{ toTitleCase(riskIndicator.characteristic) }}
+                  </td>
+                  <td class="fs-sm">
+                    {{ toTitleCase(riskIndicator.key) }}
+                  </td>
+                  <td class="fs-sm">
+                    {{ riskIndicator.name }}
+                  </td>
+                  <td class="fs-sm">
+                    {{ riskIndicator.description }}
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+              <div class="row">
+                <div class="mb-4">
+                  <button type="button" @click="submitRiskIndicatorConfig" class="btn btn-success me-2">Guardar</button>
                 </div>
               </div>
             </div>

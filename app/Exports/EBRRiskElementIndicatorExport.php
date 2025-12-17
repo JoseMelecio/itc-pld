@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\EBR;
+use App\Models\EBRConfiguration;
 use App\Models\EBRRiskElementIndicatorRelated;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -39,7 +40,10 @@ class EBRRiskElementIndicatorExport implements FromCollection, WithEvents, WithS
             AfterSheet::class => function(AfterSheet $event) {
                 $sheet = $event->sheet->getDelegate();
 
-                foreach ($this->ebr->type->riskElements as $riskElement) {
+                $ebrConfiguration = EBRConfiguration::where('user_id', $this->ebr->user_id)->first();
+
+
+                foreach ($ebrConfiguration->riskElements as $riskElement) {
                     $this->riskIndicatorTable($sheet, $riskElement);
                 }
             },

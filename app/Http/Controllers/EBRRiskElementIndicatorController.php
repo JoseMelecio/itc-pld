@@ -19,8 +19,6 @@ class EBRRiskElementIndicatorController extends Controller
     public function index()
     {
         $riskIndicators = EBRRiskElementIndicator::all();
-        Log::info(json_encode($riskIndicators));
-
         return Inertia::render('ebr/catalogs/risk-element-indicators/Index', [
             'riskIndicators' => $riskIndicators,
         ]);
@@ -31,7 +29,10 @@ class EBRRiskElementIndicatorController extends Controller
      */
     public function create()
     {
-        return Inertia::render('ebr/catalogs/risk-element-indicators/Edit', []);
+        $riskElements = EBRRiskElement::select('id', 'risk_element')->get();
+        return Inertia::render('ebr/catalogs/risk-element-indicators/Edit', [
+            'riskElements' => $riskElements,
+        ]);
     }
 
     /**
@@ -51,9 +52,11 @@ class EBRRiskElementIndicatorController extends Controller
     public function show(string $id)
     {
         $riskIndicator = EBRRiskElementIndicator::findOrFail($id);
+        $riskElements = EBRRiskElement::select('id', 'risk_element')->get();
 
         return Inertia::render('ebr/catalogs/risk-element-indicators/Edit', [
             'riskIndicator' => $riskIndicator,
+            'riskElements' => $riskElements,
         ]);
 
     }

@@ -6,13 +6,15 @@ use App\Exports\EBRClientExport;
 use App\Exports\EBRMultiSheetExport;
 use App\Exports\EBROperationExport;
 use App\Http\Requests\EBRConfigurationStoreRequest;
-use App\Http\Requests\EBRRiskelementConfigurationStoreRequest;
+use App\Http\Requests\EBRRiskElementConfigurationStoreRequest;
+use App\Http\Requests\EBRRiskIndicatorConfigurationStoreRequest;
 use App\Http\Requests\EBRStoreRequest;
 use App\Imports\EBRClientImport;
 use App\Imports\EBROperationImport;
 use App\Models\EBR;
 use App\Models\EBRConfiguration;
 use App\Models\EBRRiskElement;
+use App\Models\EBRRiskElementIndicator;
 use App\Models\EBRRiskElementIndicatorRelated;
 use App\Models\EBRRiskElementRelated;
 use App\Models\EBRRiskElementRelatedAverage;
@@ -142,6 +144,17 @@ class EBRController extends Controller
         return Inertia::render('ebr/Configuration', $this->configuration());
     }
 
+    public function riskIndicatorConfigurationStore(EBRRiskIndicatorConfigurationStoreRequest $request)
+    {
+        $data = $request->validated();
+        $user_id = Auth::user()->id;
+
+        $ebrConfiguration = EBRConfiguration::where('user_id', $user_id)->first();
+        $ebrConfiguration->riskIndicators()->sync($data['risk_indicator_config']);
+
+        return Inertia::render('ebr/Configuration', $this->configuration());
+    }
+
     /**
      * @throws Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
@@ -155,6 +168,7 @@ class EBRController extends Controller
         $ebr->maximum_risk_level = $ebr->maximum_risk_level_count;
 
         $ebrConfiguration = EBRConfiguration::where('user_id', $ebr->user_id)->first();
+        //Calculadon de los elementos relacionados
         foreach ($ebrConfiguration->riskElements as $riskElement) {
             $builder = new JsonQueryBuilder($riskElement->report_config, $ebr->id);
             $query = $builder->build();
@@ -205,6 +219,13 @@ class EBRController extends Controller
             $relatedAverage['risk_inherent_concentration_header'] = ($relatedAverage['weight_impact_range_header'] + $relatedAverage['frequency_range_header']) / 2;
         }
 
+        foreach ($ebrConfiguration->riskIndicators as $riskIndicator) {
+            if (empty($riskIndicator->report_config)) continue;
+            $builder = new JsonQueryBuilder($riskIndicator->report_config, $ebr->id);
+            $query = $builder->build();
+            $result = $query->get();
+
+        }
         $ebr->save();
         return Excel::download(new EBRMultiSheetExport($ebr), 'reporte_ebr.xlsx');
     }
@@ -246,8 +267,10 @@ class EBRController extends Controller
 
 
         $riskElements = EBRRiskElement::where('active', true)->orderBy('risk_element')->get();
+        $riskIndicators = EBRRiskElementIndicator::orderBy('risk_element_id')->orderBy('name')->get();
 
         $riskElementSelectedIds = $ebrConfiguration->riskElements()->pluck('ebr_risk_elements.id')->toArray();
+        $riskIndicatorsSelectedIds = $ebrConfiguration->riskIndicators()->pluck('ebr_risk_element_indicators.id')->toArray();
 
         return [
             'templates' => [
@@ -259,7 +282,9 @@ class EBRController extends Controller
                 'operations' => $ebrConfiguration->template_operations_config,
             ],
             'risk_elements' => $riskElements,
-            'risk_elements_selected' => $riskElementSelectedIds
+            'risk_elements_selected' => $riskElementSelectedIds,
+            'risk_indicators' => $riskIndicators,
+            'risk_indicators_selected' => $riskIndicatorsSelectedIds,
         ];
     }
 }
