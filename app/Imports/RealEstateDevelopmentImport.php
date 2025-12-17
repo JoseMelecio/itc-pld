@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 
@@ -359,8 +360,8 @@ class RealEstateDevelopmentImport implements ToCollection, WithMultipleSheets
                     'moneda' => trim(strtoupper($row[98])),   // CS -> 96
                     'montoAportacion' => trim(strtoupper($row[99])),  // CT -> 97
                     'aportacionFideicomiso' => trim(strtoupper($row[100])),  // CU -> 98
-                    'nombreInstitucion' => trim(strtoupper($row[102])),  // CV -> 99
-                    'valorInmueblePreVenta' => trim(strtoupper($row[103])),   // CW -> 100
+                    'nombreInstitucion' => trim(strtoupper($row[101])),  // CV -> 99
+                    'valorInmueblePreVenta' => trim(strtoupper($row[102])),   // CW -> 100
                 ];
 
                 if (strlen($m_recursosTercerosNumeral['instrumentoMonetario']) > 0) {
@@ -514,6 +515,7 @@ class RealEstateDevelopmentImport implements ToCollection, WithMultipleSheets
      */
     public function getData(): array
     {
+        Log::info(json_encode($this->data));
         return $this->data;
     }
 

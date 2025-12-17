@@ -8,6 +8,7 @@ import { router } from '@inertiajs/vue3'
 const page = usePage();
 
 const props = defineProps({
+  riskElements: Object,
   errors: Object,
   riskIndicator: {
     type: Object,
@@ -16,8 +17,9 @@ const props = defineProps({
       key: null,
       name: null,
       description: null,
+      type: null,
       report_config: {},
-      risk_indicator: null,
+      risk_element_id: null,
       order: null,
     }),
   }
@@ -135,7 +137,7 @@ watch(() => form.report_config, (newVal) => {
                   </div>
 
                   <div class="mb-4">
-                    <label class="form-label" for="month">Clave <span class="text-danger">*</span></label>
+                    <label class="form-label" for="month">Clave</label>
                     <input type="text" class="form-control form-control-sm" :class="{ 'is-invalid': errors.key }"  id="key" name="key" placeholder="Clave" v-model="form.key">
                     <div id="key-error" class="text-danger" >{{ errors.key }}</div>
                   </div>
@@ -160,9 +162,18 @@ watch(() => form.report_config, (newVal) => {
                   </div>
 
                   <div class="mb-4">
+                    <label class="form-label" for="month">Tipo de indicador de riesgo</label>
+                    <input type="text" class="form-control form-control-sm" :class="{ 'is-invalid': errors.type }"  id="type" name="type" placeholder="LD/FT" v-model="form.type">
+                    <div id="type-error" class="text-danger" >{{ errors.type }}</div>
+                  </div>
+
+                  <div class="mb-4">
                     <label class="form-label" for="month">Indicador de Riesgo <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control form-control-sm" :class="{ 'is-invalid': errors.risk_indicator }"  id="risk_indicator" name="risk_indicator" placeholder="Indicador de Riesgo" v-model="form.risk_indicator">
-                    <div id="risk_indicator-error" class="text-danger" >{{ errors.risk_indicator }}</div>
+                    <select class="form-select" id="risk_element_id" name="risk_element_id" v-model="form.risk_element_id">
+                      <option selected="">Seleccione una opcion</option>
+                      <option v-for="element in riskElements" :key="element.id" :value="element.id">{{ element.risk_element }}</option>
+                    </select>
+                    <div id="risk_element_id-error" class="text-danger" >{{ errors.risk_element_id }}</div>
                   </div>
 
                   <div class="mb-4">
@@ -175,9 +186,9 @@ watch(() => form.report_config, (newVal) => {
 
                 <div class="col-6">
                   <div class="mb-4">
-                    <label class="form-label" for="file">Reglas <span class="text-danger">*</span></label>
+                    <label class="form-label" for="file">SQL <span class="text-danger">*</span></label>
                     <textarea
-                        v-model="reportConfigString"
+                        v-model="form."
                         class="form-control form-control-sm"
                         :class="{ 'is-invalid': errors.report_config }"
                         id="report_config"

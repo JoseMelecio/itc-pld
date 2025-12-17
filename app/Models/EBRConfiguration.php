@@ -32,4 +32,14 @@ class EBRConfiguration extends Model
             'risk_element_id'
         );
     }
+
+    public function riskIndicators()
+    {
+        return $this->belongsToMany(
+            EBRRiskElementIndicator::class,
+            'ebr_configuration_risk_element_indicators',
+            'ebr_configuration_id',
+            'risk_indicator_id'
+        );
+    }
 }

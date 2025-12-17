@@ -96,7 +96,7 @@ function formatNumber(num) {
                       {{ riskIndicator.description }}
                     </td>
                     <td class="fw-semibold fs-sm">
-                      {{ riskIndicator.risk_indicator }}
+                      {{ riskIndicator.type }}
                     </td>
                     <td class="text-center">
                       <div class="btn-group">

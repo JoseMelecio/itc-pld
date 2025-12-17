@@ -33,12 +33,27 @@ class EBRRiskIndicatorStoreRequest extends FormRequest
     {
         return [
             'characteristic' => 'required|string',
-            'key' => 'required|string',
+            'key' => 'nullable|string',
             'name' => 'required|string',
             'description' => 'required|string',
+            'type' => 'nullable|string',
             'report_config' => 'required|array',
-            'risk_indicator' => 'required|string',
+            'risk_element_id' => 'required|exists:ebr_risk_elements,id',
+            'mysql' => 'nullable|string',
             'order' => 'required|numeric',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'characteristic.required' => 'El campo es necesario',
+            'name.required' => 'El campo es necesario',
+            'description.required' => 'El campo es necesario',
+            'report_config.required' => 'El campo es necesario',
+            'risk_element_id.required' => 'El campo es necesario',
+            'risk_element_id.exists' => 'El elemento de riesgo no exite',
+            'order.required' => 'El campo es necesario',
         ];
     }
 }

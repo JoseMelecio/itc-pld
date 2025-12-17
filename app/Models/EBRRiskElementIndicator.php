@@ -13,8 +13,10 @@ class EBRRiskElementIndicator extends Model
         'key',
         'name',
         'description',
+        'type',
         'report_config',
-        'risk_indicator',
+        'mysql',
+        'risk_element_id',
         'order'
     ];
 
