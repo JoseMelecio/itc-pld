@@ -515,7 +515,6 @@ class RealEstateDevelopmentImport implements ToCollection, WithMultipleSheets
      */
     public function getData(): array
     {
-        Log::info(json_encode($this->data));
         return $this->data;
     }
 
