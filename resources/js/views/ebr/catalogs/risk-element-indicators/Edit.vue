@@ -19,6 +19,7 @@ const props = defineProps({
       description: null,
       type: null,
       report_config: {},
+      sql: null,
       risk_element_id: null,
       order: null,
     }),
@@ -188,14 +189,14 @@ watch(() => form.report_config, (newVal) => {
                   <div class="mb-4">
                     <label class="form-label" for="file">SQL <span class="text-danger">*</span></label>
                     <textarea
-                        v-model="form."
+                        v-model="form.sql"
                         class="form-control form-control-sm"
-                        :class="{ 'is-invalid': errors.report_config }"
-                        id="report_config"
-                        name="report_config"
+                        :class="{ 'is-invalid': errors.sql }"
+                        id="sql"
+                        name="sql"
                         rows="24"
                     ></textarea>
-                    <div id="report_config-error" class="text-danger">{{ errors.report_config}}</div>
+                    <div id="sql-error" class="text-danger">{{ errors.sql}}</div>
                   </div>
                 </div>
 

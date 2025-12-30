@@ -10,7 +10,7 @@ class EBRRiskElementIndicatorRelated extends Model
 
     protected $fillable = [
         'ebr_id',
-        'ebr_risk_element_indicator_id',
+        'ebr_risk_element_id',
         'characteristic',
         'key',
         'name',

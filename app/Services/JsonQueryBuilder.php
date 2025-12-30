@@ -25,7 +25,7 @@ class JsonQueryBuilder
                 $q->on('ebr_clients.ebr_id', '=', 'ebr_operations.ebr_id')
                     ->on('ebr_clients.id_usuario_cliente', '=', 'ebr_operations.id_usuario_cliente_que_realizo_operacion')
                     ->where('ebr_operations.ebr_id', '=', $ebrId);
-        });
+            });
 
         // SELECTs dinámicos
         if (!empty($this->data['selects'])) {

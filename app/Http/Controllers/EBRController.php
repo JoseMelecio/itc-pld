@@ -22,6 +22,7 @@ use App\Services\JsonQueryBuilder;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -162,6 +163,11 @@ class EBRController extends Controller
     public function calcs($id)
     {
         $ebr = EBR::findOrFail($id);
+
+        //Delete previus details
+        EBRRiskElementRelated::where('ebr_id', $ebr->id)->delete();
+        EBRRiskElementIndicatorRelated::where('ebr_id', $ebr->id)->delete();
+
         $ebr->total_operation_amount = $ebr->total_amount;
         $ebr->total_clients = $ebr->total_clients_count;
         $ebr->total_operations = $ebr->total_operations_count;
@@ -220,10 +226,29 @@ class EBRController extends Controller
         }
 
         foreach ($ebrConfiguration->riskIndicators as $riskIndicator) {
-            if (empty($riskIndicator->report_config)) continue;
-            $builder = new JsonQueryBuilder($riskIndicator->report_config, $ebr->id);
-            $query = $builder->build();
-            $result = $query->get();
+            if (empty($riskIndicator->sql) || !$riskIndicator->active) continue;
+            Log::info($riskIndicator->sql);
+            Log::info($ebr->id);
+            [$sql, $bindings] = $this->normalizeNamedParameter($riskIndicator->sql, 'ebr_id', $ebr->id);
+            $result = DB::select($sql, $bindings);
+            $newIndicatorRelated = [
+                'ebr_id' => $ebr->id,
+                'ebr_risk_element_id' => $riskIndicator->risk_element_id,
+                'characteristic' => $riskIndicator->characteristic,
+                'key' => $riskIndicator->key,
+                'name' => $riskIndicator->name,
+                'description' => $riskIndicator->description,
+                'risk_indicator' => $riskIndicator->risk_indicator,
+                'order' => $riskIndicator->order,
+                'amount' => $result[0]->amount_mxn,
+                'related_clients' => $result[0]->total_clients,
+                'related_operations' => $result[0]->total_operations,
+                'weight_range_impact' => 0,
+                'frequency_range_impact' => 0,
+                'characteristic_concentration' => 0,
+            ];
+            EBRRiskElementIndicatorRelated::create($newIndicatorRelated);
+
 
         }
         $ebr->save();
@@ -287,4 +312,24 @@ class EBRController extends Controller
             'risk_indicators_selected' => $riskIndicatorsSelectedIds,
         ];
     }
+
+    public function normalizeNamedParameter(string $sql, string $paramName, $value): array
+    {
+        $counter = 0;
+        $bindings = [];
+
+        $normalizedSql = preg_replace_callback(
+            '/:' . preg_quote($paramName, '/') . '\b/',
+            function () use (&$counter, &$bindings, $paramName, $value) {
+                $counter++;
+                $newParam = "{$paramName}_{$counter}";
+                $bindings[$newParam] = $value;
+                return ':' . $newParam;
+            },
+            $sql
+        );
+
+        return [$normalizedSql, $bindings];
+    }
+
 }

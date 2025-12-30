@@ -15,9 +15,9 @@ class EBRRiskElementIndicator extends Model
         'description',
         'type',
         'report_config',
-        'mysql',
+        'sql',
         'risk_element_id',
-        'order'
+        'order',
     ];
 
     protected function casts(): array

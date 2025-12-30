@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('ebr_risk_element_indicators', function (Blueprint $table) {
-            $table->text('sql')->nullable()->after('report_config');
+            $table->boolean('active')->default(true)->after('report_config');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('ebr_risk_element_indicators', function (Blueprint $table) {
-            $table->dropColumn('sql');
+            $table->dropColumn('active');
         });
     }
 };

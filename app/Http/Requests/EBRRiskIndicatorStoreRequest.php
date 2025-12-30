@@ -37,9 +37,8 @@ class EBRRiskIndicatorStoreRequest extends FormRequest
             'name' => 'required|string',
             'description' => 'required|string',
             'type' => 'nullable|string',
-            'report_config' => 'required|array',
             'risk_element_id' => 'required|exists:ebr_risk_elements,id',
-            'mysql' => 'nullable|string',
+            'sql' => 'nullable|string',
             'order' => 'required|numeric',
         ];
     }

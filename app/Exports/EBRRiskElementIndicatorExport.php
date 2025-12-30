@@ -120,7 +120,7 @@ class EBRRiskElementIndicatorExport implements FromCollection, WithEvents, WithS
         ]);
         $this->currentRow++;
 
-        $indicatorsRelated = EBRRiskElementIndicatorRelated::where('ebr_risk_element_indicator_id', $riskElement->id)
+        $indicatorsRelated = EBRRiskElementIndicatorRelated::where('ebr_risk_element_id', $riskElement->id)
             ->where('ebr_id', $this->ebr->id)
             ->orderBy('order')->get();
 
