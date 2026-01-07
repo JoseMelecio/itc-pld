@@ -10,7 +10,9 @@ use App\Http\Requests\EBRRiskElementConfigurationStoreRequest;
 use App\Http\Requests\EBRRiskIndicatorConfigurationStoreRequest;
 use App\Http\Requests\EBRStoreRequest;
 use App\Imports\EBRClientImport;
+use App\Imports\EBRClientJsonImport;
 use App\Imports\EBROperationImport;
+use App\Imports\EBROperationJsonImport;
 use App\Models\EBR;
 use App\Models\EBRConfiguration;
 use App\Models\EBRRiskElement;
@@ -19,20 +21,15 @@ use App\Models\EBRRiskElementIndicatorRelated;
 use App\Models\EBRRiskElementRelated;
 use App\Models\EBRRiskElementRelatedAverage;
 use App\Services\JsonQueryBuilder;
-use Illuminate\Bus\Batch;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Exception;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class EBRController extends Controller
 {
@@ -55,10 +52,14 @@ class EBRController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    //EBRStoreRequest
     public function store(EBRStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
         $fileClients = $request->file('file_clients');
         $fileOperations = $request->file('file_operations');
+
+        $clientsExtension = $fileClients->getClientOriginalExtension();
+        $operationsExtension = $fileOperations->getClientOriginalExtension();
 
         $newEbr = EBR::create([
             'user_id' => auth()->user()->id,
@@ -73,13 +74,36 @@ class EBRController extends Controller
         $clientsPath = $fileClients->storeAs('ebr_files', $clientsFileName, 'local');
         $operationsPath = $fileOperations->storeAs('ebr_files', $operationsFileName, 'local');
 
-        Excel::queueImport(new EBRClientImport(
-            $newEbr->id,
-            auth()->user()->id), $clientsPath);
+        if ($clientsExtension === 'xlsx') {
+            Excel::queueImport(
+                new EBRClientImport($newEbr->id, auth()->id()),
+                $clientsPath
+            );
+        }
 
-        Excel::queueImport(new EBROperationImport(
-            $newEbr->id,
-            auth()->user()->id), $operationsPath);
+        if ($clientsExtension === 'json') {
+            EBRClientJsonImport::dispatch(
+                $clientsPath,
+                $newEbr->id,
+                auth()->id()
+            );
+        }
+
+        if ($operationsExtension === 'xlsx') {
+            Excel::queueImport(
+                new EBROperationImport($newEbr->id, auth()->id()),
+                $operationsPath
+            );
+        }
+
+        if ($operationsExtension === 'json') {
+            EBROperationJsonImport::dispatch(
+                $operationsPath,
+                $newEbr->id,
+                auth()->id()
+        );
+    }
+
 
         return redirect()->route('ebr.index');
     }
@@ -162,6 +186,7 @@ class EBRController extends Controller
      */
     public function calcs($id)
     {
+        Log::info("Empieza a calcular");
         $ebr = EBR::findOrFail($id);
 
         //Delete previus details

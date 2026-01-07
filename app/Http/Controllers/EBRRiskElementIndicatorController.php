@@ -18,8 +18,8 @@ class EBRRiskElementIndicatorController extends Controller
      */
     public function index()
     {
-       // $riskIndicators = EBRRiskElementIndicator::all();
-        $riskIndicators = EBRRiskElementIndicator::whereNull('sql')->get();
+        $riskIndicators = EBRRiskElementIndicator::all();
+        //$riskIndicators = EBRRiskElementIndicator::whereNull('sql')->get();
         return Inertia::render('ebr/catalogs/risk-element-indicators/Index', [
             'riskIndicators' => $riskIndicators,
         ]);
