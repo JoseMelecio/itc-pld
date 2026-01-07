@@ -23,8 +23,19 @@ class EBRStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'file_clients' => 'required|file|max:10240',
-            'file_operations' => 'required|file|max:10240',
+            'file_clients' => [
+                'required',
+                'file',
+                'max:102400',
+                'mimetypes:application/json,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ],
+
+            'file_operations' => [
+                'required',
+                'file',
+                'max:102400',
+                'mimetypes:application/json,text/plain,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            ],
         ];
     }
 
@@ -32,8 +43,11 @@ class EBRStoreRequest extends FormRequest
     {
         return [
             'file_clients.required' => 'El archivo es requerido',
+            'file_clients.mimetypes' => 'El archivo debe ser Excel (.xlsx) o JSON',
             'file_clients.max' => 'El archivo es demasiado grande',
+
             'file_operations.required' => 'El archivo es requerido',
+            'file_operations.mimetypes' => 'El archivo debe ser Excel (.xlsx) o JSON',
             'file_operations.max' => 'El archivo es demasiado grande',
         ];
     }

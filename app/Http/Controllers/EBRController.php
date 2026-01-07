@@ -10,7 +10,9 @@ use App\Http\Requests\EBRRiskElementConfigurationStoreRequest;
 use App\Http\Requests\EBRRiskIndicatorConfigurationStoreRequest;
 use App\Http\Requests\EBRStoreRequest;
 use App\Imports\EBRClientImport;
+use App\Imports\EBRClientJsonImport;
 use App\Imports\EBROperationImport;
+use App\Imports\EBROperationJsonImport;
 use App\Models\EBR;
 use App\Models\EBRConfiguration;
 use App\Models\EBRRiskElement;
@@ -19,19 +21,15 @@ use App\Models\EBRRiskElementIndicatorRelated;
 use App\Models\EBRRiskElementRelated;
 use App\Models\EBRRiskElementRelatedAverage;
 use App\Services\JsonQueryBuilder;
-use Illuminate\Bus\Batch;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\Exception;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class EBRController extends Controller
 {
@@ -54,10 +52,14 @@ class EBRController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    //EBRStoreRequest
     public function store(EBRStoreRequest $request): \Illuminate\Http\RedirectResponse
     {
         $fileClients = $request->file('file_clients');
         $fileOperations = $request->file('file_operations');
+
+        $clientsExtension = $fileClients->getClientOriginalExtension();
+        $operationsExtension = $fileOperations->getClientOriginalExtension();
 
         $newEbr = EBR::create([
             'user_id' => auth()->user()->id,
@@ -72,13 +74,36 @@ class EBRController extends Controller
         $clientsPath = $fileClients->storeAs('ebr_files', $clientsFileName, 'local');
         $operationsPath = $fileOperations->storeAs('ebr_files', $operationsFileName, 'local');
 
-        Excel::queueImport(new EBRClientImport(
-            $newEbr->id,
-            auth()->user()->id), $clientsPath);
+        if ($clientsExtension === 'xlsx') {
+            Excel::queueImport(
+                new EBRClientImport($newEbr->id, auth()->id()),
+                $clientsPath
+            );
+        }
 
-        Excel::queueImport(new EBROperationImport(
-            $newEbr->id,
-            auth()->user()->id), $operationsPath);
+        if ($clientsExtension === 'json') {
+            EBRClientJsonImport::dispatch(
+                $clientsPath,
+                $newEbr->id,
+                auth()->id()
+            );
+        }
+
+        if ($operationsExtension === 'xlsx') {
+            Excel::queueImport(
+                new EBROperationImport($newEbr->id, auth()->id()),
+                $operationsPath
+            );
+        }
+
+        if ($operationsExtension === 'json') {
+            EBROperationJsonImport::dispatch(
+                $operationsPath,
+                $newEbr->id,
+                auth()->id()
+        );
+    }
+
 
         return redirect()->route('ebr.index');
     }
@@ -161,7 +186,13 @@ class EBRController extends Controller
      */
     public function calcs($id)
     {
+        Log::info("Empieza a calcular");
         $ebr = EBR::findOrFail($id);
+
+        //Delete previus details
+        EBRRiskElementRelated::where('ebr_id', $ebr->id)->delete();
+        EBRRiskElementIndicatorRelated::where('ebr_id', $ebr->id)->delete();
+
         $ebr->total_operation_amount = $ebr->total_amount;
         $ebr->total_clients = $ebr->total_clients_count;
         $ebr->total_operations = $ebr->total_operations_count;
@@ -220,10 +251,29 @@ class EBRController extends Controller
         }
 
         foreach ($ebrConfiguration->riskIndicators as $riskIndicator) {
-            if (empty($riskIndicator->report_config)) continue;
-            $builder = new JsonQueryBuilder($riskIndicator->report_config, $ebr->id);
-            $query = $builder->build();
-            $result = $query->get();
+            if (empty($riskIndicator->sql) || !$riskIndicator->active) continue;
+            Log::info($riskIndicator->sql);
+            Log::info($ebr->id);
+            [$sql, $bindings] = $this->normalizeNamedParameter($riskIndicator->sql, 'ebr_id', $ebr->id);
+            $result = DB::select($sql, $bindings);
+            $newIndicatorRelated = [
+                'ebr_id' => $ebr->id,
+                'ebr_risk_element_id' => $riskIndicator->risk_element_id,
+                'characteristic' => $riskIndicator->characteristic,
+                'key' => $riskIndicator->key,
+                'name' => $riskIndicator->name,
+                'description' => $riskIndicator->description,
+                'risk_indicator' => $riskIndicator->risk_indicator,
+                'order' => $riskIndicator->order,
+                'amount' => $result[0]->amount_mxn,
+                'related_clients' => $result[0]->total_clients,
+                'related_operations' => $result[0]->total_operations,
+                'weight_range_impact' => 0,
+                'frequency_range_impact' => 0,
+                'characteristic_concentration' => 0,
+            ];
+            EBRRiskElementIndicatorRelated::create($newIndicatorRelated);
+
 
         }
         $ebr->save();
@@ -287,4 +337,24 @@ class EBRController extends Controller
             'risk_indicators_selected' => $riskIndicatorsSelectedIds,
         ];
     }
+
+    public function normalizeNamedParameter(string $sql, string $paramName, $value): array
+    {
+        $counter = 0;
+        $bindings = [];
+
+        $normalizedSql = preg_replace_callback(
+            '/:' . preg_quote($paramName, '/') . '\b/',
+            function () use (&$counter, &$bindings, $paramName, $value) {
+                $counter++;
+                $newParam = "{$paramName}_{$counter}";
+                $bindings[$newParam] = $value;
+                return ':' . $newParam;
+            },
+            $sql
+        );
+
+        return [$normalizedSql, $bindings];
+    }
+
 }

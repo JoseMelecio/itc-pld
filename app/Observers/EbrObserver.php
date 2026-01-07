@@ -4,6 +4,8 @@ namespace App\Observers;
 
 use App\Jobs\FinalizeEBRProcessingJob;
 use App\Models\EBR;
+use App\Models\EBRClient;
+use App\Models\EBROperation;
 use Illuminate\Support\Facades\Log;
 
 class EbrObserver
@@ -27,6 +29,9 @@ class EbrObserver
             if (!$ebr->status || $ebr->status !== 'done') {
 
                 Log::info("✅ Ambos imports completados para EBR {$ebr->id}. Despachando job...");
+                $clientCount = EBRClient::where('ebr_id', $ebr->id)->count();
+                $opsCount = EBROperation::where('ebr_id', $ebr->id)->count();
+                Log::info("Clientes: {$clientCount} - Operaciones: {$opsCount}");
 
                 // Lanzamos el job final
                 dispatch(new FinalizeEBRProcessingJob($ebr->id));

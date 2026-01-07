@@ -23,7 +23,8 @@ class EBR extends Model
         'import_clients_done',
         'file_name_operations',
         'import_operations_done',
-        'ebr_type_id'
+        'ebr_type_id',
+        'status'
     ];
 
     protected function casts(): array
