@@ -5,6 +5,9 @@ namespace App\Console\Commands;
 use App\Models\EBR;
 use App\Models\EBRClient;
 use App\Models\EBROperation;
+use App\Models\EBRRiskElementIndicatorRelated;
+use App\Models\EBRRiskElementRelated;
+use App\Models\EBRRiskElementRelatedAverage;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -35,6 +38,9 @@ class DeleteOldEbrRecords extends Command
 
         $ebrs = EBR::where('created_at', '<', $limitDate)->get();
         foreach ($ebrs as $ebr) {
+            EBRRiskElementRelated::where('ebr_id', $ebr->id)->delete();
+            EBRRiskElementRelatedAverage::where('ebr_id', $ebr->id)->delete();
+            EBRRiskElementIndicatorRelated::where('ebr_id', $ebr->id)->delete();
             EBROperation::where('ebr_id', $ebr->id)->delete();
             EBRClient::where('ebr_id', $ebr->id)->delete();
             $ebr->delete();
